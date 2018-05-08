@@ -104,6 +104,8 @@ def auth_user(data):
     if not correct_pwd:
         return None
     if password != correct_pwd:
+        print("password: %s" % password)
+        print("correct pwd: %s" % correct_pwd)
         return None
     return User(username)
 
