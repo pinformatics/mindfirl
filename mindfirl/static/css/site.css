@@ -1,0 +1,25 @@
+.wrapper {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 28px;
+    color: white;
+}
+
+.project-progress {
+    margin-bottom: 10px;
+}
+
+.title-bar {
+    margin-top: 20px;
+}
+
+.project-title {
+    float: left;
+}
+
+.create-project {
+    float:right;
+}
