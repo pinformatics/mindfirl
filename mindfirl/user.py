@@ -10,7 +10,7 @@ class User(object):
 
     @staticmethod
     def get(mongo, uid):
-        user = mongo.db.mindfirl.users.find_one({'username': uid })
+        user = mongo.db.users.find_one({'username': uid })
         if user:
             return User(uid)
         return None
@@ -63,13 +63,11 @@ class User(object):
 def auth_user(mongo, data):
     username = data['name']
     password = data['pwd']
-    user = mongo.db.mindfirl.users.find_one({'username': username})
+    user = mongo.db.users.find_one({'username': username})
     if not user:
         return None
 
     if password != user['password']:
-        print("password: %s" % password)
-        print("correct pwd: %s" % correct_pwd)
         return None
     return User(username)
 
@@ -80,9 +78,10 @@ def register_user(mongo, data):
     user_exist = mongo.db.users.find_one({'username': username})
     if user_exist:
         return None
-    users = mongo.db.mindfirl.users
+    users = mongo.db.users
     user_id = users.insert({'username': username, 'password': password})
     #print("user id: " + str(user_id))
     return True
+
 
 

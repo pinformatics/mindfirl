@@ -8,8 +8,18 @@
     color: white;
 }
 
+.logo a {
+    text-decoration: none;
+    color: white;
+}
+
+.nav-ele {
+    margin-left: 20px;
+}
+
 .project-progress {
     margin-bottom: 10px;
+    width: 80%;
 }
 
 .title-bar {
@@ -23,3 +33,120 @@
 .create-project {
     float:right;
 }
+
+html {
+    font-size: 18px;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  padding-bottom: 6rem;
+  min-height: 100%;
+}
+
+
+#title h3 {
+    font-size: 36px;
+    margin-bottom: 0px;
+}
+
+.submit_button {
+    background-color: #30819C;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #b3b3b3;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: not-allowed;
+}
+
+.tooltiptext1 {
+    visibility: hidden;
+    width: 100px;
+    background-color: #ADD8E6;
+    color: #000;
+    text-align: center;
+    border-radius: 3px;
+    padding: 0 2px 0 2px;
+    font-size: 14px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    margin-left: -60px;
+    margin-top: -15px;
+}
+
+.tooltip1:hover .tooltiptext1 {
+    visibility: visible;
+}
+
+.card-header a {
+    text-decoration: none;
+    color: black;
+}
+
+.card-body a {
+    text-decoration: none;
+}
+
+.guide-links {
+    width: 25%;
+    float: right;
+    margin-top: 50px;
+}
+
+.guide-content {
+    width: 60%;
+    margin-top: 50px;
+}
+
+.guide-content h2 {
+    margin-top: 40px;
+}
+
+.guide-content img {
+    width: 800px;
+    height: 400px;
+}
+
+.guide-content table {
+    width: 100%;
+}
+
+.guide-content table, th, td {
+    border: 1px solid gray;
+    border-collapse: collapse;
+}
+
+.guide-content th, td {
+    padding: 15px;
+    text-align: left;
+}
+
