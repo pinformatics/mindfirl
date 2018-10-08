@@ -2,6 +2,7 @@ import os
 import time
 import hashlib
 import config
+import math
 from get_pair_file import generate_pair_file, generate_fake_file
 from blocking import generate_pair_by_blocking
 
@@ -88,7 +89,7 @@ def save_project2(mongo, data):
         'pf_path': target_path,
         'assignee': [assignee],
         'assignee_stat': [
-            {'assignee': assignee, 'current_page': 0, 'page_size': file_info['size']/6, 'kapr_limit': kapr, 'current_kapr': 0}
+            {'assignee': assignee, 'current_page': 0, 'page_size': math.ceil(file_info['size']/6), 'kapr_limit': kapr, 'current_kapr': 0}
         ]
     }
     mongo.db.projects.insert(project_data)
@@ -291,7 +292,7 @@ def update_project_setting(mongo, user, data):
 def project_name_existed(mongo, data):
     project_name = data['project_name']
     owner = data['owner']
-    existed = mongo.db.projects.find({'owner': owner, 'project_name': project_name})
+    existed = mongo.db.projects.find_one({'owner': owner, 'project_name': project_name})
     if existed:
         return True
     return False
@@ -304,9 +305,9 @@ def is_invalid_kapr(mongo, data):
     user_idx = 0
     current_kapr = assignee_stat[user_idx]['current_kapr']
 
-    if float(current_kapr) > float(data['kapr_limit']):
-        return False
-    return True
+    if 100*float(current_kapr) > float(data['kapr_limit']):
+        return True
+    return False
 
 
 def get_current_kapr(mongo, data):
@@ -319,5 +320,10 @@ def get_current_kapr(mongo, data):
     current_kapr = round(100*float(current_kapr), 2)
 
     return current_kapr
+
+
+def mlog(mongo, data):
+    mongo.db.log.insert(data)
+
 
 

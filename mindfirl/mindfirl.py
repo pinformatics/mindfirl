@@ -7,6 +7,8 @@ from wtforms.fields import core, html5, simple
 from wtforms import Form, validators, widgets
 from urllib.parse import urlparse, urljoin
 import os
+import time
+import json
 from user import User, auth_user, register_user
 from mutil import r
 from flask_pymongo import PyMongo
@@ -209,6 +211,10 @@ def signup():
     else:
         form = SignupForm(formdata=request.form)
         if form.validate():
+            data = form.data
+            if data['name'] == data['pwd']:
+                flask.flash('Cannot use username as password.')
+                return redirect(url_for('signup'))
             user = register_user(mongo=mongo, data=form.data)
             if user:
                 flask.flash('Register successful. Please login now.')
@@ -426,6 +432,7 @@ def update_project(pid):
 
     storage_model.update_project_setting(mongo=mongo, user=user.username, data=data)
 
+    flask.flash('Project update has been saved.')
     return redirect(url_for('project'))
 
 
@@ -460,6 +467,7 @@ def record_linkage(pid):
     kapr_limit = assignment_status['kapr_limit']
     current_kapr = assignment_status['current_kapr']
     if current_page >= page_size:
+        flask.flash('You have completed the project.')
         return redirect('project')
 
     # prepare return data
@@ -475,6 +483,8 @@ def record_linkage(pid):
     delta = list()
     for i in range(config.DATA_PAIR_PER_PAGE*current_page, config.DATA_PAIR_PER_PAGE*(current_page+1)):
         data_pair = working_data.get_data_pair_by_index(i)
+        if data_pair is None:
+            break
         delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], 2*working_data.size())
 
     # prepare cache data for ajax query
@@ -532,6 +542,7 @@ def record_linkage_next(pid):
     # check if the project is completed
     completed = storage_model.is_project_completed(mongo=mongo, pid=pid)
     if completed:
+        flask.flash('You have completed the project.')
         return redirect('project')
 
     return redirect('record_linkage/'+pid)
@@ -558,6 +569,17 @@ def open_cell():
     kapr_limit = float(assignment_status['kapr_limit'])
 
     ret = dm.open_cell(assignment_id, full_data, working_data, pair_num, attr_num, mode, r, kapr_limit)
+
+    log_data = {
+        'username': user.username,
+        'timestamp': time.time(),
+        'url': '/get_cell',
+        'pid': str(pid),
+        'assignment_id': str(assignment_id),
+        'log': json.dumps(ret)
+    }
+    storage_model.mlog(mongo=mongo, data=log_data)
+
     return jsonify(ret)
 
 

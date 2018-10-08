@@ -389,6 +389,7 @@ class DataPairList(object):
     def get_data_pair_by_index(self, index):
         if index < 0 or index >= len(self._data):
             logging.error('Error: index out of range')
+            return None
         return self._data[index]
 
 

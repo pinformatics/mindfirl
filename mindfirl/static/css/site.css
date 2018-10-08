@@ -3,6 +3,10 @@
     margin: 0 auto;
 }
 
+.container-fluid {
+    padding-top: 10px;
+}
+
 .logo {
     font-size: 28px;
     color: white;
