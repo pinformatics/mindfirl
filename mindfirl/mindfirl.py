@@ -151,12 +151,12 @@ class ProjectForm2(Form):
     data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
-    blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control"})
+    blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
 
     assignto = SelectField(
         u'Assign to', 
         choices=[], 
-        render_kw={"class":"custom-select my-1 mr-sm-2"}
+        render_kw={"class":"form-control selectpicker", "data-live-search": "ture"}
     )
     kapr = FloatField('Privacy budget', [validators.NumberRange(min=0, max=100, message="Please enter a valid value.")], render_kw={"class":"form-control"})
 
