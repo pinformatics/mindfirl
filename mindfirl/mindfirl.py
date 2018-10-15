@@ -147,8 +147,8 @@ class ProjectForm2(Form):
         render_kw={"class":"form-control"}
     )
 
-    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"form-control-file"}, validators=[validators.Optional()])
-    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"form-control-file"}, validators=[validators.Optional()])
+    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
     blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control"})
@@ -422,8 +422,16 @@ def update_project(pid):
         'project_name': project_name,
         'project_des': project_des,
         'assignee': assignee,
-        'kapr_limit': kapr_limit
+        'kapr_limit': kapr_limit,
+        'owner': user.username
     }
+
+    # check if project name existed
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if project['project_name'] != data['project_name']:
+        if storage_model.project_name_existed(mongo=mongo, data=data):
+            flask.flash('project name existed.')
+            return redirect(url_for('view_project', pid=pid))
 
     if storage_model.is_invalid_kapr(mongo=mongo, data=data):
         current_kapr = storage_model.get_current_kapr(mongo=mongo, data=data)
@@ -507,7 +515,8 @@ def record_linkage(pid):
         'pair_num_base': config.DATA_PAIR_PER_PAGE*current_page+1,
         'delta': delta,
         'this_url': '/record_linkage/'+pid,
-        'saved_answers': answers
+        'saved_answers': answers,
+        'data_size': len(data),
     }
     return render_template('record_linkage_ppirl.html', data=ret_data)
 
@@ -622,6 +631,16 @@ def open_big_cell():
         'result': ret2['result'],
         'new_delta': ret2['new_delta']
     }
+
+    log_data = {
+        'username': user.username,
+        'timestamp': time.time(),
+        'url': '/get_big_cell',
+        'pid': str(pid),
+        'assignment_id': str(assignment_id),
+        'log': json.dumps(ret)
+    }
+    storage_model.mlog(mongo=mongo, data=log_data)
 
     return jsonify(ret)
 

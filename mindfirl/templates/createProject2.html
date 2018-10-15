@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../static/css/site.css?q=43" type="text/css">
     <script src="../static/javascript/popper.min.js"></script>
     <script src="../static/javascript/jquery-3.2.1.min.js"></script>
-    <script src="../static/javascript/createProject.js?v=11"></script>
+    <script src="../static/javascript/createProject.js?v=15"></script>
 </head>
 
 <body>
@@ -62,11 +62,11 @@
                         <hr/>
 
                         <div class="form-label">{{ form.data1.label }}</div>
-                        <div class="file-div">{{ form.data1 }}</div>
+                        <div class="file-div custom-file">{{ form.data1 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
                         <div class="form-error" id="data1-error">{{ form.data1.errors.0 }}</div>
 
                         <div class="form-label">{{ form.data2.label }}</div>
-                        <div class="file-div">{{ form.data2 }}</div>
+                        <div class="file-div custom-file">{{ form.data2 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
                         <div class="form-error" id="data2-error">{{ form.data2.errors.0 }}</div>
                         
                         <div class="form-label">{{ form.blocking.label }}</div>

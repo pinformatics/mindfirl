@@ -33,7 +33,7 @@ function all_questions_answered() {
         i += 1;
     });
     //return true; // enable this for not enforcing answer all questions to proceed.
-    return (i == 6);
+    return (i == $DATA_SIZE);
 }
 
 function create_end_session() {
