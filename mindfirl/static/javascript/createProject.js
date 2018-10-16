@@ -1,3 +1,16 @@
+$( document ).ready(function() {
+    $('.custom-file-input').on('change',function(){
+        var fileName = $(this).val();
+        fileName = fileName.split("\\");
+        fileName = fileName[fileName.length-1]
+        $(this).next().addClass("selected").html(fileName);
+    })
+
+});
+
+
+
+
 function reset_form_error() {
     $("#project_name-error").html("");
     $("#kapr-error").html("");

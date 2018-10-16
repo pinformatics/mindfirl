@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../static/css/login.css?q=6" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=43" type="text/css">
     <script src="../static/javascript/jquery-3.2.1.min.js"></script>
+    <script src="../static/javascript/updateProject.js?v=1"></script>
 </head>
 
 <body>
@@ -48,14 +49,15 @@
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
-                    <form action="/updateProject/{{ data['project']['pid'] }}" method="post">
+                    <form action="/updateProject/{{ data['project']['pid'] }}" onsubmit="return check_form(this)" method="post">
                         <div class="form-group">
                             Project name:
-                            <input class="form-control" type="text" placeholder="Project name" name="project_name" value="{{ data['project']['project_name'] }}">
+                            <input class="form-control" type="text" placeholder="Project name" name="project_name" id="project_name" value="{{ data['project']['project_name'] }}">
+                            <div class="form-error" id="project_name-error"></div>
                         </div>
                         <div class="form-group">
                             Project description:
-                            <input class="form-control" type="text" placeholder="Project description" name="project_description" value="{{ data['project']['project_des'] }}">
+                            <input class="form-control" type="text" placeholder="Project description" name="project_description" id="project_des" value="{{ data['project']['project_des'] }}">
                         </div>
                         <label class="my-1 mr-2" for="assignto">Assign to</label>
                         <select class="custom-select my-1 mr-sm-2" id="assignto" name="assignto">
@@ -63,8 +65,10 @@
                         </select>
                         <div class="form-group">
                             Privacy budget:
-                            <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" value="{{ data['project']['assignee_stat'][0]['kapr_limit'] }}">
+                            <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr" value="{{ data['project']['assignee_stat'][0]['kapr_limit'] }}">
+                            <div class="form-error" id="kapr-error"></div>
                         </div>
+
                         <button type="submit" class="btn btn-success">Update</button>
                         <a href="/project" style="text-decoration: none;" class="btn btn-outline-secondary">
                             Cancel

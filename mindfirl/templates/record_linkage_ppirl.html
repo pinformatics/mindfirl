@@ -19,7 +19,7 @@
         <script src="../static/javascript/site.js"></script>
         <script src="../static/javascript/choice_panel.js?v=8"></script>
         <script src="../static/javascript/clickable.js?v=48"></script>
-        <script src="../static/javascript/form_submit.js?v=3"></script>
+        <script src="../static/javascript/form_submit.js?v=4"></script>
         <script type=text/javascript>
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
@@ -38,6 +38,8 @@
             $THIS_URL = "{{ data['this_url'] }}";
             $NEXT_URL = "{{ data['this_url'] }}" + '/next';
             $PROJ_URL = "/project";
+
+            $DATA_SIZE = "{{ data['data_size'] }}";
 
             $user_data = '';
         </script>
