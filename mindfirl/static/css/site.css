@@ -154,3 +154,20 @@ button:disabled {
     text-align: left;
 }
 
+
+.floating {
+    z-index: 1;
+    position:relative;
+    /*overflow-y:scroll;*/
+    float: right;
+    /*left: 75%;*/
+    right: 0;
+    top: 5%;
+
+    height: 100px;
+
+    /*background-color: white;*/
+    /*color: b;*/
+
+    padding: 0;
+}
