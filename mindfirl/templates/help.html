@@ -55,19 +55,29 @@
                             Instruction
                           </div>
                           <div class="card-body">
-                                <h2>What is MINDFIRL?</h2>
-            <hr/>
-            <p>MINDFIRL stands for Minimum & Necessary Disclosure for Interactive Record Linkage. It is a software for interactive record linkage. At the beginning, all the attributes of the records are masked, and you can make record linkage decisions by the aid of supplemental visual markups, as shown in the figure. You can click the attribute to disclose it if you think the information can help you make better decisions. However, openning attributes costs your privacy budget. When the privacy budget reach the limit set by the project manager, you cannot open more attributes.
-</p>
-<img src="../static/images/guide/1.png" alt="recordlinkage">
+                                <h4>FAQ</h4>
+            <ul>
+                <li><a href="#mindfirl_what">What is MINDFIRL?</a></li>
+                <li><a href="#projects_assignments">Projects and Assignments</a></li>
+                <li><a href="#creating_projects">Creating projects</a></li>
+            </ul>
+            <h2 id="mindfirl_what">What is MINDFIRL?</h2>
+            <p>MINDFIRL stands for Minimum & Necessary Disclosure for Interactive Record Linkage. It is a software for interactive record linkage. At the beginning, all the attributes of the records are masked, and you can make record linkage decisions by the aid of supplemental visual markups, as shown in the figure. 
+            </p>
+            <img src="../static/images/guide/1.png" alt="recordlinkage">
+            <p>You can click the attribute to disclose it if you think the information can help you make better decisions. However, openning attributes costs your privacy budget. When the privacy budget reaches the limit set by the project manager, you cannot open more attributes.</p>
+             <video width="90%" controls autoplay loop>
+              <source src="../static/images/guide/budgetmeter_vid.mp4" type="video/mp4">
+            </video> 
+            
 
-<h2>Projects and Assignments</h2>
+            <h2 id="projects_assignments">Projects and Assignments</h2>
             <hr/>
-            <p>You can create projects and assign the project to others. Your projects are shown in the "My projects" list. By clicking on the project, you can check the detailed information. The "My Assignments" list shows the projects that assigned to you. You can check your progress and privacy budget used. You can start to work on the project by clicking "Go to project".
-</p>
-<img src="../static/images/guide/2.png" alt="projects">
+            <p>You can create projects and assign the project to others. Your projects are shown in the "My projects" list. By clicking on the project, you can check the detailed information. The "My Assignments" list shows the projects that have been assigned to you. You can check your progress and privacy budget used. You can start working on the project by clicking "Go to project".
+            </p>
+            <img src="../static/images/guide/2.png" alt="projects">
 
-<h2>Creating projects</h2>
+            <h2 id="creating_projects">Creating projects</h2>
             <hr/>
             <p>You can create project by clicking the "create project" button above. You will need to provide two csv files with following format:<br/>
                 <table style="">
@@ -114,12 +124,20 @@
     Then you can choose one or more attributes to block on. Records with same blocking attributes will be group into one block. Then, we will generate record linking candidates for each block.
             </p>
 
-
-<p>
+    <p>
 Then you can choose the user to assign to. You can also set up a privacy budget limit. You can type in percentage of privacy budget limit, or choose among these options: masked, minimum, moderate, full. The "masked" option means no attribute can be opened, and "full" means all the attributes are opened at the beginning. The "minimum" and "moderate" option has around 5% and 40% privacy budget limit, dependent on the data.
 </p>
-<img src="../static/images/guide/3.png" alt="createprojects">
-                          </div>
+    <!-- You can type in percentage of privacy budget limit, or choose among these options: masked, minimum, moderate, full. The "masked" option means no attribute can be opened, and "full" means all the attributes are opened at the beginning. The "minimum" and "moderate" option has around 5% and 40% privacy budget limit, dependent on the data. -->
+    </p>
+    <img src="../static/images/guide/3.png" alt="createprojects" style="border: 2px solid black;">
+
+    <br>
+
+    <form action="/">
+        <br>
+        <input type="submit" class="btn btn-primary" value="Back to projects" />
+    </form> 
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -138,3 +156,4 @@ Then you can choose the user to assign to. You can also set up a privacy budget 
     <script src="https://unpkg.com/ionicons@4.4.6/dist/ionicons.js"></script>
 </body>
 </html>
+

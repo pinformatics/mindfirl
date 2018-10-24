@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="shortcut icon" href="../static/images/site/favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="../static/css/jquery-ui.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/login.css?q=6" type="text/css">
+    <link rel="stylesheet" href="../static/css/site.css?q=43" type="text/css">
+    <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
+
+    <script src="../static/javascript/popper.min.js"></script>
+    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
+    <script src="../static/javascript/bootstrap.bundle.min.js"></script>
+    <script src="../static/javascript/bootstrap-select.min.js"></script>
+    <script src="../static/javascript/createProject.js?v=16"></script>
+</head>
+
+<body>
+    <!-- A grey horizontal navbar that becomes vertical on small screens -->
+    <nav class="navbar navbar-expand-sm" style="background-color: #1e5162;">
+        <ul class="navbar-nav">
+            <li class="nav-item logo">
+                <a href="/project">Mindfirl</a>
+            </li>
+            <li class="nav-item logo nav-ele">
+                <a href="/guide">Help</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="/logout" class="navbar-toggler-right" style="text-decoration: none; color: white;">Log out</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="title-bar" style="height:60px;">
+                        <h1>Create project</h1>
+                    </div>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form action="/saveProject2" method="post" onsubmit="return check_form(this)" enctype=multipart/form-data>
+                        <div class="form-label">{{ form.project_name.label }}</div>
+                        {{ form.project_name }} 
+                        <div class="form-error" id="project_name-error">{{ form.project_name.errors.0 }}</div>
+
+                        <div class="form-label">{{ form.project_des.label }}</div>
+                        {{ form.project_des }}
+                        <div class="form-error">{{ form.project_des.errors.0 }}</div>
+
+                        <hr/>
+
+                        <div class="form-label">{{ form.data1.label }}</div>
+                        <div class="file-div custom-file">{{ form.data1 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
+                        <div class="form-error" id="data1-error">{{ form.data1.errors.0 }}</div>
+
+                        <div class="form-label">{{ form.data2.label }}</div>
+                        <div class="file-div custom-file">{{ form.data2 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
+                        <div class="form-error" id="data2-error">{{ form.data2.errors.0 }}</div>
+                        
+                        <div class="form-label">{{ form.blocking.label }}</div>
+                        {{ form.blocking }}
+                        <div class="form-error" id="blocking-error">{{ form.blocking.errors.0 }}</div>
+
+                        <hr/>
+
+                        <div class="form-label">{{ form.assignto.label }}</div>
+                        <div class="select-div">{{ form.assignto }}</div>
+                        <div class="form-error">{{ form.assignto.errors.0 }}</div>
+
+                        <div class="form-label">{{ form.kapr.label }}</div>
+                        {{ form.kapr }}
+                        <div class="form-error" id="kapr-error">{{ form.kapr.errors.0 }}</div>
+
+                        <button type="submit" value="Upload" class="btn btn-success">Create</button>
+                    </form>
+                    <!--
+                    <form action="/saveProject" method="post">
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Project name" name="project_name">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="Project description" name="project_description">
+                        </div>
+                        <div class="form-group">
+                            <label for="importdata">Import data file 1</label>
+                            <input type="file" class="form-control-file" id="importdata" name="file1">
+                        </div>
+                        <div class="form-group">
+                            <label for="importdata">Import data file 2</label>
+                            <input type="file" class="form-control-file" id="importdata" name="file2">
+                        </div>
+                        <label class="my-1 mr-2" for="assignto">Assign to</label>
+                        <select class="custom-select my-1 mr-sm-2" id="assignto" name="assignto">
+                            <option selected>Choose...</option>
+                            <option value="1">User 1</option>
+                            <option value="2">User 2</option>
+                            <option value="3">User 3</option>
+                        </select>
+                        <div class="form-group">
+                            <input class="form-control" type="number" placeholder="Privacy budget (%)" step="1" min="0" max="100" name="privacy_budget">
+                        </div>
+                        <button type="submit" class="btn btn-success">Create</button>
+                    </form>
+                -->
+                </div>
+                <!-- end of div col-sm-8 -->
+                <div class="col-sm-4"></div>
+            </div>
+            <!-- end of div row -->
+        </div>
+    </div>
+</body>
+</html>
