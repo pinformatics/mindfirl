@@ -267,10 +267,60 @@ def project():
         a['budget'] = kapr
 
     data = {
-        'projects': projects,
-        'assignments': assignments
+        'projects': projects[:3],
+        'assignments': assignments[:3]
     }
     return render_template("project.html", data=data)
+
+
+@app.route('/project_list')
+@login_required
+def project_list():
+    user = current_user
+    projects = storage_model.get_projects_by_owner(mongo=mongo, owner=user.username)
+    projects = list(projects)
+
+    # calculate projects progress
+    for p in projects:
+        assignee_stat = p['assignee_stat']
+        finished_page, total_page = 0, 0
+        for assignee in assignee_stat:
+            finished_page += int(assignee['current_page'])
+            total_page += int(assignee['page_size'])
+        progress = float(finished_page)/total_page
+        progress = round(100*progress, 2)
+        p['progress'] = progress
+
+    data = {
+        'projects': projects,
+    }
+    return render_template("project_list.html", data=data)
+
+
+@app.route('/assignment_list')
+@login_required
+def assignment_list():
+    user = current_user
+
+    assignments = storage_model.get_projects_assigned(mongo=mongo, user=user.username)
+    assignments = list(assignments)
+    for a in assignments:
+        assignee_stat = a['assignee_stat']
+        finished_page, total_page = 0, 0
+        for assignee in assignee_stat:
+            finished_page += int(assignee['current_page'])
+            total_page += int(assignee['page_size'])
+        progress = float(finished_page)/total_page
+        progress = round(100*progress, 2)
+        a['progress'] = progress
+
+        kapr = round(100*float(assignee_stat[0]['current_kapr']), 1)
+        a['budget'] = kapr
+
+    data = {
+        'assignments': assignments
+    }
+    return render_template("assignment_list.html", data=data)
 
 
 @app.route('/createProject')
@@ -375,6 +425,32 @@ def save_project2():
     else:
         print(form.errors, "project creating error")
     return render_template("createProject2.html", form=form)
+
+
+@app.route('/project/<pid>')
+@login_required
+def project_detail(pid):
+    user = current_user
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+    if project['owner'] != user.username:
+        return forbidden()
+
+    assignee_stat = project['assignee_stat']
+    finished_page, total_page = 0, 0
+    for assignee in assignee_stat:
+        finished_page += int(assignee['current_page'])
+        total_page += int(assignee['page_size'])
+    progress = float(finished_page)/total_page
+    progress = round(100*progress, 2)
+    project['progress'] = progress
+
+    data = {
+        'project': project
+    }
+
+    return render_template('project_detail.html', data=data)
 
 
 @app.route('/delete/<pid>')

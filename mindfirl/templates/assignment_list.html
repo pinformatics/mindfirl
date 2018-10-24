@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="../static/images/site/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/site.css?q=44" type="text/css">
+    <link rel="stylesheet" href="../static/css/site.css?q=4" type="text/css">
 </head>
 
 <body>
@@ -52,30 +52,6 @@
                     <div class="content" style="min-height: 400px;">
                         <div class="card">
                           <div class="card-header">
-                            Projects
-                          </div>
-                          <div class="card-body">
-                                {% for project in data['projects'] %}
-                                <a class="link-div" href="https://google.com">
-                                <div class="module-item div-link">
-                                    {{ project['project_name'] }}
-                                    <div class="project-des">
-                                        {{ project['project_des'] }}
-                                    </div>
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ project['progress'] }}%;" aria-valuenow="{{ project['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                </a>
-                                <hr/>
-                                {% endfor %}
-
-                                <a href="/project_list" style="font-size: 18px">view all >></a>
-                          </div>
-                        </div>
-
-                        <div class="card">
-                          <div class="card-header">
                             Assignments
                           </div>
                           <div class="card-body">
@@ -86,15 +62,18 @@
                                     <div class="project-des">
                                         {{ assignment['project_des'] }}
                                     </div>
+                                    My progress:
                                     <div class="progress" style="height: 5px;">
                                         <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignment['progress'] }}%;" aria-valuenow="{{ assignment['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    Privacy budget:
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignment['budget'] }}%;" aria-valuenow="{{ assignment['budget'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </a>
                                 <hr/>
                                 {% endfor %}
-
-                                <a href="/assignment_list" style="font-size: 18px">view all >></a>
                           </div>
                         </div>
                     </div>
