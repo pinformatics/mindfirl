@@ -17,7 +17,9 @@ output:
 
 ## Sample 2
 
-### Raw (ideal: 5 groups, 10 pairs)
+### Raw (ideal: 5 group comparisons, 10 pairs)
+
+In these 5 group comparisons, the first group (id-146) alone may not refer to the same entity.
 
 ID,voter_reg_num,first_name,last_name,dob,sex,race <br/>
 146_a,1000153844,KEVIN,RANDALL,08/31/1951,M,W <br/>
