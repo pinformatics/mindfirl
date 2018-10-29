@@ -2,6 +2,22 @@
     width: 1280px;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
 #logo {
     color: #18414e;
     font-weight: bolder;
@@ -229,8 +245,12 @@ transition: all .2s ease-in-out;
     overflow: hidden;
 }
 
-.card-body img {
+.card-body-img {
     width: 700px;
+}
+
+.form-error {
+    color: red;
 }
 
 

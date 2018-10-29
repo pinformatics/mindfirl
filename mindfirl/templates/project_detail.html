@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="../static/images/site/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="../static/css/site.css?q=4" type="text/css">
+    <link rel="stylesheet" href="../static/css/site.css?q=68" type="text/css">
 </head>
 
 <body>
@@ -57,12 +57,23 @@
                           <div class="card-body">
                                 <div class="">
                                     <div class="project-des">
-                                        {{ data['project']['project_des'] }}
+                                        Description: {{ data['project']['project_des'] }}
                                     </div>
+                                    Assigned to: {{ data['project']['assignee'][0] }} <br/>
+                                    Progress:
                                     <div class="progress" style="height: 5px;">
                                         <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
+                                    <div>
+                                        <a href="/viewProjectConfig/{{ data['project']['pid'] }}"><image src="../static/images/site/_ionicons_svg_md-options.svg" alt="config" width="17px" height="17px"> Project settings</a>
+                                        {% if data['project']['progress'] >= 100 %}<br/><a href="/get_result/{{ data['project']['pid'] }}.csv"><img src="../static/images/site/_ionicons_svg_md-cloud-download.svg" alt="download" width="18px" height="18px"> Export result</a>{% endif %}
+                                        <br/>
+                                    </div>
                                 </div>
+                                <form action="/project_list">
+                                    <br>
+                                    <input type="submit" class="btn btn-primary" value="Back to projects" />
+                                </form> 
                           </div>
                         </div>
                     </div>
