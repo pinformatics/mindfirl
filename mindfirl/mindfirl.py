@@ -450,6 +450,8 @@ def project_detail(pid):
         'project': project
     }
 
+    print(data['project'])
+
     return render_template('project_detail.html', data=data)
 
 
