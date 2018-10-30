@@ -19,11 +19,9 @@ output:
 
 ### Raw (ideal: 5 group comparisons, 10 pairs)
 
-In these 5 group comparisons, the first group (id-146) alone may not refer to the same entity.
+In these 5 group comparisons, the last group (id-146) alone may not refer to the same entity.
 
 ID,voter_reg_num,first_name,last_name,dob,sex,race <br/>
-146_a,1000153844,KEVIN,RANDALL,08/31/1951,M,W <br/>
-146_b,1001039939,KEVIN,PURCELL,08/31/1951,M, <br/>
 
 223_a,1063209897,BAKRI,ABDEL-AZIZ SR,03/26/1965,M,O <br/>
 223_b,1100128569,BAKRI,ABDEL-AZIZ SR,03/26/1915,M,O <br/>
@@ -39,6 +37,10 @@ ID,voter_reg_num,first_name,last_name,dob,sex,race <br/>
 87_a,1075008084,ERNIE,SHORE III,12/17/1959,M,W <br/>
 87_b,1705008084,ERNEST,SHORE III,12/17/1959,M,W <br/>
 87_bd,1705008084,ERNEST,SHORE,12/17/1959,M,W <br/>
+
+146_a,1000153844,KEVIN,RANDALL,08/31/1951,M,W <br/>
+146_b,1001039939,KEVIN,PURCELL,08/31/1951,M, <br/>
+
 
 ### voter_reg_num (correct: 3/5 groups, 3/10 pairs | wrong: 1 pair)
 

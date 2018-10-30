@@ -18,11 +18,12 @@ Gurudev Ilangovan
 
 ## Sample 2
 
-### Raw (ideal: 5 groups, 10 pairs)
+### Raw (ideal: 5 group comparisons, 10 pairs)
+
+In these 5 group comparisons, the last group (id-146) alone may not
+refer to the same entity.
 
 ID,voter\_reg\_num,first\_name,last\_name,dob,sex,race <br/>
-146\_a,1000153844,KEVIN,RANDALL,08/31/1951,M,W <br/>
-146\_b,1001039939,KEVIN,PURCELL,08/31/1951,M, <br/>
 
 223\_a,1063209897,BAKRI,ABDEL-AZIZ SR,03/26/1965,M,O <br/>
 223\_b,1100128569,BAKRI,ABDEL-AZIZ SR,03/26/1915,M,O <br/>
@@ -38,6 +39,9 @@ ID,voter\_reg\_num,first\_name,last\_name,dob,sex,race <br/>
 87\_a,1075008084,ERNIE,SHORE III,12/17/1959,M,W <br/>
 87\_b,1705008084,ERNEST,SHORE III,12/17/1959,M,W <br/>
 87\_bd,1705008084,ERNEST,SHORE,12/17/1959,M,W <br/>
+
+146\_a,1000153844,KEVIN,RANDALL,08/31/1951,M,W <br/>
+146\_b,1001039939,KEVIN,PURCELL,08/31/1951,M, <br/>
 
 ### voter\_reg\_num (correct: 3/5 groups, 3/10 pairs | wrong: 1 pair)
 
@@ -116,10 +120,10 @@ SR,04/08/1982,M,O,0,1,3 <br/>
 
 ### Iteration 2: Blocking with voter registry number
 
-Now for second iteration of record linkage, for some reason we choose
-voter registry number as our blocking variable. The already groups
-records will not be touched. The centroids alone will be considered for
-this round. For instance,
+Now for the second iteration of record linkage, let’s assume for some
+reason we choose voter registry number as our blocking variable. The
+already grouped records will not be touched. The centroids alone will be
+considered for this round. For instance,
 
 223\_b,1100128569,BAKRI,ABDEL-AZIZ SR,03/26/1915,M,O,1,1,3 <br/>
 333\_b,1000295504,BAKER,MARY DELL,04/08/1928,F,W,1,2,2 <br/> 358\_a,,W
