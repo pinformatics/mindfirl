@@ -1,0 +1,53 @@
+.checkboxP {
+    width: 20px;
+    position: relative;
+    float: left;
+}
+
+/**
+ * Create the box for the checkbox
+ */
+.checkboxP label {
+    cursor: pointer;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    background: #eee;
+    border:1px solid #ddd;
+}
+
+/**
+ * Display the tick inside the checkbox
+ */
+.checkboxP label:after {
+    opacity: 0;
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 5px;
+    background: transparent;
+    top: 5px;
+    left: 5px;
+    border: 3px solid white;
+    border-top: none;
+    border-right: none;
+
+    transform: rotate(-45deg);
+}
+
+/**
+ * Create the hover event of the tick
+ */
+.checkboxP label:hover::after {
+    opacity: 0.2;
+}
+
+/**
+ * Create the checkbox state for the tick
+ */
+.checkboxP input[type=checkbox]:checked + label:after {
+    opacity: 1;
+}
+

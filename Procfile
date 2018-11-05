@@ -1,0 +1,1 @@
+web: cd mindfirl; gunicorn app:app
