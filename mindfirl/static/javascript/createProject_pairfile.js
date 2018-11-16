@@ -26,6 +26,9 @@ $( document ).ready(function() {
         $("#data2-error").html("");
     })
 
+    $("#data3").on('change', function(){
+        $("#data3-error").html("");
+    })
 });
 
 
@@ -37,6 +40,7 @@ function reset_form_error() {
     $("#blocking-error").html("");
     $("#data1-error").html("");
     $("#data2-error").html("");
+    $("#data3-error").html("");
 }
 
 function check_form(thisform) {
@@ -66,6 +70,11 @@ function check_form(thisform) {
     value = $("#data2").val();
     if(value == null || value == "") {
         $("#data2-error").html("Please select a file to upload.");
+        ret = false;
+    }
+    value = $("#data3").val();
+    if(value == null || value == "") {
+        $("#data3-error").html("Please select a file to upload.");
         ret = false;
     }
     return ret;

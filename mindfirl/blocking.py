@@ -47,55 +47,25 @@ def generate_pairs(block, start_id):
     return pairs
 
 
-def generate_pair_by_blocking(blocking, file1, file2, pair_file):
+def blocking_and_generate_pairs(blocking, intfile, pair_file):
     db = list()
-    paird_data = list()
-
-    ids = defaultdict(int)
-
-    with open(file1, 'r') as fin:
-        i = 0
+    with open(intfile, 'r') as fin:
+        pos = 0
         for line in fin:
             if len(line) == 0 or line == "\n":
                 continue
-            if i > 0:
-                data = line.rstrip('\n').split(',')
-                for j in range(len(data)):
-                    data[j] = data[j].strip(' ')
 
-                data_id = 'A' + data[0]
-                data[0] = data_id
-                if data_id not in ids:
-                    ids[data_id] += 1
-                    db.append(data)
-            i += 1
+            data = line.rstrip('\n').split(',')
+            if pos == int(data[7]):
+                db.append(data)
 
-    with open(file2, 'r') as fin:
-        i = 0
-        for line in fin:
-            if len(line) == 0 or line == "\n":
-                continue
-            if i > 0:
-                data = line.rstrip('\n').split(',')
-                for j in range(len(data)):
-                    data[j] = data[j].strip(' ')
-
-                data_id = 'B' + data[0]
-                data[0] = data_id
-                if data_id not in ids:
-                    ids[data_id] += 1
-                    db.append(data)
-            i += 1
-
-    print("finished reading file1 and file2. length of data is" + str(len(db)))
+            pos += 1
 
     attribute = { 'id': 1, 'fn': 2, 'ln': 3, 'bd': 4, 'gd': 5, 'rc': 6 }
     sorting_keys = list()
     for block_attr in blocking:
         if block_attr in attribute:
             sorting_keys.append(attribute[block_attr])
-
-    print(sorting_keys)
 
     if not sorting_keys:
         db_sorted = sorted(db, key=lambda x: (x[0]))
@@ -127,6 +97,9 @@ def generate_pair_by_blocking(blocking, file1, file2, pair_file):
 
         i += 1
 
+    if len(data_pair) == 0:
+        return False
+
     print('finished generate pairs.')
 
     with open(pair_file, 'w+') as fout:
@@ -135,3 +108,160 @@ def generate_pair_by_blocking(blocking, file1, file2, pair_file):
             fout.write(','.join([str(x) for x in dp])+'\n')
 
     print('finished writing data pairs.')
+
+    return True
+
+
+def create_intfile(file1, file2, intfile):
+    db = list()
+    paird_data = list()
+
+    ids = defaultdict(int)
+
+    # mindfirl internal id
+    iid = 0
+
+    with open(file1, 'r') as fin:
+        i = 0
+        for line in fin:
+            if len(line) == 0 or line == "\n":
+                continue
+            if i > 0:
+                data = line.rstrip('\n').split(',')
+                for j in range(len(data)):
+                    data[j] = data[j].strip(' ')
+
+                data_id = 'A' + data[0]
+                data[0] = data_id
+                if data_id not in ids:
+                    ids[data_id] += 1
+                    data.append(iid)
+                    iid += 1
+                    db.append(data)
+            i += 1
+
+    with open(file2, 'r') as fin:
+        i = 0
+        for line in fin:
+            if len(line) == 0 or line == "\n":
+                continue
+            if i > 0:
+                data = line.rstrip('\n').split(',')
+                for j in range(len(data)):
+                    data[j] = data[j].strip(' ')
+
+                data_id = 'B' + data[0]
+                data[0] = data_id
+                if data_id not in ids:
+                    ids[data_id] += 1
+                    data.append(iid)
+                    iid += 1
+                    db.append(data)
+            i += 1
+
+    with open(intfile, 'w+') as fout:
+        for row in db:
+            fout.write(','.join([str(x) for x in row])+'\n')
+    print("finished reading file1 and file2. length of data is" + str(len(db)))
+
+
+def generate_pair_by_blocking(blocking, file1, file2, intfile, pair_file):
+    """
+    input: 
+        blocking: attribute to block
+        file1: data file 1
+        file2: data file 2
+        intfile: intermediate file path
+        pair_file: output path
+    """
+
+    # create intfile
+    create_intfile(file1, file2, intfile)
+
+    return blocking_and_generate_pairs(blocking, intfile, pair_file)
+
+
+def new_blocking(blocking, intfile, pair_file):
+    return blocking_and_generate_pairs(blocking, intfile, pair_file)
+
+
+def get_id_by_pair_id(pair_id, pairs):
+    data = pairs[pair_id]
+    return data[0][8], data[1][8]
+
+
+
+def find_pos_by_iid(int_data, iid):
+    for i in range(len(int_data)):
+        if int_data[i][0] == iid:
+            return i
+    return None
+
+
+def disjoint_find_root(int_data, pos):
+    if int(int_data[pos][7]) == pos:
+        return pos
+    return disjoint_find_root(int_data, int(int_data[pos][7]))
+
+
+def disjoint_merge(int_data, iid1, iid2):
+    """
+    int_data: 
+    iid,id,fn,ln,dob,sex,race,gid,pos
+    A1,1000000657,LYNN,WILDING,07/04/1946,M,W,0
+    A2,1000000623,LYNN,WILDING,07/05/1946,M,W,1
+    """
+    pos1 = find_pos_by_iid(int_data, iid1)
+    pos2 = find_pos_by_iid(int_data, iid2)
+    root1 = disjoint_find_root(int_data, pos1)
+    root2 = disjoint_find_root(int_data, pos2)
+    int_data[root2][7] = root1
+
+
+
+def update_result_to_intfile(result_file, pair_file, intfile):
+    # read current round result
+    current_result = list()
+    with open(result_file, 'r') as fin:
+        for line in fin:
+            data = line.strip('\n').split(',')
+            current_result.append(data)
+
+    # read pair file
+    pairs = defaultdict(list)
+    with open(pair_file, 'r') as fin:
+        i = 0
+        for line in fin:
+            if i > 0:
+                data = line.rstrip('\n').split(',')
+                pair_id = data[0]
+                pairs[pair_id].append(data)
+            else:
+                i += 1
+
+    # read int file
+    int_data = list()
+    with open(intfile, 'r') as fin:
+        for line in fin:
+            data = line.rstrip('\n').split(',')
+            int_data.append(data)
+
+    for result in current_result:
+        if int(result[1]) == 1:
+            pair_id = result[0]
+            # iid1 is always the centroid
+            iid1, iid2 = get_id_by_pair_id(pair_id=pair_id, pairs=pairs)
+
+            disjoint_merge(int_data, iid1, iid2)
+
+    # write to file
+    with open(intfile, 'w') as fout:
+        for data in int_data:
+            fout.write(','.join([str(x) for x in data])+'\n')
+
+
+
+
+
+
+

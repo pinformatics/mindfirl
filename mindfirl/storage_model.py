@@ -4,7 +4,8 @@ import hashlib
 import config
 import math
 from get_pair_file import generate_pair_file, generate_fake_file
-from blocking import generate_pair_by_blocking
+from blocking import generate_pair_by_blocking, update_result_to_intfile
+import blocking
 
 
 def save_project(mongo, data):
@@ -60,15 +61,17 @@ def save_project2(mongo, data):
     owner = data['owner']
 
     # generate pair_file for record linkage
-    file1_path = os.path.join(config.DATA_DIR, owner+'_'+project_name+'_file1.csv')
-    file2_path = os.path.join(config.DATA_DIR, owner+'_'+project_name+'_file2.csv')
-    pairfile_path = os.path.join(config.DATA_DIR, owner+'_'+project_name+'_pairfile.csv')
-    target_path = os.path.join(config.DATA_DIR, owner+'_'+project_name+'_pf.csv')
+    file1_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file1.csv')
+    file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
+    intfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_intfile.csv')
+    pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
+    target_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
     file1 = data['file1']
     file2 = data['file2']
     file1.save(file1_path)
     file2.save(file2_path)
-    generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, pair_file=pairfile_path)
+    blocking_result = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
+    # if blocking_result is False, need to consider this
     file_info = generate_pair_file(pairfile_path, file1_path, file2_path, target_path)
 
     assignee = data['assignto']
@@ -85,6 +88,7 @@ def save_project2(mongo, data):
         'owner': owner,
         'file1_path': file1_path,
         'file2_path': file2_path,
+        'intfile_path': intfile_path,
         'pairfile_path': pairfile_path,
         'pf_path': target_path,
         'assignee': [assignee],
@@ -248,6 +252,7 @@ def save_answers(pid, data):
     save one page answers to file
     """
     data_to_write = list()
+    print(data)
     for d in data:
         if d['type'] == 'final_answer':
             answer = d['value']
@@ -320,6 +325,43 @@ def get_current_kapr(mongo, data):
     current_kapr = round(100*float(current_kapr), 2)
 
     return current_kapr
+
+
+def update_result(mongo, pid):
+    result_file = os.path.join('data', 'result', pid+'.csv')
+    project = mongo.db.projects.find_one({'pid': pid})
+    pairfile_path = project['pairfile_path']
+    intfile_path = project['intfile_path']
+
+    update_result_to_intfile(result_file, pairfile_path, intfile_path)
+
+    # reset result file
+    with open(result_file, 'w+') as fout:
+        fout.write('')
+
+
+def new_blocking(mongo, data):
+    project = mongo.db.projects.find_one({'pid': data['pid']})
+    pid=data['pid']
+    owner = project['owner']
+    assignee = project['assignee'][0]
+    file1_path = project['file1_path']
+    file2_path = project['file2_path']
+    intfile_path = project['intfile_path']
+    pairfile_path = project['pairfile_path']
+    target_path = project['pf_path']
+
+    blocking_result = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
+    if not blocking_result:
+        return False
+
+    file_info = generate_pair_file(pairfile_path, file1_path, file2_path, target_path)
+
+    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.current_page": 0}})
+    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.page_size": math.ceil(file_info['size']/6)}})
+    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.current_kapr": 0}})
+
+    return pid
 
 
 def mlog(mongo, data):

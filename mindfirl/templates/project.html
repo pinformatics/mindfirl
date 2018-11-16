@@ -50,17 +50,17 @@
 
                 <div class="col-9">
                     <div class="content" style="min-height: 400px;">
-                        {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                          {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert {{ category }} alert-dismissible fade show" role="alert">
                                     {{ message }}
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                {% endfor %}
-                            {% endif %}
+                            {% endfor %}
+                          {% endif %}
                         {% endwith %}
                         <div class="card">
                           <div class="card-header">
@@ -68,7 +68,7 @@
                           </div>
                           <div class="card-body">
                                 {% for project in data['projects'] %}
-                                <a class="link-div" href="https://google.com">
+                                <a class="link-div" href="/project/{{ project['pid'] }}">
                                 <div class="module-item div-link">
                                     {{ project['project_name'] }}
                                     <div class="project-des">

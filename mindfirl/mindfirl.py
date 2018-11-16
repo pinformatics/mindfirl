@@ -113,15 +113,15 @@ class ProjectForm(Form):
         render_kw={"class":"form-control"}
     )
 
-    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"form-control-file"}, validators=[validators.Optional()])
-    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"form-control-file"}, validators=[validators.Optional()])
+    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
-    data3 = FileField(u'Paired data file (csv)', render_kw={"class":"form-control-file"}, validators=[validators.Optional()])
+    data3 = FileField(u'Paired data file (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     assignto = SelectField(
         u'Assign to', 
         choices=[], 
-        render_kw={"class":"custom-select my-1 mr-sm-2"}
+        render_kw={"class":"form-control selectpicker", "data-live-search": "ture"}
     )
     kapr = FloatField('Privacy budget', [validators.NumberRange(min=0, max=100)], render_kw={"class":"form-control"})
 
@@ -161,6 +161,11 @@ class ProjectForm2(Form):
     kapr = FloatField('Privacy budget', [validators.NumberRange(min=0, max=100, message="Please enter a valid value.")], render_kw={"class":"form-control"})
 
 
+class BlockForm(Form):
+    blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
+    blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
+
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
@@ -189,7 +194,7 @@ def login():
                     return flask.abort(400)
                 return flask.redirect(next or flask.url_for('index'))
             else:
-                flask.flash('Incorrect username or password. Please try again.')
+                flask.flash('Incorrect username or password. Please try again.', 'alert-danger')
         else:
             print(form.errors, "login error")
         return render_template("login.html", form=form)
@@ -199,7 +204,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flask.flash('Logged out successfully.')
+    flask.flash('Logged out successfully.', 'alert-success')
     return redirect(url_for('login'))
 
 
@@ -213,15 +218,15 @@ def signup():
         if form.validate():
             data = form.data
             if data['name'] == data['pwd']:
-                flask.flash('Cannot use username as password.')
+                flask.flash('Cannot use username as password.', 'alert-danger')
                 return redirect(url_for('signup'))
             user = register_user(mongo=mongo, data=form.data)
             if user:
-                flask.flash('Register successful. Please login now.')
+                flask.flash('Register successful. Please login now.', 'alert-success')
                 return redirect(url_for('login'))
             else:
                 print('failed.')
-                flask.flash('Username exist.')
+                flask.flash('Username exist.', 'alert-danger')
         else:
             print(form.errors, "signup error")
         return render_template("register.html", form=form)
@@ -343,6 +348,12 @@ def create_project2():
     return render_template("createProject2.html", form=form)
 
 
+@app.route('/createProject2step2')
+@login_required
+def create_project2_step2():
+    return render_template("createProject2step2.html")
+
+
 @app.route('/saveProject', methods=["POST"])
 @login_required
 def save_project():
@@ -356,7 +367,7 @@ def save_project():
 
     if form.validate():
         if 'data3' not in request.files or ('data1' not in request.files or 'data2' not in request.files):
-            flask.flash('lack data files.')
+            flask.flash('lack data files.', 'alert-danger')
             return render_template("createProject.html", form=form)
 
         data = form.data
@@ -398,7 +409,7 @@ def save_project2():
 
     if form.validate():
         if 'data1' not in request.files or 'data2' not in request.files:
-            flask.flash('lack data files.')
+            flask.flash('lack data files.', 'alert-danger')
             return render_template("createProject2.html", form=form)
 
         data = form.data
@@ -411,7 +422,7 @@ def save_project2():
         data['owner'] = user.username
 
         if storage_model.project_name_existed(mongo=mongo, data=data):
-            flask.flash('project name existed.')
+            flask.flash('project name existed.', 'alert-danger')
             return render_template("createProject2.html", form=form)
 
         pid = storage_model.save_project2(mongo=mongo, data=data)
@@ -450,8 +461,6 @@ def project_detail(pid):
         'project': project
     }
 
-    print(data['project'])
-
     return render_template('project_detail.html', data=data)
 
 
@@ -462,7 +471,9 @@ def delete_project(pid):
 
     storage_model.delete_project(mongo=mongo, pid=pid, username=user.username)
 
-    return redirect('/project')
+    flask.flash('Project has been deleted.', 'alert-success')
+
+    return redirect('/project_list')
 
 
 @app.route('/viewProjectConfig/<pid>')
@@ -508,17 +519,67 @@ def update_project(pid):
     project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
     if project['project_name'] != data['project_name']:
         if storage_model.project_name_existed(mongo=mongo, data=data):
-            flask.flash('project name existed.')
+            flask.flash('project name existed.', 'alert-danger')
             return redirect(url_for('view_project', pid=pid))
 
     if storage_model.is_invalid_kapr(mongo=mongo, data=data):
         current_kapr = storage_model.get_current_kapr(mongo=mongo, data=data)
-        flask.flash('Kapr value is lower than the amount it has been used (%s%%).' % str(current_kapr))
+        flask.flash('Kapr value is lower than the amount it has been used (%s%%).' % str(current_kapr), 'alert-danger')
         return redirect(url_for('view_project', pid=pid))
 
     storage_model.update_project_setting(mongo=mongo, user=user.username, data=data)
 
-    flask.flash('Project update has been saved.')
+    flask.flash('Project update has been saved.', 'alert-success')
+    return redirect(url_for('project'))
+
+
+@app.route('/new_blocking/<pid>')
+@login_required
+def new_blocking(pid):
+    user = current_user
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+    if project['owner'] != user.username:
+        return forbidden()
+
+    data = {
+        'project': project
+    }
+
+    form = BlockForm()
+
+    all_users = storage_model.get_all_users(mongo=mongo)
+    user_list = [(u['username'], u['username']) for u in all_users]
+
+    return render_template('newBlocking.html', data=data, form=form)
+
+
+@app.route('/new_blocking_save/<pid>', methods=["POST"])
+@login_required
+def new_blocking_save(pid):
+    user = current_user
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+    if project['owner'] != user.username:
+        return forbidden()
+
+    form = BlockForm(formdata=request.form)
+
+    if form.validate():
+        data = form.data
+        data['pid'] = pid
+        data['owner'] = project['owner']
+        data['project_name'] = project['project_name']
+        result = storage_model.new_blocking(mongo=mongo, data=data)
+
+        if not result:
+            flask.flash('You have finished. No more blocking needed.', 'alert-success')
+        else:
+            flask.flash('New blocking has been processed.', 'alert-success')
+    else:
+        print(form.errors, "new blocking error")
     return redirect(url_for('project'))
 
 
@@ -553,7 +614,7 @@ def record_linkage(pid):
     kapr_limit = assignment_status['kapr_limit']
     current_kapr = assignment_status['current_kapr']
     if current_page >= page_size:
-        flask.flash('You have completed the project.')
+        flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
 
     # prepare return data
@@ -629,7 +690,10 @@ def record_linkage_next(pid):
     # check if the project is completed
     completed = storage_model.is_project_completed(mongo=mongo, pid=pid)
     if completed:
-        flask.flash('You have completed the project.')
+        # for the first time completing the linkage, update result to int_file
+        storage_model.update_result(mongo=mongo, pid=pid)
+
+        flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
 
     return redirect('record_linkage/'+pid)
@@ -775,14 +839,21 @@ def save_exit():
     return "data saved."
 
 
-@app.route('/get_result/<filename>')
+@app.route('/get_result/<pid>')
 @login_required
-def get_file(filename):
+def get_file(pid):
     """Download a file."""
     user = current_user
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+    if project['owner'] != user.username:
+        print(user.username)
+        print(project['owner'])
+        return forbidden()
 
-    path = os.path.join('data', 'result', filename)
-    return send_from_directory('', path, as_attachment=True)
+    path = os.path.join(config.DATA_DIR, 'internal', project['owner']+'_'+project['project_name']+'_intfile.csv')
+    return send_from_directory('', path, as_attachment=True, attachment_filename='result.csv')
 
 
 

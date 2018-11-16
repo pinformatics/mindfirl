@@ -242,7 +242,7 @@ transition: all .2s ease-in-out;
 }
 
 .card-body {
-    overflow: hidden;
+    overflow: visible;
 }
 
 .card-body-img {
