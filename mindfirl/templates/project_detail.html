@@ -7,6 +7,15 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=68" type="text/css">
+
+    <script>
+        function delete_alert() {
+            var r = confirm("Are you sure to delete this project? You cannot undo this action.");
+            if(r) {
+                window.location.href = "/delete/{{ data['project']['pid'] }}";
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -68,9 +77,14 @@
                                         <a href="/viewProjectConfig/{{ data['project']['pid'] }}"><image src="../static/images/site/_ionicons_svg_md-options.svg" alt="config" width="17px" height="17px"> Project settings</a>
                                         {% if data['project']['progress'] >= 100 %}
                                         <br/><a href="/get_result/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-cloud-download.svg" alt="download" width="18px" height="18px"> Export result</a>
+                                            {% if data['project']['created_by'] == 'blocking' %}
                                         <br/><a href="/new_blocking/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-cloud-download.svg" alt="download" width="18px" height="18px"> New blocking</a>
+                                            {% endif %}
+
                                         {% endif %}
                                         <br/>
+
+                                        <a href="#" onclick="delete_alert();" style="color: red;"><image src="../static/images/site/_ionicons_svg_ios-trash.svg" alt="config" width="18px" height="18px"> Delete project</a>
                                     </div>
                                 </div>
                                 <form action="/project_list">

@@ -2,7 +2,7 @@ import flask
 from flask import Flask, render_template, redirect, url_for, session, jsonify, request, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import redis
-from wtforms.fields import SelectField, FileField, FloatField, SelectMultipleField
+from wtforms.fields import SelectField, FileField, FloatField, SelectMultipleField, TextAreaField
 from wtforms.fields import core, html5, simple
 from wtforms import Form, validators, widgets
 from urllib.parse import urlparse, urljoin
@@ -115,15 +115,9 @@ class ProjectForm(Form):
 
     data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
     data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-
     data3 = FileField(u'Paired data file (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
-    assignto = SelectField(
-        u'Assign to', 
-        choices=[], 
-        render_kw={"class":"form-control selectpicker", "data-live-search": "ture"}
-    )
-    kapr = FloatField('Privacy budget', [validators.NumberRange(min=0, max=100)], render_kw={"class":"form-control"})
+    assignee_area = TextAreaField(u'Assignee', [validators.optional(), validators.length(max=200)], render_kw={"class":"form-control", "id": "assignee_area"})
 
 
 class ProjectForm2(Form):
@@ -153,12 +147,16 @@ class ProjectForm2(Form):
     blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
     blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
 
+    '''
     assignto = SelectField(
         u'Assign to', 
         choices=[], 
         render_kw={"class":"form-control selectpicker", "data-live-search": "ture"}
     )
     kapr = FloatField('Privacy budget', [validators.NumberRange(min=0, max=100, message="Please enter a valid value.")], render_kw={"class":"form-control"})
+    '''
+
+    assignee_area = TextAreaField(u'Assignee', [validators.optional(), validators.length(max=200)], render_kw={"class":"form-control", "id": "assignee_area"})
 
 
 class BlockForm(Form):
@@ -332,26 +330,26 @@ def assignment_list():
 @login_required
 def create_project():
     form = ProjectForm()
+    
     all_users = storage_model.get_all_users(mongo=mongo)
-    user_list = [(u['username'], u['username']) for u in all_users]
-    form.assignto.choices = user_list
-    return render_template("createProject.html", form=form)
+    user_list = [u['username'] for u in all_users]
+    data = {'users': user_list}
+
+    return render_template("createProject.html", form=form, data=data)
 
 
 @app.route('/createProject2')
 @login_required
 def create_project2():
     form = ProjectForm2()
+    #all_users = storage_model.get_all_users(mongo=mongo)
+    #user_list = [(u['username'], u['username']) for u in all_users]
+    #form.assignto.choices = user_list
+
     all_users = storage_model.get_all_users(mongo=mongo)
-    user_list = [(u['username'], u['username']) for u in all_users]
-    form.assignto.choices = user_list
-    return render_template("createProject2.html", form=form)
-
-
-@app.route('/createProject2step2')
-@login_required
-def create_project2_step2():
-    return render_template("createProject2step2.html")
+    user_list = [u['username'] for u in all_users]
+    data = {'users': user_list}
+    return render_template("createProject2.html", form=form, data=data)
 
 
 @app.route('/saveProject', methods=["POST"])
@@ -362,13 +360,13 @@ def save_project():
 
     # because current software do not delete users, so no worry about different user list before and after
     all_users = storage_model.get_all_users(mongo=mongo)
-    user_list = [(u['username'], u['username']) for u in all_users]
-    form.assignto.choices = user_list
+    user_list = [u['username'] for u in all_users]
+    users = {'users': user_list}
 
     if form.validate():
         if 'data3' not in request.files or ('data1' not in request.files or 'data2' not in request.files):
             flask.flash('lack data files.', 'alert-danger')
-            return render_template("createProject.html", form=form)
+            return render_template("createProject.html", form=form, data=users)
 
         data = form.data
 
@@ -383,6 +381,10 @@ def save_project():
 
         data['owner'] = user.username
 
+        if storage_model.project_name_existed(mongo=mongo, data=data):
+            flask.flash('project name existed.', 'alert-danger')
+            return render_template("createProject.html", form=form, data=users)
+
         pid = storage_model.save_project(mongo=mongo, data=data)
 
         # create result file
@@ -393,7 +395,7 @@ def save_project():
         return redirect(url_for('project'))
     else:
         print(form.errors, "project creating error")
-    return render_template("createProject.html", form=form)
+    return render_template("createProject.html", form=form, data=users)
 
 
 @app.route('/saveProject2', methods=["POST"])
@@ -404,13 +406,13 @@ def save_project2():
 
     # because current software do not delete users, so no worry about different user list before and after
     all_users = storage_model.get_all_users(mongo=mongo)
-    user_list = [(u['username'], u['username']) for u in all_users]
-    form.assignto.choices = user_list
+    user_list = [u['username'] for u in all_users]
+    users = {'users': user_list}
 
     if form.validate():
         if 'data1' not in request.files or 'data2' not in request.files:
             flask.flash('lack data files.', 'alert-danger')
-            return render_template("createProject2.html", form=form)
+            return render_template("createProject2.html", form=form, data=users)
 
         data = form.data
         
@@ -423,7 +425,7 @@ def save_project2():
 
         if storage_model.project_name_existed(mongo=mongo, data=data):
             flask.flash('project name existed.', 'alert-danger')
-            return render_template("createProject2.html", form=form)
+            return render_template("createProject2.html", form=form, data=users)
 
         pid = storage_model.save_project2(mongo=mongo, data=data)
 
@@ -435,7 +437,8 @@ def save_project2():
         return redirect(url_for('project'))
     else:
         print(form.errors, "project creating error")
-    return render_template("createProject2.html", form=form)
+
+    return render_template("createProject2.html", form=form, data=users)
 
 
 @app.route('/project/<pid>')
@@ -852,7 +855,7 @@ def get_file(pid):
         print(project['owner'])
         return forbidden()
 
-    path = os.path.join(config.DATA_DIR, 'internal', project['owner']+'_'+project['project_name']+'_intfile.csv')
+    path = storage_model.get_result_path(mongo=mongo, pid=pid)
     return send_from_directory('', path, as_attachment=True, attachment_filename='result.csv')
 
 

@@ -48,6 +48,10 @@ def generate_pairs(block, start_id):
 
 
 def blocking_and_generate_pairs(blocking, intfile, pair_file):
+    """
+    Retures:
+        the number of generated pairs
+    """
     db = list()
     with open(intfile, 'r') as fin:
         pos = 0
@@ -109,7 +113,7 @@ def blocking_and_generate_pairs(blocking, intfile, pair_file):
 
     print('finished writing data pairs.')
 
-    return True
+    return len(data_pair)
 
 
 def create_intfile(file1, file2, intfile):

@@ -618,7 +618,7 @@ def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, ka
     KAPRINC = KAPR - old_KAPR
     KAPR_key = user_key + '_KAPR'
     overall_KAPR = 100*(float(r.get(KAPR_key)) + KAPRINC)
-    if kapr_limit > 0.0001 and overall_KAPR > kapr_limit:
+    if overall_KAPR > kapr_limit:
         ret['result'] = 'fail'
         ret['KAPR'] = 0
         return ret
