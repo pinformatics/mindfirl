@@ -68,17 +68,20 @@
                                     <div class="project-des">
                                         Description: {{ data['project']['project_des'] }}
                                     </div>
-                                    Assigned to: {{ data['project']['assignee'][0] }} <br/>
-                                    Progress:
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                    
                                     <div>
                                         <a href="/viewProjectConfig/{{ data['project']['pid'] }}"><image src="../static/images/site/_ionicons_svg_md-options.svg" alt="config" width="17px" height="17px"> Project settings</a>
                                         {% if data['project']['progress'] >= 100 %}
+                                            {% if data['project']['conflicts'] == 0 %}
                                         <br/><a href="/get_result/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-cloud-download.svg" alt="download" width="18px" height="18px"> Export result</a>
-                                            {% if data['project']['created_by'] == 'blocking' %}
-                                        <br/><a href="/new_blocking/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-cloud-download.svg" alt="download" width="18px" height="18px"> New blocking</a>
+                                            {% endif %}
+                                            
+                                            {% if data['project']['created_by'] == 'blocking' and data['project']['conflicts'] == 0 %}
+                                        <br/><a href="/new_blocking/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-refresh-circle.svg" alt="download" width="18px" height="18px"> New blocking</a>
+                                            {% endif %}
+
+                                            {% if data['project']['conflicts'] == 1 %}
+                                        <br/><a href="/resolve_conflicts/{{ data['project']['pid'] }}"><img src="../static/images/site/_ionicons_svg_md-git-merge.svg" alt="download" width="18px" height="18px"> Resolve conflicts</a>
                                             {% endif %}
 
                                         {% endif %}
@@ -86,6 +89,18 @@
 
                                         <a href="#" onclick="delete_alert();" style="color: red;"><image src="../static/images/site/_ionicons_svg_ios-trash.svg" alt="config" width="18px" height="18px"> Delete project</a>
                                     </div>
+                                    <br/>
+
+                                    Overall Progress:
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    {% for assignee in data['project']['assignee_stat'] %}
+                                    Assignee: {{ assignee['assignee'] }} <br/>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignee['progress'] }}%;" aria-valuenow="{{ assignee['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    {% endfor %}
                                 </div>
                                 <form action="/project_list">
                                     <br>

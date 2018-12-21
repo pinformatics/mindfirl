@@ -13,7 +13,20 @@
     <script src="../static/javascript/jquery-3.2.1.min.js"></script>
     <script src="../static/javascript/bootstrap.bundle.min.js"></script>
     <script src="../static/javascript/bootstrap-select.min.js"></script>
-    <script src="../static/javascript/createProject.js?v=18"></script>
+    <script>
+        var user_list = [];
+        {% for user in data['users'] %}
+        user_list.push('{{ user }}');
+        {% endfor %}
+
+        var options = [];
+        var option_str = '';
+        for(i=0; i < user_list.length; i++) {
+            options.push(`<option value="${user_list[i]}">${user_list[i]}</option>`);
+            option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
+        }
+    </script>
+    <script src="../static/javascript/new_blocking.js?v=2"></script>
 </head>
 
 <body>
@@ -75,7 +88,7 @@
                                         {% endfor %}
                                       {% endif %}
                                     {% endwith %}
-                                    <form action="/new_blocking_save/{{ data['project']['pid'] }}" method="post" enctype=multipart/form-data>
+                                    <form action="/new_blocking_save/{{ data['project']['pid'] }}" method="post" onsubmit="return check_form(this)" enctype=multipart/form-data>
                                         <div class="form-group">
                                             Project name:
                                             <input class="form-control" type="text" placeholder="Project name" name="project_name" id="project_name" value="{{ data['project']['project_name'] }}" disabled>
@@ -90,15 +103,31 @@
                                         {{ form.blocking }}
                                         <div class="form-error" id="blocking-error">{{ form.blocking.errors.0 }}</div>
 
-                                        <label class="my-1 mr-2" for="assignto">Assign to</label>
-                                        <select class="custom-select my-1 mr-sm-2" id="assignto" name="assignto" disabled>
-                                            <option value="{{ data['project']['assignee'][0] }}">{{ data['project']['assignee'][0] }}</option>
-                                        </select>
-                                        <div class="form-group">
-                                            Privacy budget:
-                                            <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr" value="{{ data['project']['assignee_stat'][0]['kapr_limit'] }}" disabled>
-                                            <div class="form-error" id="kapr-error"></div>
+                                        <hr/>
+
+                                        <div id="assignee_1">
+                                            <label class="" for="assignto">Assign to</label>
+                                            <select class="form-control selectpicker" data-live-search="ture" id="assignto_1" name="assignto">
+                                                {% for user in data['users'] %}
+                                                <option value="{{user}}">{{user}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-group">
+                                                Privacy budget:
+                                                <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr_1" value="">
+                                                <div class="form-error" id="kapr_1-error"></div>
+                                                Assignment percentage:
+                                                <input class="form-control" type="number" placeholder="Assignment percentage (%)" step="1" min="0" max="100" name="percentage" id="percentage_1" value="100">
+                                                <div class="form-error" id="percentage_1-error"></div>
+                                            </div>
                                         </div>
+
+                                        <div id="add-assignee" style="color: blue; cursor: pointer; margin-top: 0px;">
+                                            + <span style="text-decoration: underline;">Add an assignee</span>
+                                        </div>
+
+                                        <div style="display: none;">{{ form.assignee_area }}</div>
+                                        <div class="form-error" id="kapr-error" style="margin-bottom: 8px;">{{ form.assignee_area.errors.0 }}</div>
 
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                         <a href="/project/{{ data['project']['pid'] }}" style="text-decoration: none;" class="btn btn-outline-secondary">

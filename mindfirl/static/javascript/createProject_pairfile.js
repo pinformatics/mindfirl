@@ -123,10 +123,10 @@ function encode_assignee() {
     }
     $("#assignee_area").html(encoded_assignee);
 
-    if(total_percentage == 100)
-        return true;
-    $("#percentage_1-error").html("Percentage must add up to 100.");
-    return false;
+    //if(total_percentage == 100)
+    //    return true;
+    //$("#percentage_1-error").html("Percentage must add up to 100.");
+    return true;
 }
 
 

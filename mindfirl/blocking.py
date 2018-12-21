@@ -50,7 +50,9 @@ def generate_pairs(block, start_id):
 def blocking_and_generate_pairs(blocking, intfile, pair_file):
     """
     Retures:
-        the number of generated pairs
+        - the number of generated pairs
+        - a list of blocking id:
+          [[1,2,3,4],[5,6,7,8,9]]
     """
     db = list()
     with open(intfile, 'r') as fin:
@@ -86,9 +88,10 @@ def blocking_and_generate_pairs(blocking, intfile, pair_file):
     elif len(sorting_keys) == 6:
         db_sorted = sorted(db, key=lambda x: (x[sorting_keys[0]], x[sorting_keys[1]], x[sorting_keys[2]], x[sorting_keys[3]], x[sorting_keys[4]], x[sorting_keys[5]]))
 
-    print('finished sorting db.')
+    #print('finished sorting db.')
 
     data_pair = list()
+    block_id = list()
     i = 0
     while i < len(db_sorted):
         block = [db_sorted[i]]
@@ -96,24 +99,25 @@ def blocking_and_generate_pairs(blocking, intfile, pair_file):
             block.append(db_sorted[i+1])
             i += 1
         if len(block) >= 2:
-            pairs = generate_pairs(block, start_id=int(len(data_pair)/2+1))
+            start_id = int(len(data_pair)/2+1)
+            pairs = generate_pairs(block, start_id=start_id)
             data_pair += pairs
+
+            # add to block list
+            end_id = int(start_id + (len(pairs)/2))
+            block_id.append(list(range(start_id, end_id)))
 
         i += 1
 
     if len(data_pair) == 0:
-        return False
-
-    print('finished generate pairs.')
+        return 0, []
 
     with open(pair_file, 'w+') as fout:
         fout.write('ID,voter_reg_num,first_name,last_name,dob,sex,race,type,file_id\n')
         for dp in data_pair:
             fout.write(','.join([str(x) for x in dp])+'\n')
 
-    print('finished writing data pairs.')
-
-    return len(data_pair)
+    return int(len(data_pair)/2), block_id
 
 
 def create_intfile(file1, file2, intfile):

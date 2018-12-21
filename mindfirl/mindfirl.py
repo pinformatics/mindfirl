@@ -163,6 +163,8 @@ class BlockForm(Form):
     blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
     blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
 
+    assignee_area = TextAreaField(u'Assignee', [validators.optional(), validators.length(max=200)], render_kw={"class":"form-control", "id": "assignee_area"})
+
 
 @app.route("/dashboard")
 @login_required
@@ -246,11 +248,11 @@ def project():
     # calculate projects progress
     for p in projects:
         assignee_stat = p['assignee_stat']
-        finished_page, total_page = 0, 0
+        pair_idx, total_pairs = 0, 0
         for assignee in assignee_stat:
-            finished_page += int(assignee['current_page'])
-            total_page += int(assignee['page_size'])
-        progress = float(finished_page)/total_page
+            pair_idx += int(assignee['pair_idx'])
+            total_pairs += int(assignee['total_pairs'])
+        progress = float(pair_idx)/total_pairs
         progress = round(100*progress, 2)
         p['progress'] = progress
 
@@ -260,11 +262,13 @@ def project():
         assignee_stat = a['assignee_stat']
         finished_page, total_page = 0, 0
         for assignee in assignee_stat:
-            finished_page += int(assignee['current_page'])
-            total_page += int(assignee['page_size'])
-        progress = float(finished_page)/total_page
-        progress = round(100*progress, 2)
-        a['progress'] = progress
+            if assignee['assignee'] == user.username:
+                pair_idx = int(assignee['pair_idx'])
+                total_pairs = int(assignee['total_pairs'])
+                progress = float(pair_idx)/total_pairs
+                progress = round(100*progress, 2)
+                a['progress'] = progress
+                break
 
         kapr = round(100*float(assignee_stat[0]['current_kapr']), 1)
         a['budget'] = kapr
@@ -286,11 +290,11 @@ def project_list():
     # calculate projects progress
     for p in projects:
         assignee_stat = p['assignee_stat']
-        finished_page, total_page = 0, 0
+        pair_idx, total_pairs = 0, 0
         for assignee in assignee_stat:
-            finished_page += int(assignee['current_page'])
-            total_page += int(assignee['page_size'])
-        progress = float(finished_page)/total_page
+            pair_idx += int(assignee['pair_idx'])
+            total_pairs += int(assignee['total_pairs'])
+        progress = float(pair_idx)/total_pairs
         progress = round(100*progress, 2)
         p['progress'] = progress
 
@@ -309,15 +313,16 @@ def assignment_list():
     assignments = list(assignments)
     for a in assignments:
         assignee_stat = a['assignee_stat']
-        finished_page, total_page = 0, 0
-        for assignee in assignee_stat:
-            finished_page += int(assignee['current_page'])
-            total_page += int(assignee['page_size'])
-        progress = float(finished_page)/total_page
-        progress = round(100*progress, 2)
-        a['progress'] = progress
 
-        kapr = round(100*float(assignee_stat[0]['current_kapr']), 1)
+        for assignee in assignee_stat:
+            if assignee['assignee'] == user.username:
+                pair_idx = int(assignee['pair_idx'])
+                total_pairs = int(assignee['total_pairs'])
+                progress = float(pair_idx)/total_pairs
+                progress = round(100*progress, 2)
+                kapr = round(100*float(assignee['current_kapr']), 1)
+                break
+        a['progress'] = progress
         a['budget'] = kapr
 
     data = {
@@ -429,11 +434,6 @@ def save_project2():
 
         pid = storage_model.save_project2(mongo=mongo, data=data)
 
-        # create result file
-        filename = os.path.join(config.DATA_DIR, 'result', pid+'.csv')
-        f = open(filename, 'w+')
-        f.close()
-
         return redirect(url_for('project'))
     else:
         print(form.errors, "project creating error")
@@ -452,13 +452,24 @@ def project_detail(pid):
         return forbidden()
 
     assignee_stat = project['assignee_stat']
-    finished_page, total_page = 0, 0
+    pair_idx, total_pairs = 0, 0
     for assignee in assignee_stat:
-        finished_page += int(assignee['current_page'])
-        total_page += int(assignee['page_size'])
-    progress = float(finished_page)/total_page
+        pair_idx += int(assignee['pair_idx'])
+        total_pairs += int(assignee['total_pairs'])
+        assignee_progress = int(assignee['pair_idx'])/int(assignee['total_pairs'])
+        assignee_progress = round(100*assignee_progress, 2)
+        assignee['progress'] = assignee_progress
+    progress = float(pair_idx)/total_pairs
     progress = round(100*progress, 2)
     project['progress'] = progress
+
+    indices = storage_model.detect_result_conflicts(mongo, pid)
+    if len(indices) > 0:
+        project['conflicts'] = 1
+    else:
+        project['conflicts'] = 0
+
+    print(project)
 
     data = {
         'project': project
@@ -471,6 +482,11 @@ def project_detail(pid):
 @login_required
 def delete_project(pid):
     user = current_user
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+    if project['owner'] != user.username:
+        return forbidden()
 
     storage_model.delete_project(mongo=mongo, pid=pid, username=user.username)
 
@@ -506,15 +522,15 @@ def update_project(pid):
 
     project_name = request.form['project_name']
     project_des = request.form['project_description']
-    assignee = request.form['assignto']
-    kapr_limit = request.form['privacy_budget']
+    #assignee = request.form['assignto']
+    #kapr_limit = request.form['privacy_budget']
 
     data = {
         'pid': pid,
         'project_name': project_name,
         'project_des': project_des,
-        'assignee': assignee,
-        'kapr_limit': kapr_limit,
+        #'assignee': assignee,
+        #'kapr_limit': kapr_limit,
         'owner': user.username
     }
 
@@ -525,10 +541,10 @@ def update_project(pid):
             flask.flash('project name existed.', 'alert-danger')
             return redirect(url_for('view_project', pid=pid))
 
-    if storage_model.is_invalid_kapr(mongo=mongo, data=data):
-        current_kapr = storage_model.get_current_kapr(mongo=mongo, data=data)
-        flask.flash('Kapr value is lower than the amount it has been used (%s%%).' % str(current_kapr), 'alert-danger')
-        return redirect(url_for('view_project', pid=pid))
+    #if storage_model.is_invalid_kapr(mongo=mongo, data=data):
+    #    current_kapr = storage_model.get_current_kapr(mongo=mongo, data=data)
+    #    flask.flash('Kapr value is lower than the amount it has been used (%s%%).' % str(current_kapr), 'alert-danger')
+    #    return redirect(url_for('view_project', pid=pid))
 
     storage_model.update_project_setting(mongo=mongo, user=user.username, data=data)
 
@@ -546,14 +562,15 @@ def new_blocking(pid):
     if project['owner'] != user.username:
         return forbidden()
 
+    all_users = storage_model.get_all_users(mongo=mongo)
+    user_list = [u['username'] for u in all_users]
+
     data = {
-        'project': project
+        'project': project,
+        'users': user_list
     }
 
     form = BlockForm()
-
-    all_users = storage_model.get_all_users(mongo=mongo)
-    user_list = [(u['username'], u['username']) for u in all_users]
 
     return render_template('newBlocking.html', data=data, form=form)
 
@@ -605,11 +622,6 @@ def record_linkage(pid):
     # username and project_id can identify an assignment
     assignment_id = pid + '-' + user.username
 
-    # get working data and full data
-    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
-    working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile))
-    full_data = dl.load_data_from_csv(pair_datafile)
-
     # get assignment status
     assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
     current_page = assignment_status['current_page']
@@ -620,18 +632,24 @@ def record_linkage(pid):
         flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
 
+    # get working data and full data
+    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    indices, pair_idx = storage_model.get_current_block(mongo=mongo, pid=pid, assignee=user.username)
+    working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
+    full_data = dl.load_data_from_csv(pair_datafile)
+
     # prepare return data
-    icons = working_data.get_icons()[config.DATA_PAIR_PER_PAGE*current_page:config.DATA_PAIR_PER_PAGE*(current_page+1)]
-    ids_list = working_data.get_ids()[2*config.DATA_PAIR_PER_PAGE*current_page:2*config.DATA_PAIR_PER_PAGE*(current_page+1)]
+    icons = working_data.get_icons()
+    ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
     data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r)
-    pairs_formatted = working_data.get_data_display(data_mode, data_mode_list, left=config.DATA_PAIR_PER_PAGE*current_page, right=config.DATA_PAIR_PER_PAGE*(current_page+1))
+    pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
     # get the delta information
     delta = list()
-    for i in range(config.DATA_PAIR_PER_PAGE*current_page, config.DATA_PAIR_PER_PAGE*(current_page+1)):
+    for i in range(working_data.size()):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
@@ -654,7 +672,7 @@ def record_linkage(pid):
         'kapr_limit': kapr_limit, 
         'page_number': current_page+1,
         'page_size': page_size,
-        'pair_num_base': config.DATA_PAIR_PER_PAGE*current_page+1,
+        'pair_num_base': pair_idx+1,
         'delta': delta,
         'this_url': '/record_linkage/'+pid,
         'saved_answers': answers,
@@ -682,6 +700,9 @@ def record_linkage_next(pid):
     # increase page number to db
     storage_model.increase_assignment_page(mongo=mongo, username=user.username, pid=pid)
 
+    # increase pair index to db
+    storage_model.increase_pair_idx(mongo=mongo, pid=pid, username=user.username)
+
     # update kapr to db
     KAPR_key = assignment_id + '_KAPR'
     kapr = r.get(KAPR_key)
@@ -693,8 +714,12 @@ def record_linkage_next(pid):
     # check if the project is completed
     completed = storage_model.is_project_completed(mongo=mongo, pid=pid)
     if completed:
-        # for the first time completing the linkage, update result to int_file
-        storage_model.update_result(mongo=mongo, pid=pid)
+        storage_model.combine_result(mongo, pid)
+        # don't update the result yet, because we use ajax to write result, the result might not been updated 
+        # if there are conflicts, the result is updated after the resolve_conflict
+        indices = storage_model.detect_result_conflicts(mongo, pid)
+        if len(indices) == 0:
+            storage_model.update_result(mongo=mongo, pid=pid)
 
         flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
@@ -790,6 +815,42 @@ def open_big_cell():
     return jsonify(ret)
 
 
+@app.route('/resolve_conflicts/<pid>')
+@login_required
+def resolve_conflicts(pid):
+    user = current_user
+    assignment_id = pid + '-' + user.username
+
+    # find if this project exist
+    project = storage_model.get_assignment(mongo=mongo, username=user.username, pid=pid)
+    if not project:
+        return page_not_found('page_not_found')
+
+    indices = storage_model.detect_result_conflicts(mongo, pid)
+    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
+
+    icons = working_data.get_icons()
+    ids_list = working_data.get_ids()
+    ids = list(zip(ids_list[0::2], ids_list[1::2]))
+    
+    pairs_formatted = working_data.get_data_display('full')
+    data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
+
+
+    ret_data = {
+        'data': data,
+        'icons': icons,
+        'ids': ids,
+        'title': project['project_name'],
+        'this_url': '/record_linkage/'+pid,
+        'next_url': '/project/'+pid,
+        'pid': pid,
+        'data_size': len(data),
+    }
+    return render_template('resolve_conflicts.html', data=ret_data)
+
+
 @app.route('/save_data', methods=['GET', 'POST'])
 @login_required
 def save_data():
@@ -805,7 +866,7 @@ def save_data():
             user_data += ('uid:'+user.username+','+line+';')
     formatted_data = ud.parse_user_data(user_data)
 
-    storage_model.save_answers(pid, formatted_data)
+    storage_model.save_answers(mongo, pid, user.username, formatted_data)
 
     user_data_key = assignment_id + '_user_data'
     r.append(user_data_key, formatted_data)
@@ -842,6 +903,26 @@ def save_exit():
     return "data saved."
 
 
+@app.route('/save_data_resolve_conflicts/<pid>', methods=['GET', 'POST'])
+@login_required
+def save_data_resolve_conflicts(pid):
+    user = current_user
+
+    user_data_raw = request.form['user_data']
+    data_list = user_data_raw.split(';')
+    user_data = ''
+    for line in data_list:
+        if line:
+            user_data += ('uid:'+user.username+','+line+';')
+    formatted_data = ud.parse_user_data(user_data)
+
+    storage_model.save_resolve_conflicts(mongo, pid, user.username, formatted_data)
+
+    storage_model.update_result(mongo=mongo, pid=pid)
+
+    return 'data_saved.'
+
+
 @app.route('/get_result/<pid>')
 @login_required
 def get_file(pid):
@@ -851,8 +932,6 @@ def get_file(pid):
     if not project:
         return page_not_found('page_not_found')
     if project['owner'] != user.username:
-        print(user.username)
-        print(project['owner'])
         return forbidden()
 
     path = storage_model.get_result_path(mongo=mongo, pid=pid)

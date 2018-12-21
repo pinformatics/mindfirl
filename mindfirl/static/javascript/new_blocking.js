@@ -2,31 +2,9 @@
 var assignee_list = [1];
 
 $( document ).ready(function() {
-    $('.custom-file-input').on('change',function(){
-        var fileName = $(this).val();
-        fileName = fileName.split("\\");
-        fileName = fileName[fileName.length-1]
-        $(this).next().addClass("selected").html(fileName);
-    })
-
-    $("#project_name").on('change', function(){
-        $("#project_name-error").html("");
-    })
-
-    $("#kapr").on('change', function(){
-        $("#kapr-error").html("");
-    })
 
     $("#blocking").on('change', function(){
         $("#blocking-error").html("");
-    })
-
-    $("#data1").on('change', function(){
-        $("#data1-error").html("");
-    })
-
-    $("#data2").on('change', function(){
-        $("#data2-error").html("");
     })
 
     add_assignee();
@@ -121,18 +99,14 @@ function encode_assignee() {
     }
     $("#assignee_area").html(encoded_assignee);
 
-    //if(total_percentage == 100)
-    //    return true;
-    //$("#percentage_1-error").html("Percentage must add up to 100.");
-    return true;
+    if(total_percentage == 100)
+        return true;
+    $("#percentage_1-error").html("Percentage must add up to 100.");
+    return false;
 }
 
 function reset_form_error() {
-    $("#project_name-error").html("");
-    $("#kapr-error").html("");
     $("#blocking-error").html("");
-    $("#data1-error").html("");
-    $("#data2-error").html("");
 }
 
 function check_form(thisform) {
@@ -154,16 +128,6 @@ function check_form(thisform) {
     value = $("#blocking").val();
     if(value == null || value == "") {
         $("#blocking-error").html("Please select a blocking attribute.");
-        ret = false;
-    }
-    value = $("#data1").val();
-    if(value == null || value == "") {
-        $("#data1-error").html("Please select a file to upload.");
-        ret = false;
-    }
-    value = $("#data2").val();
-    if(value == null || value == "") {
-        $("#data2-error").html("Please select a file to upload.");
         ret = false;
     }
 

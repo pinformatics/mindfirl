@@ -66,14 +66,16 @@
                                         <input class="form-control" type="text" placeholder="Project description" name="project_description" id="project_des" value="{{ data['project']['project_des'] }}">
                                     </div>
                                     <label class="my-1 mr-2" for="assignto">Assign to</label>
+                                    {% for assignee in data['project']['assignee_stat'] %}
                                     <select class="custom-select my-1 mr-sm-2" id="assignto" name="assignto">
-                                        <option value="{{ data['project']['assignee'][0] }}">{{ data['project']['assignee'][0] }}</option>
+                                        <option value="{{ data['project']['assignee'][0] }}">{{ assignee['assignee'] }}</option>
                                     </select>
                                     <div class="form-group">
                                         Privacy budget:
-                                        <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr" value="{{ data['project']['assignee_stat'][0]['kapr_limit'] }}">
+                                        <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr" value="{{ assignee['kapr_limit'] }}" disabled>
                                         <div class="form-error" id="kapr-error"></div>
                                     </div>
+                                    {% endfor %}
 
                                     <button type="submit" class="btn btn-primary">Update</button>
                                     <a href="/project/{{ data['project']['pid'] }}" style="text-decoration: none;" class="btn btn-outline-secondary">

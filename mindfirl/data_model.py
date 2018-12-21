@@ -236,6 +236,10 @@ class DataPair(object):
         return [id1_list, id2_list]
 
 
+    def get_pair_num(self):
+        return self._pair_num
+
+
     def _get_character_disclosed_num(self, value):
         character_disclosed_num = 0
         for c in value:
@@ -315,7 +319,7 @@ class DataPairList(object):
     a list of DataPair, this object only hold DataPair object
     TODO: in get_something function, add the paging function
     """
-    def __init__(self, data_pairs = []):
+    def __init__(self, data_pairs=[], indices=None):
         """
         input: raw list of data pairs, for example:
         [
@@ -325,6 +329,13 @@ class DataPairList(object):
         """
         if len(data_pairs)%2 != 0:
             logging.error('Error: dataset not in pair.')
+
+        if indices is not None:
+            new_data_pairs = list()
+            for row in data_pairs:
+                if int(row[0]) in indices:
+                    new_data_pairs.append(row)
+            data_pairs = new_data_pairs
 
         self._data_raw = data_pairs
         self._data = list()
@@ -438,8 +449,13 @@ class DataPairList(object):
         return ret
 
 
-    def get_icons(self):
-        return [d.get_icons() for d in self._data]
+    def get_icons(self, indices=None):
+        if indices is None:
+            return [d.get_icons() for d in self._data]
+        ret = list()
+        for d in self._data:
+            if d.get_pair_num() in indices:
+                ret.append(d.get_icons)
 
 
     def get_ids(self):

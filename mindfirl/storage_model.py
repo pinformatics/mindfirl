@@ -6,25 +6,76 @@ import math
 from get_pair_file import generate_pair_file, generate_fake_file
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
+import numpy as np
 
 
-def _get_tmp_pair_file(pair_file, tmp_file, start, end):
+def random_assign(pair_file, tmp_file, pair_num, block_id):
     data = list()
     with open(pair_file, 'r') as fin:
         lines = fin.readlines()
         data.append(lines[0])
 
-        i = (start+1)*2 - 1
-        right = (end+1)*2 - 1
-        while i < right:
+        idx = list(range(1, len(lines), 2))
+        np.random.shuffle(idx)
+
+        selected = idx[:pair_num]
+        selected.sort()
+
+        assigned_id = list()
+        for i in selected:
             data.append(lines[i])
-            i += 1
+            data.append(lines[i+1])
+
+            cur_id = int(lines[i].split(',')[0])
+            assigned_id.append(cur_id)
 
     with open(tmp_file, 'w+') as fout:
         for line in data:
             fout.write(line)
 
-    return tmp_file
+    # make assigned_id grouped in blocks
+    grouped_assigned_id = list()
+    for block in block_id:
+        cur_block = list()
+        for idx in assigned_id:
+            if idx in block:
+                cur_block.append(idx)
+        grouped_assigned_id.append(cur_block)
+
+    return grouped_assigned_id
+
+
+def random_assign_pairfile(pair_file, tmp_file, pair_num):
+    data = list()
+    with open(pair_file, 'r') as fin:
+        lines = fin.readlines()
+        data.append(lines[0])
+
+        idx = list(range(1, len(lines), 2))
+        np.random.shuffle(idx)
+
+        selected = idx[:pair_num]
+        selected.sort()
+
+        assigned_id = list()
+        for i in selected:
+            data.append(lines[i])
+            data.append(lines[i+1])
+
+            cur_id = int(lines[i].split(',')[0])
+            assigned_id.append(cur_id)
+
+    with open(tmp_file, 'w+') as fout:
+        for line in data:
+            fout.write(line)
+
+    # make assigned_id grouped in page of 6
+    grouped_assigned_id = list()
+    for i in range(0, len(assigned_id), 6):
+        cur_block = assigned_id[i:i+6]
+        grouped_assigned_id.append(cur_block)
+
+    return grouped_assigned_id
 
 
 def delete_file(path):
@@ -44,6 +95,30 @@ def get_total_pairs_from_pairfile(pairfile):
     return (cnt-1)/2
 
 
+def get_block_num(block_id, pf_file):
+    """
+    get how many blocks exist in the pf_file
+    """
+    pair_id = list()
+
+    with open(pf_file, 'r') as fin:
+        for line in fin:
+            data = line.rstrip().split(',')
+            pair_id.append(int(data[0]))
+
+    pair_num = 0
+    for cur_block in block_id:
+        flag = False
+        for value in cur_block:
+            if value in pair_id:
+                flag = True
+                break
+        if flag:
+            pair_num += 1
+
+    return pair_num
+
+
 def save_project(mongo, data):
     project_name = data['project_name']
     project_des = data['project_des']
@@ -56,13 +131,17 @@ def save_project(mongo, data):
     file1_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file1.csv')
     file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
     pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
+    result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
+
+    # create result file
+    f = open(result_path, 'w+')
+    f.close()
 
     pair_file.save(pairfile_path)
     file1.save(file1_path)
     file2.save(file2_path)
 
     total_pairs = get_total_pairs_from_pairfile(pairfile_path)
-    print(total_pairs)
 
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
@@ -70,36 +149,33 @@ def save_project(mongo, data):
     starting_num = 0      # the starting num of the pair_file, used for divide pairs to assignees
     idx = 0
     for assignee_item in assignee_items:
-        item = assignee_item.split(',')
-        assignee_list.append(item[0])
+        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        assignee_list.append(cur_assignee)
 
-        percentage = float(item[2])/100.0
-        pair_num = int(total_pairs*percentage)
-        ending_num = starting_num + pair_num
-        print(ending_num)
-
-        # last assignee take all the rest pairs
-        if idx == len(assignee_items)-1:
-            ending_num = total_pairs
-            pair_num = ending_num - starting_num
-
-        tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+item[0]+'_'+project_name+'_pairfile.csv')
-        tmp_file = _get_tmp_pair_file(pair_file=pairfile_path, tmp_file=tmp_file, start=starting_num, end=ending_num)
-        pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+item[0]+'_pf.csv')
+        percentage = float(cur_percentage)/100.0
+        tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
+        assigned_id = random_assign_pairfile(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
+        pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
 
+        # create assignee result file
+        cur_result = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_result.csv')
+        f = open(cur_result, 'w+')
+        f.close()
+
         assignee_stat.append({
-            'assignee': item[0], 
+            'assignee': cur_assignee, 
             'pf_path': pf_file,
+            'result_path': cur_result,
+            'assigned_id': assigned_id,
             'current_page': 0, 
-            'page_size': pair_num/6, 
-            'kapr_limit': item[1], 
+            'page_size': math.ceil(int(total_pairs*percentage)/6), 
+            'pair_idx': 0,
+            'total_pairs': math.ceil(int(total_pairs*percentage)),
+            'kapr_limit': cur_kapr, 
             'current_kapr': 0
         })
-
-        idx += 1
-        starting_num = ending_num
 
     project_key = owner+'-'+project_name+str(time.time())
     project_key = project_key.encode('utf-8')
@@ -114,6 +190,7 @@ def save_project(mongo, data):
         'file1_path': file1_path,
         'file2_path': file2_path,
         'pairfile_path': pairfile_path,
+        'result_path': result_path,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
     }
@@ -132,50 +209,53 @@ def save_project2(mongo, data):
     file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
     intfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_intfile.csv')
     pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
-    target_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
+    result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
     file1 = data['file1']
     file2 = data['file2']
     file1.save(file1_path)
     file2.save(file2_path)
-    blocking_result = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
-    total_pairs = blocking_result/2
+
+    total_pairs, block_id = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
     # if blocking_result is False, need to consider this
 
+    # create result file
+    f = open(result_path, 'w+')
+    f.close()
+
+    # assign the pairfile to each assignee, generate pf_file for them
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
-    starting_num = 0      # the starting num of the pair_file, used for divide pairs to assignees
-    idx = 0
     for assignee_item in assignee_items:
-        item = assignee_item.split(',')
-        assignee_list.append(item[0])
+        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        assignee_list.append(cur_assignee)
 
-        percentage = float(item[2])/100.0
-        pair_num = int(total_pairs*percentage)
-        ending_num = starting_num + pair_num
-
-        # last assignee take all the rest pairs
-        if idx == len(assignee_items)-1:
-            ending_num = total_pairs
-            pair_num = ending_num - starting_num
-
-        tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+item[0]+'_'+project_name+'_pairfile.csv')
-        tmp_file = _get_tmp_pair_file(pair_file=pairfile_path, tmp_file=tmp_file, start=starting_num, end=ending_num)
-        pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+item[0]+'_pf.csv')
+        percentage = float(cur_percentage)/100.0
+        tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
+        assigned_id = random_assign(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
 
-        assignee_stat.append({
-            'assignee': item[0], 
-            'pf_path': pf_file,
-            'current_page': 0, 
-            'page_size': pair_num/6, 
-            'kapr_limit': item[1], 
-            'current_kapr': 0
-        })
+        total_blocks = get_block_num(block_id=block_id, pf_file=pf_file)
 
-        idx += 1
-        starting_num = ending_num
+        # create assignee result file
+        cur_result = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_result.csv')
+        f = open(cur_result, 'w+')
+        f.close()
+
+        assignee_stat.append({
+            'assignee': cur_assignee, 
+            'pf_path': pf_file,
+            'result_path': cur_result,
+            'assigned_id': assigned_id,
+            'current_page': 0, 
+            'page_size': total_blocks, 
+            'kapr_limit': cur_kapr, 
+            'current_kapr': 0,
+            'pair_idx': 0,
+            'total_pairs': pf_result['size'],
+        })
 
     project_key = owner+'-'+project_name+str(time.time())
     project_key = project_key.encode('utf-8')
@@ -187,10 +267,13 @@ def save_project2(mongo, data):
         'project_des': project_des, 
         'owner': owner,
         'created_by': 'blocking',
+        'blocking_on': data['blocking'],
+        'block_id': block_id,
         'file1_path': file1_path,
         'file2_path': file2_path,
         'intfile_path': intfile_path,
         'pairfile_path': pairfile_path,
+        'result_path': result_path,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
     }
@@ -204,12 +287,23 @@ def delete_project(mongo, pid, username):
     project = mongo.db.projects.find_one({'pid': pid})
     file1_path = project['file1_path']
     file2_path = project['file2_path']
+    if 'intfile_path' in project:
+        intfile_path = project['intfile_path']
+        delete_file(intfile_path)
     pairfile_path = project['pairfile_path']
-    #pf_path = project['pf_path']
+    result_path = project['result_path']
+
     delete_file(file1_path)
     delete_file(file2_path)
     delete_file(pairfile_path)
-    #delete_file(pf_path)
+    delete_file(result_path)
+
+    assignee_stat = project['assignee_stat']
+    for assignee in assignee_stat:
+        pf_path = assignee['pf_path']
+        result_path = assignee['result_path']
+        delete_file(pf_path)
+        delete_file(result_path)
 
     ret = mongo.db.projects.delete_one({'pid': pid})
     return ret
@@ -266,9 +360,40 @@ def get_assignment_status(mongo, username, pid):
     return ret
 
 
+def get_assignee_result_path(mongo, pid, assignee):
+    assignment = mongo.db.projects.find_one({'pid': pid})
+    assignee_stat = assignment['assignee_stat']
+
+    for item in assignee_stat:
+        if item['assignee'] == assignee:
+            return item['result_path']
+
+
 def increase_assignment_page(mongo, username, pid):
     assignment = mongo.db.projects.find_one({'pid': pid})
     mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": username}, {"$inc": {"assignee_stat.$.current_page": 1}})
+
+
+def increase_pair_idx(mongo, pid, username):
+    assignment = mongo.db.projects.find_one({'pid': pid})
+
+    pair_idx = 0
+    assignee_stat = assignment['assignee_stat']
+    for item in assignee_stat:
+        if item['assignee'] == username:
+            assignee = item
+            break
+
+    pair_idx = assignee['pair_idx']
+    assigned_id = assignee['assigned_id']
+
+    pos, i = 0, 0
+    while pair_idx != pos and i < len(assigned_id):
+        pos += len(assigned_id[i])
+        i += 1
+    inc = len(assigned_id[i])
+
+    mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": username}, {"$inc": {"assignee_stat.$.pair_idx": inc}})
 
 
 def update_kapr(mongo, username, pid, kapr):
@@ -340,12 +465,12 @@ def clear_working_page_cache(assignment_id, r):
         r.delete(key)
 
 
-def save_answers(pid, data):
+def save_answers(mongo, pid, username, data):
     """
     save one page answers to file
     """
     data_to_write = list()
-    print(data)
+
     for d in data:
         if d['type'] == 'final_answer':
             answer = d['value']
@@ -355,10 +480,45 @@ def save_answers(pid, data):
             line = ','.join([str(pair_num), str(decision), str(choice)])
             data_to_write.append(line)
 
-    filename = os.path.join('data', 'result', pid+'.csv')
+    filename = get_assignee_result_path(mongo=mongo, pid=pid, assignee=username)
+
     with open(filename, 'a') as f:
         for item in data_to_write:
             f.write(item + '\n')
+
+    return True
+
+
+def save_resolve_conflicts(mongo, pid, username, data):
+    """
+    update the result file
+    """
+    final_answer = dict()
+    for d in data:
+        if d['type'] == 'final_answer':
+            answer = d['value']
+            pair_num = int(answer.split('a')[0][1:])
+            choice = int(answer.split('a')[1])
+            decision = 1 if choice > 3 else 0
+            final_answer[pair_num] = ','.join([str(pair_num), str(decision), str(choice)])
+
+    project = mongo.db.projects.find_one({'pid': pid})
+    result_file = project['result_path']
+
+    results = dict()
+    with open(result_file, 'r') as fin:
+        for line in fin:
+            if line.strip() == '':
+                continue
+            pair_id, decision, choice = line.strip().split(',')
+            if int(pair_id) in final_answer:
+                results[int(pair_id)] = final_answer[int(pair_id)]
+            else:
+                results[int(pair_id)] = line.strip()
+
+    with open(result_file, 'w+') as fout:
+        for pair_id in sorted(results):
+            fout.write(results[pair_id]+'\n')
 
     return True
 
@@ -377,12 +537,12 @@ def update_project_setting(mongo, user, data):
     pid = data['pid']
     project_name = data['project_name']
     project_des = data['project_des']
-    assignee = data['assignee']
-    kapr_limit = data['kapr_limit']
+    #assignee = data['assignee']
+    #kapr_limit = data['kapr_limit']
 
-    mongo.db.projects.update( {"pid": pid}, {"$set": {"project_name": project_name, "project_des": project_des}})
+    mongo.db.projects.update({"pid": pid}, {"$set": {"project_name": project_name, "project_des": project_des}})
 
-    mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.kapr_limit": float(kapr_limit)}})
+    #mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.kapr_limit": float(kapr_limit)}})
 
     return True
 
@@ -420,21 +580,72 @@ def get_current_kapr(mongo, data):
     return current_kapr
 
 
+def get_current_block(mongo, pid, assignee):
+    """
+    get pair id for current block (one block per page)
+    """
+    assignment = mongo.db.projects.find_one({'pid': pid})
+    assignee_stat = assignment['assignee_stat']
+
+    for item in assignee_stat:
+        if item['assignee'] == assignee:
+            cur_assignee = item
+            break
+
+    pair_idx = cur_assignee['pair_idx']
+    assigned_id = cur_assignee['assigned_id']
+
+    pos = 0
+    i = 0
+    while pair_idx != pos and i < len(assigned_id):
+        pos += len(assigned_id[i])
+        i += 1
+
+    ret = assigned_id[i]
+
+    return ret, pair_idx
+
+
+def combine_result(mongo, pid):
+    project = mongo.db.projects.find_one({'pid': pid})
+
+    result_file = project['result_path']
+    pairfile_path = project['pairfile_path']
+
+    results = list()
+    assignee_stat = project['assignee_stat']
+    for assignee in assignee_stat:
+        cur_result = assignee['result_path']
+        with open(cur_result, 'r') as fin:
+            for line in fin:
+                if line:
+                    results.append(line)
+        # reset this result file
+        with open(cur_result, 'w+') as fout:
+            fout.write('')
+
+    with open(result_file, 'a') as fout:
+        for item in results:
+            fout.write(item)
+
+    return True
+
+
 def update_result(mongo, pid):
     project = mongo.db.projects.find_one({'pid': pid})
 
     if project['created_by'] == 'pairfile':
         return True
 
-    result_file = os.path.join('data', 'result', pid+'.csv')
+    result_file = project['result_path']
     pairfile_path = project['pairfile_path']
     intfile_path = project['intfile_path']
 
     update_result_to_intfile(result_file, pairfile_path, intfile_path)
 
     # reset result file
-    with open(result_file, 'w+') as fout:
-        fout.write('')
+    fout = open(result_file, 'w+')
+    fout.close()
 
     return True
 
@@ -442,32 +653,81 @@ def update_result(mongo, pid):
 def get_result_path(mongo, pid):
     project = mongo.db.projects.find_one({'pid': pid})
     if project['created_by'] == 'pairfile':
-        path = os.path.join(config.DATA_DIR, 'result', pid+'.csv')
+        return project['result_path']
     else:
-        path = os.path.join(config.DATA_DIR, 'internal', project['owner']+'_'+project['project_name']+'_intfile.csv')
-    return path
+        return project['intfile_path']
+
+
+def detect_result_conflicts(mongo, pid):
+    project = mongo.db.projects.find_one({'pid': pid})
+
+    result_file = project['result_path']
+
+    pair_id = dict()
+    conflicts = list()
+    with open(result_file, 'r') as fin:
+        for line in fin:
+            if line.strip() == '':
+                continue
+            data = line.split(',')
+            cur_id = int(data[0])
+            if cur_id in pair_id:
+                conflicts.append(cur_id)
+            else:
+                pair_id[cur_id] = 1
+
+    return conflicts
 
 
 def new_blocking(mongo, data):
     project = mongo.db.projects.find_one({'pid': data['pid']})
     pid=data['pid']
+    project_name = project['project_name']
     owner = project['owner']
     assignee = project['assignee'][0]
     file1_path = project['file1_path']
     file2_path = project['file2_path']
     intfile_path = project['intfile_path']
     pairfile_path = project['pairfile_path']
-    target_path = project['pf_path']
 
-    blocking_result = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
-    if not blocking_result:
-        return False
+    total_pairs, block_id = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
 
-    file_info = generate_pair_file(pairfile_path, file1_path, file2_path, target_path)
+    assignee_items = data['assignee_area'].rstrip(';').split(';')
+    assignee_list = list()
+    assignee_stat = list()
+    for assignee_item in assignee_items:
+        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        assignee_list.append(cur_assignee)
 
-    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.current_page": 0}})
-    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.page_size": math.ceil(file_info['size']/6)}})
-    mongo.db.projects.update({"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.current_kapr": 0}})
+        percentage = float(cur_percentage)/100.0
+        tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
+        assigned_id = random_assign(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
+        pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
+        delete_file(tmp_file)
+
+        total_blocks = get_block_num(block_id=block_id, pf_file=pf_file)
+
+        # create result file
+        cur_result = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_result.csv')
+        f = open(cur_result, 'w+')
+        f.close()
+
+        assignee_stat.append({
+            'assignee': cur_assignee, 
+            'pf_path': pf_file,
+            'result_path': cur_result,
+            'assigned_id': assigned_id,
+            'current_page': 0, 
+            'page_size': total_blocks, 
+            'kapr_limit': cur_kapr, 
+            'current_kapr': 0,
+            'pair_idx': 0,
+            'total_pairs': pf_result['size'],
+        })
+
+    mongo.db.projects.update( {"pid": pid}, {"$set": {"assignee": assignee_list}})
+    mongo.db.projects.update( {"pid": pid}, {"$set": {"assignee_stat": assignee_stat}})
 
     return pid
 
