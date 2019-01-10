@@ -21,10 +21,16 @@ import config
 
 app = Flask(__name__)
 app.secret_key = 'a9%z$/`9h8Frnh893;*g7285h6'
-app.config['MONGO_DBNAME'] = 'mindfirl'
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
 
+#CORS(app) # very important!
+
+app.config['MONGO_DBNAME'] = 'mindfirl'
+app.config['MONGO_HOST'] = 'localhost'
+app.config['MONGO_PORT'] = '27017'
+app.config['MONGO_USERNAME'] = 'mindfirl_admin'
+app.config['MONGO_PASSWORD'] = 'changeMe'
 mongo = PyMongo(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
