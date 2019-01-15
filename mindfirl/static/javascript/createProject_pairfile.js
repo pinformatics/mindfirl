@@ -148,6 +148,10 @@ function check_form(thisform) {
         $("#project_name-error").html("Please enter a value.");
         ret = false;
     }
+    if(value.indexOf(" ") != -1) {
+        $("#project_name-error").html("No space in project name.");
+        ret = false;
+    }
     value = $("#data1").val();
     if(value == null || value == "") {
         $("#data1-error").html("Please select a file to upload.");

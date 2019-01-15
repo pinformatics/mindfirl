@@ -37,7 +37,7 @@
                         <ul class="widget widget-menu">
                             <li><a href="/project"><ion-icon name="speedometer"></ion-icon> <span class="sidebar-text">Dashboard</span></a></li>
                             <li><a href="/project_list"><ion-icon name="folder"></ion-icon> <span class="sidebar-text">Projects</span></a></li>
-                            <li><a href="/assignment_list"><ion-icon name="document"></ion-icon> <span class="sidebar-text">Assignments</span></a></li>
+                            <li><a href="/assignment_list" style="background-color: #12313b;"><ion-icon name="document"></ion-icon> <span class="sidebar-text">Assignments</span></a></li>
                             <li><a href="/guide"><ion-icon name="help-circle"></ion-icon> <span class="sidebar-text">Help</span></a></li>
                         </ul>
 
@@ -68,7 +68,7 @@
                           </div>
                           <div class="card-body">
                             {% for assignment in data['assignments'] %}
-                            <a class="link-div" href="/record_linkage/{{ assignment['pid'] }}">
+                            <a class="link-div" href="/assignment/{{ assignment['pid'] }}">
                             <div class="module-item div-link">
                                     {{ assignment["project_name"] }}
                                     <div class="project-des">

@@ -45,7 +45,7 @@
                     <div class="sidenav">
                         <ul class="widget widget-menu">
                             <li><a href="/project"><ion-icon name="speedometer"></ion-icon> <span class="sidebar-text">Dashboard</span></a></li>
-                            <li><a href="/project_list"><ion-icon name="folder"></ion-icon> <span class="sidebar-text">Projects</span></a></li>
+                            <li><a href="/project_list" style="background-color: #12313b;"><ion-icon name="folder"></ion-icon> <span class="sidebar-text">Projects</span></a></li>
                             <li><a href="/assignment_list"><ion-icon name="document"></ion-icon> <span class="sidebar-text">Assignments</span></a></li>
                             <li><a href="/guide"><ion-icon name="help-circle"></ion-icon> <span class="sidebar-text">Help</span></a></li>
                         </ul>
@@ -104,13 +104,13 @@
                                     <br/>
 
                                     Overall Progress:
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100">{{ data['project']['progress'] }}%</div>
                                     </div>
                                     {% for assignee in data['project']['assignee_stat'] %}
                                     Assignee: {{ assignee['assignee'] }} <br/>
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignee['progress'] }}%;" aria-valuenow="{{ assignee['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignee['progress'] }}%;" aria-valuenow="{{ assignee['progress'] }}" aria-valuemin="0" aria-valuemax="100">{{ assignee['progress'] }}%</div>
                                     </div>
                                     {% endfor %}
                                 </div>

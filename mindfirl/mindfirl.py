@@ -25,10 +25,11 @@ app.secret_key = 'a9%z$/`9h8Frnh893;*g7285h6'
 #CORS(app) # very important!
 
 app.config['MONGO_DBNAME'] = 'mindfirl'
-app.config['MONGO_HOST'] = 'localhost'
-app.config['MONGO_PORT'] = '27017'
-app.config['MONGO_USERNAME'] = 'mindfirl_admin'
-app.config['MONGO_PASSWORD'] = 'changeMe'
+#app.config['MONGO_HOST'] = 'localhost'
+#app.config['MONGO_PORT'] = '27017'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
+#app.config['MONGO_USERNAME'] = 'mindfirl'
+#app.config['MONGO_PASSWORD'] = 'changeMe'
 mongo = PyMongo(app)
 
 
@@ -482,6 +483,34 @@ def project_detail(pid):
     }
 
     return render_template('project_detail.html', data=data)
+
+
+@app.route('/assignment/<pid>')
+@login_required
+def assignment_detail(pid):
+    user = current_user
+    assignment = storage_model.get_assignment(mongo=mongo, username=user.username, pid=pid)
+    if not assignment:
+        return page_not_found('page_not_found')
+
+    assignee_stat = assignment['assignee_stat']
+
+    for assignee in assignee_stat:
+        if assignee['assignee'] == user.username:
+            pair_idx = int(assignee['pair_idx'])
+            total_pairs = int(assignee['total_pairs'])
+            progress = float(pair_idx)/total_pairs
+            progress = round(100*progress, 2)
+            kapr = round(100*float(assignee['current_kapr']), 1)
+            break
+    assignment['progress'] = progress
+    assignment['budget'] = kapr
+
+    data = {
+        'assignment': assignment
+    }
+
+    return render_template('assignment_detail.html', data=data)
 
 
 @app.route('/delete/<pid>')

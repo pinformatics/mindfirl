@@ -80,6 +80,8 @@ function add_assignee() {
 function check_assignee() {
     var ret = true;
 
+    var assignee_names = new Set([]);
+
     for(i = 0; i < assignee_list.length; i++) {
         var idx = assignee_list[i];
         var assignee = $('#assignto_'+idx).val();
@@ -102,6 +104,13 @@ function check_assignee() {
             });
             ret = false;
         }
+
+        assignee_names.add(assignee);
+    }
+
+    if(assignee_names.size != assignee_list.length) {
+        alert("Duplicate assignee!");
+        ret = false;
     }
 
     return ret;
@@ -142,6 +151,10 @@ function check_form(thisform) {
     var value = $("#project_name").val();
     if(value == null || value == "") {
         $("#project_name-error").html("Please enter a value.");
+        ret = false;
+    }
+    if(value.indexOf(" ") != -1) {
+        $("#project_name-error").html("No space in project name.");
         ret = false;
     }
     /*
