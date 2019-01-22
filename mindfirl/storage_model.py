@@ -40,7 +40,8 @@ def random_assign(pair_file, tmp_file, pair_num, block_id):
         for idx in assigned_id:
             if idx in block:
                 cur_block.append(idx)
-        grouped_assigned_id.append(cur_block)
+        if cur_block:
+            grouped_assigned_id.append(cur_block)
 
     return grouped_assigned_id
 

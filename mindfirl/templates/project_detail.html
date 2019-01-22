@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=68" type="text/css">
+    <link rel="stylesheet" href="../static/css/progress.css?q=7" type="text/css">
 
     <script>
         function delete_alert() {
@@ -104,13 +105,23 @@
                                     <br/>
 
                                     Overall Progress:
-                                    <div class="progress" style="height: 10px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100">{{ data['project']['progress'] }}%</div>
+                                    <div class="progress-custom">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['project']['progress'] }}%;" aria-valuenow="{{ data['project']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="progress-value">
+                                            {{ data['project']['progress'] }}%
+                                        </div>
                                     </div>
                                     {% for assignee in data['project']['assignee_stat'] %}
                                     Assignee: {{ assignee['assignee'] }} <br/>
-                                    <div class="progress" style="height: 10px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignee['progress'] }}%;" aria-valuenow="{{ assignee['progress'] }}" aria-valuemin="0" aria-valuemax="100">{{ assignee['progress'] }}%</div>
+                                    <div class="progress-custom">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignee['progress'] }}%;" aria-valuenow="{{ assignee['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="progress-value">
+                                            {{ assignee['progress'] }}%
+                                        </div>
                                     </div>
                                     {% endfor %}
                                 </div>

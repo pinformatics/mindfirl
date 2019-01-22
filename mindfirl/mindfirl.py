@@ -394,7 +394,7 @@ def save_project():
         data['owner'] = user.username
 
         if storage_model.project_name_existed(mongo=mongo, data=data):
-            flask.flash('project name existed.', 'alert-danger')
+            flask.flash('project name existed. Please use another project name.', 'alert-danger')
             return render_template("createProject.html", form=form, data=users)
 
         pid = storage_model.save_project(mongo=mongo, data=data)

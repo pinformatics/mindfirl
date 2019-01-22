@@ -27,9 +27,24 @@
             option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
         }
 
-        $(window).on("beforeunload", function() {
-            return "Are you sure? You will lose all the date if you leave!";
+        // warning before leave
+        $(document).ready(function() {
+            var needToConfirm = false; 
+            window.onbeforeunload = function(){
+                if (needToConfirm) {
+                    return "Are you sure? You will lose all the date if you leave!";
+                }
+            };
+
+            $("input,select,textarea").change(function() {
+                needToConfirm = true;
+            });
         });
+
+        function leave() {
+            $(window).off("beforeunload");
+            needToConfirm = false;
+        }
     </script>
 </head>
 
@@ -148,7 +163,7 @@
                                         <div style="display: none;">{{ form.assignee_area }}</div>
                                         <div class="form-error" id="kapr-error">{{ form.assignee_area.errors.0 }}</div>
 
-                                        <button type="submit" value="Upload" class="btn btn-primary" style="margin-top: 8px;">Create</button>
+                                        <button type="submit" value="Upload" class="btn btn-primary" style="margin-top: 8px;" onclick="leave();">Create</button>
                                     </form>
                                 </div>
                           </div>

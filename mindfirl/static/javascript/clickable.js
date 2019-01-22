@@ -210,7 +210,7 @@ function refresh_delta() {
             var d = $DELTA[id1];
 
             // if there is a budget limit, then check if this cell goes over the limit
-            if( typeof $KAPR_LIMIT !== 'undefined' && $KAPR_LIMIT > 0 && $KAPR + d > $KAPR_LIMIT) {
+            if( typeof $KAPR_LIMIT !== 'undefined' && $KAPR_LIMIT >= 0 && $KAPR + d > $KAPR_LIMIT) {
                 $(this).css('cursor', 'not-allowed');
                 // this.classList.remove("clickable_cell");
             }
@@ -229,7 +229,7 @@ function refresh_delta() {
             var id2 = this.children[2].children[0].getAttribute("id");
             var d = $DELTA[id1] + $DELTA[id2];
             // if there is a budget limit, then check if this cell goes over the limit
-            if( typeof $KAPR_LIMIT !== 'undefined' && $KAPR_LIMIT > 0 && $KAPR + d > $KAPR_LIMIT) {
+            if( typeof $KAPR_LIMIT !== 'undefined' && $KAPR_LIMIT >= 0 && $KAPR + d > $KAPR_LIMIT) {
                 $(this).css('cursor', 'not-allowed');
                 // $(this).classList.remove("clickable_big_cell");
             }

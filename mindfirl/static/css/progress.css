@@ -1,0 +1,18 @@
+.progress-custom {
+    display: table;
+    width: 30%;
+    line-height: 1.0;
+}
+
+.progress-custom .progress{
+    margin-bottom: 0;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.progress-custom .progress-value{
+    display: table-cell;
+    vertical-align: middle;
+    width: 1%; 
+    padding: 0 4px; /*optionally*/
+}

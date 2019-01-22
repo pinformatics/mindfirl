@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=4" type="text/css">
+    <link rel="stylesheet" href="../static/css/progress.css?q=7" type="text/css">
 </head>
 
 <body>
@@ -76,8 +77,13 @@
                                     <div class="project-des">
                                         {{ project['project_des'] }}
                                     </div>
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ project['progress'] }}%;" aria-valuenow="{{ project['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-custom">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ project['progress'] }}%;" aria-valuenow="{{ project['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="progress-value">
+                                            {{ project['progress'] }}%
+                                        </div>
                                     </div>
                                 </div>
                                 </a>

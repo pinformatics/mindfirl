@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=68" type="text/css">
+    <link rel="stylesheet" href="../static/css/progress.css?q=7" type="text/css">
 </head>
 
 <body>
@@ -73,12 +74,22 @@
                                     </div>
                                     
                                     Progress:
-                                    <div class="progress" style="height: 10px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['assignment']['progress'] }}%;" aria-valuenow="{{ data['assignment']['progress'] }}" aria-valuemin="0" aria-valuemax="100">{{ data['assignment']['progress'] }}%</div>
+                                    <div class="progress-custom">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['assignment']['progress'] }}%;" aria-valuenow="{{ data['assignment']['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="progress-value">
+                                            {{ data['assignment']['progress'] }}%
+                                        </div>
                                     </div>
                                     Budget:
-                                    <div class="progress" style="height: 10px;">
-                                        <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['assignment']['budget'] }}%;" aria-valuenow="{{ data['assignment']['budget'] }}" aria-valuemin="0" aria-valuemax="100">{{ data['assignment']['budget'] }}%</div>
+                                    <div class="progress-custom">
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ data['assignment']['budget'] }}%;" aria-valuenow="{{ data['assignment']['budget'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="progress-value">
+                                            {{ data['assignment']['budget'] }}%
+                                        </div>
                                     </div>
                                 </div>
                                 {% if data['assignment']['progress'] < 100 %}
