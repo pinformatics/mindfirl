@@ -36,9 +36,10 @@ app.secret_key = 'a9%z$/`9h8Frnh893;*g7285h6'
 #     # 8. Use this link as your mongodb uri in the application you push to Heroku. 
 #     app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
 # else:
-#     app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
+    
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
 
-app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
+# app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
 
 mongo = PyMongo(app)
 
