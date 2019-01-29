@@ -27,24 +27,24 @@
             option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
         }
 
+        function leave() {
+            $(window).off("beforeunload");
+            needToConfirm = false;
+        }
+
         // warning before leave
         $(document).ready(function() {
             var needToConfirm = false; 
-            window.onbeforeunload = function(){
+            $(window).on("beforeunload", function() {
                 if (needToConfirm) {
                     return "Are you sure? You will lose all the date if you leave!";
                 }
-            };
+            });
 
             $("input,select,textarea").change(function() {
                 needToConfirm = true;
             });
         });
-
-        function leave() {
-            $(window).off("beforeunload");
-            needToConfirm = false;
-        }
     </script>
 </head>
 

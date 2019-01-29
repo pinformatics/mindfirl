@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=48" type="text/css">
-    <link rel="stylesheet" href="../static/css/progress.css?q=7" type="text/css">
+    <link rel="stylesheet" href="../static/css/progress.css?q=22" type="text/css">
 </head>
 
 <body>
@@ -76,12 +76,13 @@
                                         {{ project['project_des'] }}
                                     </div>
                                     <div class="progress-custom">
-                                        <div class="progress">
+                                        <div class="progress progress-custom-progress">
                                             <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ project['progress'] }}%;" aria-valuenow="{{ project['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
-                                        <div class="progress-value">
+                                        <div class="progress-custom-value">
                                             {{ project['progress'] }}%
                                         </div>
+                                        <div style="clear:both;"></div>
                                     </div>
                                 </div>
                                 </a>
@@ -105,12 +106,13 @@
                                         {{ assignment['project_des'] }}
                                     </div>
                                     <div class="progress-custom">
-                                        <div class="progress" style="height: 10px; width: 25%;">
+                                        <div class="progress progress-custom-progress">
                                             <div class="progress-bar bg-18414e" role="progressbar" style="width: {{ assignment['progress'] }}%;" aria-valuenow="{{ assignment['progress'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
-                                        <div class="progress-value">
+                                        <div class="progress-custom-value">
                                             {{ assignment['progress'] }}%
                                         </div>
+                                        <div style="clear:both;"></div>
                                     </div>
                                 </div>
                             </a>

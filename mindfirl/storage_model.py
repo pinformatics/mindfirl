@@ -9,74 +9,77 @@ import blocking
 import numpy as np
 
 
-def random_assign(pair_file, tmp_file, pair_num, block_id):
-    data = list()
-    with open(pair_file, 'r') as fin:
-        lines = fin.readlines()
-        data.append(lines[0])
+class Assign_generator(object):
+    def __init__(self, pair_file):
+        with open(pair_file, 'r') as fin:
+            self.lines = fin.readlines()
 
-        idx = list(range(1, len(lines), 2))
-        np.random.shuffle(idx)
+        self.idx = list(range(1, len(self.lines), 2))
+        np.random.shuffle(self.idx)
 
-        selected = idx[:pair_num]
+        self.loc = 0
+        self.size = len(self.idx)
+
+        self.idx = self.idx + self.idx
+            
+
+    def random_assign(self, tmp_file, pair_num, block_id):
+        selected = self.idx[self.loc:self.loc+pair_num]
+        if self.loc + pair_num >= self.size:
+            self.loc = pair_num - (self.size - self.loc)
         selected.sort()
 
+        data = list()
+        data.append(self.lines[0])
         assigned_id = list()
         for i in selected:
-            data.append(lines[i])
-            data.append(lines[i+1])
-
-            cur_id = int(lines[i].split(',')[0])
+            data.append(self.lines[i])
+            data.append(self.lines[i+1])
+            cur_id = int(self.lines[i].split(',')[0])
             assigned_id.append(cur_id)
 
-    with open(tmp_file, 'w+') as fout:
-        for line in data:
-            fout.write(line)
+        with open(tmp_file, 'w+') as fout:
+            for line in data:
+                fout.write(line)
 
-    # make assigned_id grouped in blocks
-    grouped_assigned_id = list()
-    for block in block_id:
-        cur_block = list()
-        for idx in assigned_id:
-            if idx in block:
-                cur_block.append(idx)
-        if cur_block:
+        # make assigned_id grouped in blocks
+        grouped_assigned_id = list()
+        for block in block_id:
+            cur_block = list()
+            for idx in assigned_id:
+                if idx in block:
+                    cur_block.append(idx)
+            if cur_block:
+                grouped_assigned_id.append(cur_block)
+
+        return grouped_assigned_id
+
+    def random_assign_pairfile(self, tmp_file, pair_num):
+        selected = self.idx[self.loc:self.loc+pair_num]
+        if self.loc + pair_num >= self.size:
+            self.loc = pair_num - (self.size - self.loc)
+        selected.sort()
+
+        data = list()
+        data.append(self.lines[0])
+        assigned_id = list()
+        for i in selected:
+            data.append(self.lines[i])
+            data.append(self.lines[i+1])
+            cur_id = int(self.lines[i].split(',')[0])
+            assigned_id.append(cur_id)
+
+        with open(tmp_file, 'w+') as fout:
+            for line in data:
+                fout.write(line)
+
+        # make assigned_id grouped in page of 6
+        grouped_assigned_id = list()
+        for i in range(0, len(assigned_id), 6):
+            cur_block = assigned_id[i:i+6]
             grouped_assigned_id.append(cur_block)
 
-    return grouped_assigned_id
-
-
-def random_assign_pairfile(pair_file, tmp_file, pair_num):
-    data = list()
-    with open(pair_file, 'r') as fin:
-        lines = fin.readlines()
-        data.append(lines[0])
-
-        idx = list(range(1, len(lines), 2))
-        np.random.shuffle(idx)
-
-        selected = idx[:pair_num]
-        selected.sort()
-
-        assigned_id = list()
-        for i in selected:
-            data.append(lines[i])
-            data.append(lines[i+1])
-
-            cur_id = int(lines[i].split(',')[0])
-            assigned_id.append(cur_id)
-
-    with open(tmp_file, 'w+') as fout:
-        for line in data:
-            fout.write(line)
-
-    # make assigned_id grouped in page of 6
-    grouped_assigned_id = list()
-    for i in range(0, len(assigned_id), 6):
-        cur_block = assigned_id[i:i+6]
-        grouped_assigned_id.append(cur_block)
-
-    return grouped_assigned_id
+        return grouped_assigned_id
 
 
 def delete_file(path):
@@ -144,18 +147,17 @@ def save_project(mongo, data):
 
     total_pairs = get_total_pairs_from_pairfile(pairfile_path)
 
+    assigner = Assign_generator(pairfile_path)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
-    starting_num = 0      # the starting num of the pair_file, used for divide pairs to assignees
-    idx = 0
     for assignee_item in assignee_items:
         cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = random_assign_pairfile(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
+        assigned_id = assigner.random_assign_pairfile(tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
@@ -224,6 +226,7 @@ def save_project2(mongo, data):
     f.close()
 
     # assign the pairfile to each assignee, generate pf_file for them
+    assigner = Assign_generator(pairfile_path)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
@@ -233,7 +236,7 @@ def save_project2(mongo, data):
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = random_assign(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
