@@ -23,23 +23,19 @@ app = Flask(__name__)
 app.secret_key = 'a9%z$/`9h8Frnh893;*g7285h6'
 
 #CORS(app) # very important!
-
-# if 'DYNO' in os.environ:
-#     # 1. Create new project in heroku. 
-#     # 2. Add Heroku Redis extension
-#     # 3. Add mLabMongoDB extension
-#     # 4. Click on the extension link in the project dashboard. It will take you to the mongo DB sandbox page
-#     # 5. Go to users and create a new user (eg: John) and password (eg: Abcd1234)
-#     # 6. Copy the mongo db uri they provide. It will look something like this: 
-#     #     mongodb://<dbuser>:<dbpassword>@df784663.mlab.com:47668/heroku_xxxx
-#     # 7. Replace the user and password with what you just created: mongodb://John:Abcd1234>@df784663.mlab.com:47668/heroku_xxxx
-#     # 8. Use this link as your mongodb uri in the application you push to Heroku. 
-#     app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
-# else:
-    
-app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
-
-# app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
+if 'DYNO' in os.environ:
+    # 1. Create new project in heroku. 
+    # 2. Add Heroku Redis extension
+    # 3. Add mLabMongoDB extension
+    # 4. Click on the extension link in the project dashboard. It will take you to the mongo DB sandbox page
+    # 5. Go to users and create a new user (eg: John) and password (eg: Abcd1234)
+    # 6. Copy the mongo db uri they provide. It will look something like this: 
+    #     mongodb://<dbuser>:<dbpassword>@df784663.mlab.com:47668/heroku_xxxx
+    # 7. Replace the user and password with what you just created: mongodb://John:Abcd1234>@df784663.mlab.com:47668/heroku_xxxx
+    # 8. Use this link as your mongodb uri in the application you push to Heroku. 
+    app.config['MONGO_URI'] = 'mongodb://mindfirl:mindfirl123@ds139775.mlab.com:39775/heroku_6dfr3hn9'
+else:
+    app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
 
 mongo = PyMongo(app)
 
