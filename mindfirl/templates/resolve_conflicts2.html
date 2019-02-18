@@ -19,7 +19,7 @@
         <script src="../static/javascript/site.js"></script>
         <script src="../static/javascript/choice_panel.js?v=8"></script>
         <script src="../static/javascript/clickable.js?v=49"></script>
-        <script src="../static/javascript/form_submit.js?v=8"></script>
+        <script src="../static/javascript/form_submit_resolve_conflicts.js?v=7"></script>
         <script type=text/javascript>
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
@@ -280,8 +280,24 @@
                                     </ul>
                                     <br/>
                                     <ul class="choice-result">
-                                        <li class="diff">Different</li>
-                                        <li class="same">Same</li>
+                                        <div class="tooltip1">
+                                            <span class="tooltiptext1">
+                                                Different:
+                                                {% for choice in data['choices'][r[0][0]|int] %}
+                                                    {%  if choice[1]|int == 0 %}
+                                                        {{ choice[0] }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                Same:
+                                                {% for choice in data['choices'][r[0][0]|int] %}
+                                                    {%  if choice[1]|int == 1 %}
+                                                        {{ choice[0] }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </span>
+                                        <li class="diff">Different: {{ data['choice_cnt'][r[0][0]|int][0] }}</li>
+                                        <li class="same">Same: {{ data['choice_cnt'][r[0][0]|int][1] }}</li>
+                                        </div>
                                     </ul>
                                 </div>
                             </div>

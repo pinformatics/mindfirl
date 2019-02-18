@@ -589,7 +589,7 @@ def KAPR_delta(DATASET, data_pair, display_status, M):
     return delta
 
 
-def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, kapr_limit=0):
+def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, kapr_limit=100):
     """
     openning a clickable cell, full_data is the full database, working_data is the data that need to manually linked.
     pair_num and attr_num are string
@@ -658,6 +658,22 @@ def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, ka
     ret['new_delta'] = new_delta_list
 
     return ret
+
+
+def batched_open_cell(user_key, full_data, working_data, ids, data_mode_list, r, kapr_limit=100):
+    size = len(ids)
+    for i in range(size):
+        for j in range(6):
+            id1 = ids[i][0][j]
+            pair_num = str(id1.split('-')[0])
+            attr_num = str(id1.split('-')[2])
+            data_mode = data_mode_list[i][j]
+
+            if data_mode == 'partial' or data_mode == 'P':
+                open_cell(user_key, full_data, working_data, pair_num, attr_num, 'masked', r, kapr_limit)
+            elif data_mode == 'full' or data_mode == 'F':
+                open_cell(user_key, full_data, working_data, pair_num, attr_num, 'masked', r, kapr_limit)
+                open_cell(user_key, full_data, working_data, pair_num, attr_num, 'partial', r, kapr_limit)
 
 
 def get_kaprlimit(full_data, working_data, data_mode):

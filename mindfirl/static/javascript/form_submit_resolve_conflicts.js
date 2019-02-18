@@ -51,18 +51,18 @@ $(function() {
         else {
             $('#button_next_rl').attr("disabled", "disabled");
             get_summitted_answers();
-            post($SCRIPT_ROOT+'/save_data_resolve_conflicts/'+$PID, $user_data, "post");
+            post($SCRIPT_ROOT+'/save_data_resolve_conflicts', $user_data, "post");
             $(window).off("beforeunload");
             window.location.href = $NEXT_URL;
         }
         return false;
     });
 
-    //$('#save_exit').bind('click', function() {
-    //    get_summitted_answers();
-    //    post($SCRIPT_ROOT+'/save_exit', $user_data, "post");
-    //    $(window).off("beforeunload");
-    //    window.location.href = $PROJ_URL;
-    //    return false;
-    //});
+    $('#save_exit').bind('click', function() {
+        get_summitted_answers();
+        post($SCRIPT_ROOT+'/save_exit', $user_data, "post");
+        $(window).off("beforeunload");
+        window.location.href = $PROJ_URL;
+        return false;
+    });
 });

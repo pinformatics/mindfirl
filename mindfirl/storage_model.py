@@ -7,6 +7,7 @@ from get_pair_file import generate_pair_file, generate_fake_file
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
+from collections import defaultdict
 
 
 class Assign_generator(object):
@@ -378,6 +379,15 @@ def increase_assignment_page(mongo, username, pid):
     mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": username}, {"$inc": {"assignee_stat.$.current_page": 1}})
 
 
+def increase_conflict_page_pairidx(mongo, username, pid):
+    project = mongo.db.conflicts.find_one({'pid': pid})
+    current_page = int(project['current_page'])
+    mongo.db.conflicts.update({"pid": pid}, {"$inc": {"current_page": 1}})
+
+    block_id = project['pair_num']
+    inc = len(block_id[current_page])
+    mongo.db.conflicts.update({"pid": pid}, {"$inc": {"pair_idx": inc}})
+
 def increase_pair_idx(mongo, pid, username):
     assignment = mongo.db.projects.find_one({'pid': pid})
 
@@ -404,6 +414,8 @@ def update_kapr(mongo, username, pid, kapr):
     assignment = mongo.db.projects.find_one({'pid': pid})
     mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": username}, {"$set": {"assignee_stat.$.current_kapr": kapr}})
 
+def update_kapr_conflicts(mongo, username, pid, kapr):
+    mongo.db.conflicts.update({'pid': pid}, {'$set': {'current_kapr': kapr}})
 
 def get_data_mode(assignment_id, ids, r):
     mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full'}
@@ -420,6 +432,35 @@ def get_data_mode(assignment_id, ids, r):
                 r.set(key, 'M')
                 cur_list.append('masked')
         data_mode_list.append(cur_list)
+
+    return data_mode_list
+
+
+def _union_data_mode(list1, list2):
+    ret = 6*['masked']
+    for i in range(6):
+        if list1[i] == 'full' or list2[i] == 'full':
+            ret[i] = 'full'
+        elif list1[i] == 'partial' or list2[i] == 'partial':
+            ret[i] = 'partial'
+    return ret
+
+
+def get_conflict_data_mode(pid, ids, mongo, r):
+    """
+    the data mode for resolve conflicts is the Union of each assignee's data mode
+    """
+    data_mode_list = len(ids)*[6*['masked']]
+
+    project = mongo.db.projects.find_one({'pid': pid})
+    assignee_stat = project['assignee_stat']
+    for assignee in assignee_stat:
+        username = assignee['assignee']
+        assignment_id = pid + '-' + username
+        cur_data_mode_list = get_data_mode(assignment_id, ids, r)
+        
+        for i in range(len(ids)):
+            data_mode_list[i] = _union_data_mode(data_mode_list[i], cur_data_mode_list[i])
 
     return data_mode_list
 
@@ -493,18 +534,19 @@ def save_answers(mongo, pid, username, data):
     return True
 
 
-def save_resolve_conflicts(mongo, pid, username, data):
+def update_resolve_conflicts(mongo, pid):
     """
     update the result file
     """
+    conflict_project = mongo.db.conflicts.find_one({'pid': pid})
+    conflict_result = conflict_project['result_path']
+
     final_answer = dict()
-    for d in data:
-        if d['type'] == 'final_answer':
-            answer = d['value']
-            pair_num = int(answer.split('a')[0][1:])
-            choice = int(answer.split('a')[1])
-            decision = 1 if choice > 3 else 0
-            final_answer[pair_num] = ','.join([str(pair_num), str(decision), str(choice)])
+    with open(conflict_result, 'r') as fin:
+        for line in fin:
+            answer = line.rstrip().split(',')
+            pair_num = int(answer[0])
+            final_answer[pair_num] = line.rstrip()
 
     project = mongo.db.projects.find_one({'pid': pid})
     result_file = project['result_path']
@@ -527,6 +569,32 @@ def save_resolve_conflicts(mongo, pid, username, data):
     return True
 
 
+def save_resolve_conflicts(mongo, pid, username, data):
+    """
+    save the resolve conflicts result file
+    """
+    data_to_write = list()
+
+    for d in data:
+        if d['type'] == 'final_answer':
+            answer = d['value']
+            pair_num = int(answer.split('a')[0][1:])
+            choice = int(answer.split('a')[1])
+            decision = 1 if choice > 3 else 0
+            line = ','.join([str(pair_num), str(decision), str(choice)])
+            data_to_write.append(line)
+
+    project = mongo.db.conflicts.find_one({'pid': pid})
+    filename = project['result_path']
+
+    print(filename)
+
+    with open(filename, 'a') as f:
+        for item in data_to_write:
+            f.write(item + '\n')
+    return True
+
+
 def is_project_completed(mongo, pid):
     project = mongo.db.projects.find_one({'pid': pid})
 
@@ -536,6 +604,13 @@ def is_project_completed(mongo, pid):
             return False
     return True
 
+def is_conflict_project_completed(mongo, pid):
+    project = mongo.db.conflicts.find_one({'pid': pid})
+
+    if int(project['current_page']) < int(project['page_size']):
+        return False
+    return True
+    
 
 def update_project_setting(mongo, user, data):
     pid = data['pid']
@@ -624,13 +699,16 @@ def combine_result(mongo, pid):
             for line in fin:
                 if line:
                     results.append(line)
+
         # reset this result file
-        with open(cur_result, 'w+') as fout:
-            fout.write('')
+        #with open(cur_result, 'w+') as fout:
+        #    fout.write('')
 
     with open(result_file, 'a') as fout:
         for item in results:
             fout.write(item)
+
+    ret = mongo.db.conflicts.delete_one({'pid': pid})
 
     return True
 
@@ -682,6 +760,46 @@ def detect_result_conflicts(mongo, pid):
 
     return conflicts
 
+def save_conflict_project(mongo, data):
+    mongo.db.conflicts.insert(data)
+    return True
+
+def get_conflict_project(mongo, username, pid):
+    project = mongo.db.conflicts.find_one({'pid': pid})
+    return project
+
+
+def get_users_choices(mongo, pid, indices):
+    """
+    Retures:
+        {
+            pair_num: [[username, decision, choice], [username, decision, choice]],
+            pair_num: [[username, decision, choice], [username, decision, choice]],
+        }
+    """
+    choices = defaultdict(list)
+
+    project = mongo.db.projects.find_one({'pid': pid})
+    assignee_stat = project['assignee_stat']
+    for assignee in assignee_stat:
+        result_path = assignee['result_path']
+        with open(result_path, 'r') as fin:
+            data = fin.readlines()
+            answers = [line.rstrip().split(',') for line in data if len(line.rstrip()) > 0]
+            for answer in answers:
+                if int(answer[0]) in indices:
+                    choices[int(answer[0])].append([assignee['assignee'], int(answer[1]), int(answer[2])])
+
+    choice_cnt = dict()
+    for idx in indices:
+        choice_cnt[idx] = list([0, 0])
+    for k, v in choices.items():
+        for item in v:
+            decision = item[1]
+            choice_cnt[k][decision] += 1
+
+    return choices, choice_cnt
+
 
 def new_blocking(mongo, data):
     project = mongo.db.projects.find_one({'pid': data['pid']})
@@ -696,6 +814,7 @@ def new_blocking(mongo, data):
 
     total_pairs, block_id = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
 
+    assigner = Assign_generator(pairfile_path)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
@@ -705,7 +824,8 @@ def new_blocking(mongo, data):
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = random_assign(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        #assigned_id = random_assign(pair_file=pairfile_path, tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)

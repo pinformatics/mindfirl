@@ -476,8 +476,6 @@ def project_detail(pid):
     else:
         project['conflicts'] = 0
 
-    print(project)
-
     data = {
         'project': project
     }
@@ -692,6 +690,7 @@ def record_linkage(pid):
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
+    r.set(user.username+'_working_pid_rc', 0)
     KAPR_key = assignment_id + '_KAPR'
     r.set(KAPR_key, float(current_kapr))
 
@@ -744,7 +743,9 @@ def record_linkage_next(pid):
     storage_model.update_kapr(mongo=mongo, username=user.username, pid=pid, kapr=kapr)
 
     # flush related cache in redis
-    storage_model.clear_working_page_cache(assignment_id, r)
+    # dont flush yet, because resolve conflicts need these data
+    # TODO: flush these data when resolve conflict finished
+    # storage_model.clear_working_page_cache(assignment_id, r)
 
     # check if the project is completed
     completed = storage_model.is_project_completed(mongo=mongo, pid=pid)
@@ -755,6 +756,8 @@ def record_linkage_next(pid):
         indices = storage_model.detect_result_conflicts(mongo, pid)
         if len(indices) == 0:
             storage_model.update_result(mongo=mongo, pid=pid)
+        else:
+            create_resolve_conflict_project(pid)
 
         flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
@@ -768,6 +771,7 @@ def open_cell():
     user = current_user
     pid = r.get(user.username+'_working_pid')
     assignment_id = pid + '-' + user.username
+    is_rc = r.get(user.username+'_working_pid_rc')
 
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
     full_data = dl.load_data_from_csv(pair_datafile)
@@ -781,6 +785,9 @@ def open_cell():
 
     assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
     kapr_limit = float(assignment_status['kapr_limit'])
+    # is resolve conflict
+    if is_rc == '1':
+        kapr_limit = 100
 
     ret = dm.open_cell(assignment_id, full_data, working_data, pair_num, attr_num, mode, r, kapr_limit)
 
@@ -850,16 +857,192 @@ def open_big_cell():
     return jsonify(ret)
 
 
+@app.route('/test_conflict/<pid>')
+def create_resolve_conflict_project(pid):
+    user = current_user
+    assignment_id = pid + '-' + user.username
+    # get pair_num of conflicts
+    conflict_indices = storage_model.detect_result_conflicts(mongo, pid)
+
+    # get block information of the project
+    project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
+
+    # arrange conflict pairs by block
+    block_id = project['block_id']
+
+    # arrange pairs by block id
+    conflicts = list()
+    for block in block_id:
+        cur_block = list()
+        for idx in conflict_indices:
+            if idx in block:
+                cur_block.append(idx)
+        if cur_block:
+            conflicts.append(cur_block)
+
+    # simulate open cells for those opened by assignees
+    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    full_data = dl.load_data_from_csv(pair_datafile)
+    working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile), indices=conflict_indices)
+
+    ids_list = working_data.get_ids()
+    ids = list(zip(ids_list[0::2], ids_list[1::2]))
+    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r)
+    dm.batched_open_cell(assignment_id, full_data, working_data, ids, data_mode_list, r, kapr_limit=100)
+
+    KAPR_key = assignment_id + '_KAPR'
+    current_kapr = r.get(KAPR_key)
+
+    result_path = os.path.join(config.DATA_DIR, 'internal', project['owner']+'_'+project['project_name']+'_conflict_result.csv')
+    # create result file
+    f = open(result_path, 'w+')
+    f.close()
+
+    conflict_project = {
+        'pid': pid,
+        'project_name': project['project_name'],
+        'pair_num': conflicts,
+        'current_page': 0,
+        'page_size': len(conflicts),
+        'kapr_limit': 100,
+        'current_kapr': current_kapr,
+        'pair_idx': 0,
+        'total_pairs': len(conflict_indices),
+        'result_path': result_path
+    }
+
+    storage_model.save_conflict_project(mongo, conflict_project)
+
+    return 'block_id'
+
+
+@app.route('/resolve_conflicts2/<pid>')
+@login_required
+def resolve_conflicts2(pid):
+    user = current_user
+
+    # find if this project exist
+    assignment = storage_model.get_conflict_project(mongo=mongo, username=user.username, pid=pid)
+    if not assignment:
+        return page_not_found('page_not_found')
+    
+    # username and project_id can identify an assignment
+    assignment_id = pid + '-' + user.username
+
+    # get assignment status
+    current_page = assignment['current_page']
+    page_size = int(assignment['page_size'])
+    kapr_limit = assignment['kapr_limit']
+    current_kapr = assignment['current_kapr']
+    if current_page >= page_size:
+        flask.flash('You have completed the project.', 'alert-success')
+        return redirect('project')
+
+    # get working data and full data
+    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    pair_idx = assignment['pair_idx']
+    indices = assignment['pair_num'][current_page]
+    working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
+    full_data = dl.load_data_from_csv(pair_datafile)
+
+    # prepare return data
+    icons = working_data.get_icons()
+    ids_list = working_data.get_ids()
+    ids = list(zip(ids_list[0::2], ids_list[1::2]))
+    data_mode = 'masked'
+    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r)
+    print(ids)
+    print(data_mode_list)
+    pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
+    data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
+
+    # get the delta information
+    delta = list()
+    for i in range(working_data.size()):
+        data_pair = working_data.get_data_pair_by_index(i)
+        if data_pair is None:
+            break
+        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], 2*working_data.size())
+
+    # prepare cache data for ajax query
+    r.set(user.username+'_working_pid', pid)
+    r.set(user.username+'_working_pid_rc', 1)
+    KAPR_key = assignment_id + '_KAPR'
+    r.set(KAPR_key, float(current_kapr))
+
+    # get saved working answers
+    answers = storage_model.get_working_answers(assignment_id, r)
+
+    # get users' choices information
+    choices, choice_cnt = storage_model.get_users_choices(mongo=mongo, pid=pid, indices=indices)
+
+    ret_data = {
+        'data': data,
+        'icons': icons,
+        'ids': ids,
+        'title': 'resolve conflicts',
+        'kapr': round(100*float(current_kapr), 1),
+        'kapr_limit': kapr_limit, 
+        'page_number': current_page+1,
+        'page_size': page_size,
+        'pair_num_base': pair_idx+1,
+        'delta': delta,
+        'this_url': '/resolve_conflicts2/'+pid,
+        'saved_answers': answers,
+        'data_size': len(data),
+        'choices': choices,
+        'choice_cnt': choice_cnt,
+    }
+    return render_template('resolve_conflicts2.html', data=ret_data)
+
+
+@app.route('/resolve_conflicts2/<pid>/next', methods=["GET"])
+@login_required
+def resolve_conflicts2_next(pid):
+    """
+    update page number to db
+    update kapr to db
+    flush related cache in redis
+    """
+    user = current_user
+    assignment_id = pid + '-' + user.username
+
+    # find if this project exist
+    assignment = storage_model.get_conflict_project(mongo=mongo, username=user.username, pid=pid)
+    if not assignment:
+        return page_not_found('page_not_found')
+
+    # increase page number to db
+    storage_model.increase_conflict_page_pairidx(mongo=mongo, username=user.username, pid=pid)
+
+    # update kapr to db
+    KAPR_key = assignment_id + '_KAPR'
+    kapr = r.get(KAPR_key)
+    storage_model.update_kapr_conflicts(mongo=mongo, username=user.username, pid=pid, kapr=kapr)
+
+    # flush related cache in redis
+    # dont flush yet, because resolve conflicts need these data
+    # TODO: flush these data when resolve conflict finished
+    # storage_model.clear_working_page_cache(assignment_id, r)
+
+    # check if the project is completed
+    completed = storage_model.is_conflict_project_completed(mongo=mongo, pid=pid)
+    if completed:
+        # combine resolve_conflict_result with result
+        storage_model.update_resolve_conflicts(mongo, pid)
+        # update result file to int_file
+        storage_model.update_result(mongo=mongo, pid=pid)
+        flask.flash('You have completed resolve conflicts of this project.', 'alert-success')
+        return redirect('project/'+pid)
+
+    return redirect('resolve_conflicts2/'+pid)
+
+
 @app.route('/resolve_conflicts/<pid>')
 @login_required
 def resolve_conflicts(pid):
     user = current_user
     assignment_id = pid + '-' + user.username
-
-    # find if this project exist
-    project = storage_model.get_assignment(mongo=mongo, username=user.username, pid=pid)
-    if not project:
-        return page_not_found('page_not_found')
 
     indices = storage_model.detect_result_conflicts(mongo, pid)
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
@@ -871,7 +1054,6 @@ def resolve_conflicts(pid):
     
     pairs_formatted = working_data.get_data_display('full')
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
-
 
     ret_data = {
         'data': data,
@@ -894,6 +1076,7 @@ def save_data():
     assignment_id = pid + '-' + user.username
 
     user_data_raw = request.form['user_data']
+    print(user_data_raw)
     data_list = user_data_raw.split(';')
     user_data = ''
     for line in data_list:
@@ -938,10 +1121,11 @@ def save_exit():
     return "data saved."
 
 
-@app.route('/save_data_resolve_conflicts/<pid>', methods=['GET', 'POST'])
+@app.route('/save_data_resolve_conflicts', methods=['GET', 'POST'])
 @login_required
-def save_data_resolve_conflicts(pid):
+def save_data_resolve_conflicts():
     user = current_user
+    pid = r.get(user.username+'_working_pid')
 
     user_data_raw = request.form['user_data']
     data_list = user_data_raw.split(';')
@@ -950,10 +1134,11 @@ def save_data_resolve_conflicts(pid):
         if line:
             user_data += ('uid:'+user.username+','+line+';')
     formatted_data = ud.parse_user_data(user_data)
+    print(formatted_data)
 
     storage_model.save_resolve_conflicts(mongo, pid, user.username, formatted_data)
 
-    storage_model.update_result(mongo=mongo, pid=pid)
+    #storage_model.update_result(mongo=mongo, pid=pid)
 
     return 'data_saved.'
 
