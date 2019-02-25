@@ -477,8 +477,6 @@ def get_pair_datafile(mongo, user, pid):
     for item in assignee_stat:
         if item['assignee'] == user.username:
             return item['pf_path']
-        else:
-            print('RROR-storage_model.get_pair_datafile')
 
 
 def get_project_pair_datafile(mongo, user, pid):
@@ -487,6 +485,7 @@ def get_project_pair_datafile(mongo, user, pid):
         return project['pf_path']
     else:
         print('ERROR-storage_model.get_project_pair_datafile')
+        return project['pf_path']
 
 
 def get_all_users(mongo):
