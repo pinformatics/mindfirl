@@ -21,7 +21,7 @@
         {% endfor %}
 
         var options = [];
-        var option_str = '';
+        var option_str = '<option value="" selected disabled hidden>Please select</option>';
         for(i=0; i < user_list.length; i++) {
             options.push(`<option value="${user_list[i]}">${user_list[i]}</option>`);
             option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
@@ -142,6 +142,7 @@
                                         <div id="assignee_1">
                                             <label class="" for="assignto">Assign to</label>
                                             <select class="form-control selectpicker" data-live-search="ture" id="assignto_1" name="assignto">
+                                                <option value="" selected disabled hidden>Please select</option>
                                                 {% for user in data['users'] %}
                                                 <option value="{{user}}">{{user}}</option>
                                                 {% endfor %}

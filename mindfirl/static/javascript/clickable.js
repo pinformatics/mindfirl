@@ -193,13 +193,29 @@ function make_cell_clickable() {
     });
 }
 
-function remove_clickable_cells() {
+function remove_all_clickable_cells() {
     // remove clickable_cell class on the whole page.
     $('.clickable_cell').each(function() {
         this.classList.remove("clickable_cell");
     });
     $('.clickable_big_cell').each(function() {
         this.classList.remove("clickable_big_cell");
+    });
+}
+
+function remove_full_clickable_cells() {
+    // remove clickable_cell class on the whole page.
+    $('.clickable_cell').each(function() {
+        var mode = this.getAttribute("mode");
+        if(mode == 'full') {
+            this.classList.remove("clickable_cell");
+        }
+    });
+    $('.clickable_big_cell').each(function() {
+        var mode = this.getAttribute("mode");
+        if(mode == 'full') {
+            this.classList.remove("clickable_cell");
+        }
     });
 }
 
@@ -244,11 +260,12 @@ function refresh_delta() {
 }
 
 $(function() {
+    remove_full_clickable_cells();
     if(typeof $USTUDY_MODE === 'undefined' || $USTUDY_MODE != 1) {
         make_cell_clickable();
     }
     else {
-        remove_clickable_cells();
+        remove_all_clickable_cells();
     }
     refresh_delta();
 });

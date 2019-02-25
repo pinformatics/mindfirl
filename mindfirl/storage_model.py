@@ -708,9 +708,14 @@ def combine_result(mongo, pid):
         for item in results:
             fout.write(item)
 
-    ret = mongo.db.conflicts.delete_one({'pid': pid})
-
     return True
+
+def delete_resolve_conflict(mongo, pid):
+    project = mongo.db.conflicts.find_one({'pid': pid})
+    result_file = project['result_path']
+    delete_file(result_file)
+    ret = mongo.db.conflicts.delete_one({'pid': pid})
+    return ret
 
 
 def update_result(mongo, pid):

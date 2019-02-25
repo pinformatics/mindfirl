@@ -60,7 +60,7 @@ $(function() {
 
     $('#save_exit').bind('click', function() {
         get_summitted_answers();
-        post($SCRIPT_ROOT+'/save_exit', $user_data, "post");
+        post($SCRIPT_ROOT+'/save_exit_resolve_conflicts', $user_data, "post");
         $(window).off("beforeunload");
         window.location.href = $PROJ_URL;
         return false;

@@ -24,23 +24,12 @@ app.secret_key = 'a9%z$/`9h8Frnh893;*g7285h6'
 
 #CORS(app) # very important!
 
-# if 'DYNO' in os.environ:
-#     # 1. Create new project in heroku. 
-#     # 2. Add Heroku Redis extension
-#     # 3. Add mLabMongoDB extension
-#     # 4. Click on the extension link in the project dashboard. It will take you to the mongo DB sandbox page
-#     # 5. Go to users and create a new user (eg: John) and password (eg: Abcd1234)
-#     # 6. Copy the mongo db uri they provide. It will look something like this: 
-#     #     mongodb://<dbuser>:<dbpassword>@df784663.mlab.com:47668/heroku_xxxx
-#     # 7. Replace the user and password with what you just created: mongodb://John:Abcd1234>@df784663.mlab.com:47668/heroku_xxxx
-#     # 8. Use this link as your mongodb uri in the application you push to Heroku. 
-#     app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
-# else:
-    
+app.config['MONGO_DBNAME'] = 'mindfirl'
+#app.config['MONGO_HOST'] = 'localhost'
+#app.config['MONGO_PORT'] = '27017'
 app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
-
-# app.config['MONGO_URI'] = 'mongodb://ilangurudev:2Hessian!@ds147668.mlab.com:47668/heroku_mqrk2vwm'
-
+#app.config['MONGO_USERNAME'] = 'mindfirl'
+#app.config['MONGO_PASSWORD'] = 'changeMe'
 mongo = PyMongo(app)
 
 
@@ -356,6 +345,7 @@ def create_project():
     
     all_users = storage_model.get_all_users(mongo=mongo)
     user_list = [u['username'] for u in all_users]
+    user_list = sorted(user_list)
     data = {'users': user_list}
 
     return render_template("createProject.html", form=form, data=data)
@@ -371,6 +361,7 @@ def create_project2():
 
     all_users = storage_model.get_all_users(mongo=mongo)
     user_list = [u['username'] for u in all_users]
+    user_list = sorted(user_list)
     data = {'users': user_list}
     return render_template("createProject2.html", form=form, data=data)
 
@@ -697,7 +688,7 @@ def record_linkage(pid):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], 2*working_data.size())
+        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -962,8 +953,6 @@ def resolve_conflicts2(pid):
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
     data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r)
-    print(ids)
-    print(data_mode_list)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
@@ -973,7 +962,7 @@ def resolve_conflicts2(pid):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], 2*working_data.size())
+        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -989,6 +978,7 @@ def resolve_conflicts2(pid):
 
     ret_data = {
         'data': data,
+        'data_mode_list': data_mode_list,
         'icons': icons,
         'ids': ids,
         'title': 'resolve conflicts',
@@ -1043,6 +1033,7 @@ def resolve_conflicts2_next(pid):
         storage_model.update_resolve_conflicts(mongo, pid)
         # update result file to int_file
         storage_model.update_result(mongo=mongo, pid=pid)
+        storage_model.delete_resolve_conflict(mongo, pid)
         flask.flash('You have completed resolve conflicts of this project.', 'alert-success')
         return redirect('project/'+pid)
 
@@ -1152,6 +1143,36 @@ def save_data_resolve_conflicts():
     #storage_model.update_result(mongo=mongo, pid=pid)
 
     return 'data_saved.'
+
+
+@app.route('/save_exit_resolve_conflicts', methods=['POST'])
+@login_required
+def save_exit_resolve_conflicts():
+    """
+    during record linkage, save and exit the current page
+    1. save answered responses to redis
+    2. save kapr to mongodb
+    """
+    user = current_user
+    pid = r.get(user.username+'_working_pid')
+    assignment_id = pid + '-' + user.username
+
+    user_data_raw = request.form['user_data']
+    data_list = user_data_raw.split(';')
+    user_data = ''
+    for line in data_list:
+        if line:
+            user_data += ('uid:'+user.username+','+line+';')
+    formatted_data = ud.parse_user_data(user_data)
+    
+    storage_model.save_working_answers(assignment_id, formatted_data, r)
+
+    # update kapr to db
+    KAPR_key = assignment_id + '_KAPR'
+    kapr = r.get(KAPR_key)
+    storage_model.update_kapr_conflicts(mongo=mongo, username=user.username, pid=pid, kapr=kapr)
+
+    return "data saved."
 
 
 @app.route('/get_result/<pid>')
