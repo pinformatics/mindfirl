@@ -136,6 +136,7 @@ def save_project(mongo, data):
     file1_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file1.csv')
     file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
     pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
+    pf_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
     result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
 
     # create result file
@@ -145,6 +146,7 @@ def save_project(mongo, data):
     pair_file.save(pairfile_path)
     file1.save(file1_path)
     file2.save(file2_path)
+    pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
 
     total_pairs = get_total_pairs_from_pairfile(pairfile_path)
 
@@ -194,6 +196,7 @@ def save_project(mongo, data):
         'file1_path': file1_path,
         'file2_path': file2_path,
         'pairfile_path': pairfile_path,
+        'pf_path': pf_path,
         'result_path': result_path,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
@@ -213,6 +216,7 @@ def save_project2(mongo, data):
     file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
     intfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_intfile.csv')
     pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
+    pf_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
     result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
     file1 = data['file1']
     file2 = data['file2']
@@ -221,6 +225,7 @@ def save_project2(mongo, data):
 
     total_pairs, block_id = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
     # if blocking_result is False, need to consider this
+    pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
 
     # create result file
     f = open(result_path, 'w+')
@@ -278,6 +283,7 @@ def save_project2(mongo, data):
         'file2_path': file2_path,
         'intfile_path': intfile_path,
         'pairfile_path': pairfile_path,
+        'pf_path': pf_path,
         'result_path': result_path,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
@@ -471,6 +477,16 @@ def get_pair_datafile(mongo, user, pid):
     for item in assignee_stat:
         if item['assignee'] == user.username:
             return item['pf_path']
+        else:
+            print('RROR-storage_model.get_pair_datafile')
+
+
+def get_project_pair_datafile(mongo, user, pid):
+    project = mongo.db.projects.find_one({'pid': pid})
+    if project['owner'] == user:
+        return project['pf_path']
+    else:
+        print('ERROR-storage_model.get_project_pair_datafile')
 
 
 def get_all_users(mongo):

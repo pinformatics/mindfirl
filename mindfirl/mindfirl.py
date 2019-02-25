@@ -949,7 +949,7 @@ def resolve_conflicts2(pid):
         return redirect('project')
 
     # get working data and full data
-    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user, pid=pid)
     pair_idx = assignment['pair_idx']
     indices = assignment['pair_num'][current_page]
     working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
