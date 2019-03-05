@@ -424,6 +424,9 @@ def update_kapr_conflicts(mongo, username, pid, kapr):
     mongo.db.conflicts.update({'pid': pid}, {'$set': {'current_kapr': kapr}})
 
 def get_data_mode(assignment_id, ids, r):
+    """
+    if is None, then insert 'M' into the redis
+    """
     mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full'}
     data_mode_list = []
 
@@ -433,7 +436,10 @@ def get_data_mode(assignment_id, ids, r):
             key = assignment_id + '-' + attribute_id1
             mode = r.get(key)
             if mode != None:
-                cur_list.append(mode_dict[mode])
+                if mode in ['masked', 'partial', 'full']:
+                    cur_list.append(mode)
+                else:
+                    cur_list.append(mode_dict[mode])
             else:
                 r.set(key, 'M')
                 cur_list.append('masked')
@@ -452,7 +458,7 @@ def _union_data_mode(list1, list2):
     return ret
 
 
-def get_conflict_data_mode(pid, ids, mongo, r):
+def get_conflict_data_mode(pid, ids, mongo, r, manager_assignment_id):
     """
     the data mode for resolve conflicts is the Union of each assignee's data mode
     """
@@ -468,6 +474,14 @@ def get_conflict_data_mode(pid, ids, mongo, r):
         for i in range(len(ids)):
             data_mode_list[i] = _union_data_mode(data_mode_list[i], cur_data_mode_list[i])
 
+            # insert data mode to redis as manager role
+            id1, id2 = ids[i]
+            j = 0
+            for attribute_id1 in id1:
+                key = manager_assignment_id + '-' + attribute_id1
+                r.set(key, data_mode_list[i][j])
+                j += 1
+
     return data_mode_list
 
 
@@ -478,6 +492,9 @@ def get_pair_datafile(mongo, user, pid):
         if item['assignee'] == user.username:
             return item['pf_path']
 
+def get_pair_datafile_by_owner(mongo, owner, pid):
+    project = mongo.db.projects.find_one({'pid': pid})
+    return project['pf_path']
 
 def get_project_pair_datafile(mongo, user, pid):
     project = mongo.db.projects.find_one({'pid': pid})

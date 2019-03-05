@@ -37,7 +37,6 @@ if 'DYNO' in os.environ:
     app.config['MONGO_URI'] = 'mongodb://mindfirl:mindfirl123@ds139775.mlab.com:39775/heroku_6dfr3hn9'
 else:
     app.config['MONGO_URI'] = 'mongodb://localhost:27017/mindfirl'
-
 mongo = PyMongo(app)
 
 
@@ -783,7 +782,7 @@ def open_cell():
     assignment_id = pid + '-' + user.username
     is_rc = r.get(user.username+'_working_pid_rc')
 
-    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user, pid=pid)
     full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile))
 
@@ -793,8 +792,9 @@ def open_cell():
     pair_num = str(id1.split('-')[0])
     attr_num = str(id1.split('-')[2])
 
-    assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
-    kapr_limit = float(assignment_status['kapr_limit'])
+    if is_rc != '1':
+        assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
+        kapr_limit = float(assignment_status['kapr_limit'])
     # is resolve conflict
     if is_rc == '1':
         kapr_limit = 100
@@ -819,12 +819,17 @@ def open_big_cell():
     user = current_user
     pid = r.get(user.username+'_working_pid')
     assignment_id = pid + '-' + user.username
+    is_rc = r.get(user.username+'_working_pid_rc')
 
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
     full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile))
-    assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
-    kapr_limit = float(assignment_status['kapr_limit'])
+
+    if is_rc != '1':
+        assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
+        kapr_limit = float(assignment_status['kapr_limit'])
+    else:
+        kapr_limit = 100.0
 
     id1 = request.args.get('id1')
     id2 = request.args.get('id2')
@@ -869,8 +874,10 @@ def open_big_cell():
 
 @app.route('/test_conflict/<pid>')
 def create_resolve_conflict_project(pid):
-    user = current_user
-    assignment_id = pid + '-' + user.username
+    project = storage_model.get_project_by_pid(mongo, pid)
+    owner = project['owner']
+
+    assignment_id = pid + '-' + owner
     # get pair_num of conflicts
     conflict_indices = storage_model.detect_result_conflicts(mongo, pid)
 
@@ -891,13 +898,16 @@ def create_resolve_conflict_project(pid):
             conflicts.append(cur_block)
 
     # simulate open cells for those opened by assignees
-    pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
+    pair_datafile = storage_model.get_pair_datafile_by_owner(mongo=mongo, owner=owner, pid=pid)
     full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile), indices=conflict_indices)
 
+    KAPR_key = assignment_id + '_KAPR'
+    r.set(KAPR_key, 0.0)
+
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
-    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r)
+    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id)
     dm.batched_open_cell(assignment_id, full_data, working_data, ids, data_mode_list, r, kapr_limit=100)
 
     KAPR_key = assignment_id + '_KAPR'
@@ -949,7 +959,7 @@ def resolve_conflicts2(pid):
         return redirect('project')
 
     # get working data and full data
-    pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user, pid=pid)
+    pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
     pair_idx = assignment['pair_idx']
     indices = assignment['pair_num'][current_page]
     working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
@@ -960,7 +970,7 @@ def resolve_conflicts2(pid):
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
-    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r)
+    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 

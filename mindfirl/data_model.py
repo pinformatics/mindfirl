@@ -483,6 +483,18 @@ class DataPairList(object):
         self._kapr_size = size
 
 
+def display_matching(attr1, attr2, mode):
+    if mode == 'F' or mode == 'full':
+        return attr1 == attr2
+    if len(attr1) != len(attr2):
+        return False
+    for i in range(len(attr1)):
+        if attr1[i] == '*' or attr2[i] == '*':
+            continue
+        if attr1[i] != attr2[i]:
+            return False
+    return True
+
 
 def get_KAPR_for_dp(dataset, data_pair, display_status, M):
     """
@@ -521,7 +533,9 @@ def get_KAPR_for_dp(dataset, data_pair, display_status, M):
                 col = col_list_P[j]
             else:
                 continue
-            if dataset[i][col] != data_pair.get_data_raw(1, col):
+            # TODO: change this to regex matching
+            #if dataset[i][col] != data_pair.get_data_raw(1, col):
+            if display_matching(dataset[i][col], data_pair.get_data_raw(1, col), display_status[j]) == False:
                 match_flag = False
                 break
         if match_flag:
