@@ -7,6 +7,8 @@
 
     <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../static/css/site.css?q=68" type="text/css">
+
+    <script src="../static/javascript/updateProject.js"></script>
 </head>
 
 <body>
@@ -70,7 +72,7 @@
                                 <form action="/updateProject/{{ data['project']['pid'] }}" onsubmit="return check_form(this)" method="post">
                                     <div class="form-group">
                                         Project name:
-                                        <input class="form-control" type="text" placeholder="Project name" name="project_name" id="project_name" value="{{ data['project']['project_name'] }}">
+                                        <input class="form-control" type="text" placeholder="Project name" name="project_name" id="project_name" value="{{ data['project']['project_name'] }}" disabled>
                                         <div class="form-error" id="project_name-error"></div>
                                     </div>
                                     <div class="form-group">

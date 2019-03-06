@@ -108,7 +108,7 @@ class SignupForm(Form):
 
 class ProjectForm(Form):
     project_name = simple.StringField(
-        label="Project name",
+        label="Project name*",
         widget=widgets.TextInput(),
         validators=[
             validators.DataRequired(message="project name cannot be empty"),
@@ -127,16 +127,16 @@ class ProjectForm(Form):
         render_kw={"class":"form-control"}
     )
 
-    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-    data3 = FileField(u'Paired data file (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data1 = FileField(u'Data File 1 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data2 = FileField(u'Data File 2 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data3 = FileField(u'Paired data file (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     assignee_area = TextAreaField(u'Assignee', [validators.optional(), validators.length(max=200)], render_kw={"class":"form-control", "id": "assignee_area"})
 
 
 class ProjectForm2(Form):
     project_name = simple.StringField(
-        label="Project name",
+        label="Project name*",
         widget=widgets.TextInput(),
         validators=[
             validators.DataRequired(message="project name cannot be empty"),
@@ -155,11 +155,11 @@ class ProjectForm2(Form):
         render_kw={"class":"form-control"}
     )
 
-    data1 = FileField(u'Data File 1 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-    data2 = FileField(u'Data File 2 (csv)', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data1 = FileField(u'Data File 1 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data2 = FileField(u'Data File 2 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     blocking_choices = [('id', 'ID'), ('fn', 'Firstname'), ('ln', 'Lastname'), ('bd', 'DoB'), ('gd', 'Gender'), ('rc', 'Race')]
-    blocking = SelectMultipleField('Blocking', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
+    blocking = SelectMultipleField('Blocking*', choices=blocking_choices, render_kw={"class":"form-control selectpicker"})
 
     '''
     assignto = SelectField(
@@ -1205,7 +1205,8 @@ def get_file(pid):
         return forbidden()
 
     path = storage_model.get_result_path(mongo=mongo, pid=pid)
-    return send_from_directory('', path, as_attachment=True, attachment_filename='result.csv')
+    result_file_name = '%s_result.csv' % project['project_name']
+    return send_from_directory('', path, as_attachment=True, attachment_filename=result_file_name)
 
 
 

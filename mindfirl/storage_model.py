@@ -718,21 +718,36 @@ def get_current_block(mongo, pid, assignee):
 
 
 def combine_result(mongo, pid):
+    """
+    combine assignee result file into final result file.
+    if the answer are the same, just keep one.
+    """
     project = mongo.db.projects.find_one({'pid': pid})
 
     result_file = project['result_path']
     pairfile_path = project['pairfile_path']
 
     results = list()
+    answers = dict()
     assignee_stat = project['assignee_stat']
     for assignee in assignee_stat:
         cur_result = assignee['result_path']
         with open(cur_result, 'r') as fin:
             for line in fin:
                 if line:
-                    results.append(line)
+                    pair_id, decision, choice = line.rstrip().split(',')
+                    pair_id = int(pair_id)
+                    decision = int(decision)
+                    if pair_id not in answers:
+                        answers[pair_id] = decision
+                        results.append(line)
+                    else:
+                        if answers[pair_id] == decision:
+                            continue
+                        else:
+                            results.append(line)
 
-        # reset this result file
+        # reset (cannot reset yet. resolve conflict need assignee's result)
         #with open(cur_result, 'w+') as fout:
         #    fout.write('')
 

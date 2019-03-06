@@ -140,7 +140,7 @@
                                         <hr/>
 
                                         <div id="assignee_1">
-                                            <label class="" for="assignto">Assign to</label>
+                                            <label class="" for="assignto">Assign to*</label>
                                             <select class="form-control selectpicker" data-live-search="ture" id="assignto_1" name="assignto">
                                                 <option value="" selected disabled hidden>Please select</option>
                                                 {% for user in data['users'] %}
@@ -148,10 +148,10 @@
                                                 {% endfor %}
                                             </select>
                                             <div class="form-group">
-                                                Privacy budget:
+                                                Privacy budget*:
                                                 <input class="form-control" type="number" placeholder="Privacy budget (%)" step="any" min="0" max="100" name="privacy_budget" id="kapr_1" value="">
                                                 <div class="form-error" id="kapr_1-error"></div>
-                                                Assignment percentage:
+                                                Assignment percentage*:
                                                 <input class="form-control" type="number" placeholder="Assignment percentage (%)" step="1" min="0" max="100" name="percentage" id="percentage_1" value="100">
                                                 <div class="form-error" id="percentage_1-error"></div>
                                             </div>
