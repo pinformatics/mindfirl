@@ -678,7 +678,10 @@ def record_linkage(pid):
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
     indices, pair_idx = storage_model.get_current_block(mongo=mongo, pid=pid, assignee=user.username)
     working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
-    full_data = dl.load_data_from_csv(pair_datafile)
+    project_pairfile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
+    full_project_pairs = storage_model.get_total_pairs_from_pairfile(project_pairfile)
+    working_data.set_kapr_size(full_project_pairs)
+    full_data = dl.load_data_from_csv(project_pairfile)
 
     # prepare return data
     icons = working_data.get_icons()
@@ -783,8 +786,11 @@ def open_cell():
     is_rc = r.get(user.username+'_working_pid_rc')
 
     pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user, pid=pid)
-    full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile))
+    project_pairfile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
+    full_project_pairs = storage_model.get_total_pairs_from_pairfile(project_pairfile)
+    working_data.set_kapr_size(full_project_pairs)
+    full_data = dl.load_data_from_csv(project_pairfile)
 
     id1 = request.args.get('id1')
     id2 = request.args.get('id2')
@@ -822,8 +828,11 @@ def open_big_cell():
     is_rc = r.get(user.username+'_working_pid_rc')
 
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
-    full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile))
+    project_pairfile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
+    full_project_pairs = storage_model.get_total_pairs_from_pairfile(project_pairfile)
+    working_data.set_kapr_size(full_project_pairs)
+    full_data = dl.load_data_from_csv(project_pairfile)
 
     if is_rc != '1':
         assignment_status = storage_model.get_assignment_status(mongo=mongo, username=user.username, pid=pid)
@@ -899,8 +908,11 @@ def create_resolve_conflict_project(pid):
 
     # simulate open cells for those opened by assignees
     pair_datafile = storage_model.get_pair_datafile_by_owner(mongo=mongo, owner=owner, pid=pid)
-    full_data = dl.load_data_from_csv(pair_datafile)
     working_data = dm.DataPairList(data_pairs = dl.load_data_from_csv(pair_datafile), indices=conflict_indices)
+    project_pairfile = storage_model.get_project_pair_datafile(mongo=mongo, user=owner, pid=pid)
+    full_project_pairs = storage_model.get_total_pairs_from_pairfile(project_pairfile)
+    working_data.set_kapr_size(full_project_pairs)
+    full_data = dl.load_data_from_csv(project_pairfile)
 
     KAPR_key = assignment_id + '_KAPR'
     r.set(KAPR_key, 0.0)
@@ -963,7 +975,10 @@ def resolve_conflicts2(pid):
     pair_idx = assignment['pair_idx']
     indices = assignment['pair_num'][current_page]
     working_data = dm.DataPairList(data_pairs=dl.load_data_from_csv(pair_datafile), indices=indices)
-    full_data = dl.load_data_from_csv(pair_datafile)
+    project_pairfile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
+    full_project_pairs = storage_model.get_total_pairs_from_pairfile(project_pairfile)
+    working_data.set_kapr_size(full_project_pairs)
+    full_data = dl.load_data_from_csv(project_pairfile)
 
     # prepare return data
     icons = working_data.get_icons()
@@ -1052,6 +1067,8 @@ def resolve_conflicts2_next(pid):
         # update result file to int_file
         storage_model.update_result(mongo=mongo, pid=pid)
         storage_model.delete_resolve_conflict(mongo, pid)
+        # flush redis data
+        storage_model.clear_working_page_cache(assignment_id, r)
         flask.flash('You have completed resolve conflicts of this project.', 'alert-success')
         return redirect('project/'+pid)
 

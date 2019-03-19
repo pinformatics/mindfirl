@@ -498,7 +498,7 @@ def get_pair_datafile_by_owner(mongo, owner, pid):
 
 def get_project_pair_datafile(mongo, user, pid):
     project = mongo.db.projects.find_one({'pid': pid})
-    if project['owner'] == user:
+    if project['owner'] == user or True:
         return project['pf_path']
     else:
         print('ERROR-storage_model.get_project_pair_datafile')
@@ -830,6 +830,7 @@ def get_users_choices(mongo, pid, indices):
         }
     """
     choices = defaultdict(list)
+    choice_map = {1:'H', 2:'M', 3:'L', 4:'L', 5:'M', 6:'H'}
 
     project = mongo.db.projects.find_one({'pid': pid})
     assignee_stat = project['assignee_stat']
@@ -840,7 +841,7 @@ def get_users_choices(mongo, pid, indices):
             answers = [line.rstrip().split(',') for line in data if len(line.rstrip()) > 0]
             for answer in answers:
                 if int(answer[0]) in indices:
-                    choices[int(answer[0])].append([assignee['assignee'], int(answer[1]), int(answer[2])])
+                    choices[int(answer[0])].append([assignee['assignee'], int(answer[1]), choice_map[int(answer[2])]])
 
     choice_cnt = dict()
     for idx in indices:
