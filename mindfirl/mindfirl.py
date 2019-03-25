@@ -562,14 +562,14 @@ def view_project(pid):
 def update_project(pid):
     user = current_user
 
-    project_name = request.form['project_name']
+    #project_name = request.form['project_name']
     project_des = request.form['project_description']
     #assignee = request.form['assignto']
     #kapr_limit = request.form['privacy_budget']
 
     data = {
         'pid': pid,
-        'project_name': project_name,
+        #'project_name': project_name,
         'project_des': project_des,
         #'assignee': assignee,
         #'kapr_limit': kapr_limit,
@@ -578,10 +578,10 @@ def update_project(pid):
 
     # check if project name existed
     project = storage_model.get_project_by_pid(mongo=mongo, pid=pid)
-    if project['project_name'] != data['project_name']:
-        if storage_model.project_name_existed(mongo=mongo, data=data):
-            flask.flash('project name existed.', 'alert-danger')
-            return redirect(url_for('view_project', pid=pid))
+    #if project['project_name'] != data['project_name']:
+    #    if storage_model.project_name_existed(mongo=mongo, data=data):
+    #        flask.flash('project name existed.', 'alert-danger')
+    #        return redirect(url_for('view_project', pid=pid))
 
     #if storage_model.is_invalid_kapr(mongo=mongo, data=data):
     #    current_kapr = storage_model.get_current_kapr(mongo=mongo, data=data)

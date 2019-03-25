@@ -646,12 +646,13 @@ def is_conflict_project_completed(mongo, pid):
 
 def update_project_setting(mongo, user, data):
     pid = data['pid']
-    project_name = data['project_name']
+    #project_name = data['project_name']
     project_des = data['project_des']
     #assignee = data['assignee']
     #kapr_limit = data['kapr_limit']
 
-    mongo.db.projects.update({"pid": pid}, {"$set": {"project_name": project_name, "project_des": project_des}})
+    #mongo.db.projects.update({"pid": pid}, {"$set": {"project_name": project_name, "project_des": project_des}})
+    mongo.db.projects.update({"pid": pid}, {"$set": {"project_des": project_des}})
 
     #mongo.db.projects.update( {"pid": pid, "assignee_stat.assignee": assignee}, {"$set": {"assignee_stat.$.kapr_limit": float(kapr_limit)}})
 
