@@ -114,6 +114,27 @@ button:disabled {
     visibility: visible;
 }
 
+.tooltiptext2 {
+    visibility: hidden;
+    width: 200px;
+    background-color: #ADD8E6;
+    color: #000;
+    text-align: center;
+    border-radius: 3px;
+    padding: 0 2px 0 2px;
+    font-size: 14px;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    margin-left: -60px;
+    margin-top: -15px;
+}
+
+.tooltip2:hover .tooltiptext2 {
+    visibility: visible;
+}
+
 .card-header a {
     text-decoration: none;
     color: black;

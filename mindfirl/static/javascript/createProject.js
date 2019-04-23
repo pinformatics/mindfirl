@@ -87,6 +87,7 @@ function check_assignee() {
         var assignee = $('#assignto_'+idx).val();
         var kapr = $('#kapr_'+idx).val();
         var percentage = $('#percentage_'+idx).val();
+        
         if(assignee == null || assignee == "") {
             ret = false;
         }
@@ -124,8 +125,8 @@ function encode_assignee() {
         var assignee = $('#assignto_'+idx).val();
         var kapr = $('#kapr_'+idx).val();
         var percentage = $('#percentage_'+idx).val();
+        
         encoded_assignee += (assignee + ',' + kapr + ',' + percentage + ';');
-
         total_percentage += parseInt(percentage);
     }
     $("#assignee_area").html(encoded_assignee);

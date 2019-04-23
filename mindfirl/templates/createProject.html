@@ -13,7 +13,7 @@
     <script src="../static/javascript/jquery-3.2.1.min.js"></script>
     <script src="../static/javascript/bootstrap.bundle.min.js"></script>
     <script src="../static/javascript/bootstrap-select.min.js"></script>
-    <script src="../static/javascript/createProject_pairfile.js?v=23"></script>
+    <script src="../static/javascript/createProject_pairfile.js?v=31"></script>
     <script>
         var user_list = [];
         {% for user in data['users'] %}
@@ -27,24 +27,24 @@
             option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
         }
 
+        function leave() {
+            $(window).off("beforeunload");
+            needToConfirm = false;
+        }
+
         // warning before leave
         $(document).ready(function() {
             var needToConfirm = false; 
-            window.onbeforeunload = function(){
+            $(window).on("beforeunload", function() {
                 if (needToConfirm) {
                     return "Are you sure? You will lose all the date if you leave!";
                 }
-            };
+            });
 
             $("input,select,textarea").change(function() {
                 needToConfirm = true;
             });
         });
-
-        function leave() {
-            $(window).off("beforeunload");
-            return true;
-        }
     </script>
 </head>
 
@@ -154,6 +154,7 @@
                                                 Assignment percentage*:
                                                 <input class="form-control" type="number" placeholder="Assignment percentage (%)" step="1" min="0" max="100" name="percentage" id="percentage_1" value="100">
                                                 <div class="form-error" id="percentage_1-error"></div>
+                                                <label><input type="checkbox" id="full_1" name="full_1" value="full">Fully open</label><br>
                                             </div>
                                         </div>
 

@@ -669,7 +669,14 @@ def record_linkage(pid):
     current_page = assignment_status['current_page']
     page_size = assignment_status['page_size']
     kapr_limit = assignment_status['kapr_limit']
+    print('-----------------------------')
+    print(kapr_limit)
     current_kapr = assignment_status['current_kapr']
+    isfull = assignment_status['isfull']
+    if isfull == 'true':
+        default_mode = 'F'
+    else:
+        default_mode = 'M'
     if current_page >= page_size:
         flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
@@ -688,7 +695,7 @@ def record_linkage(pid):
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
-    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r)
+    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r, default_mode=default_mode)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
@@ -711,11 +718,12 @@ def record_linkage(pid):
 
     ret_data = {
         'data': data,
+        'data_mode_list': data_mode_list,
         'icons': icons,
         'ids': ids,
         'title': project['project_name'],
         'kapr': round(100*float(current_kapr), 1),
-        'kapr_limit': kapr_limit, 
+        'kapr_limit': float(kapr_limit), 
         'page_number': current_page+1,
         'page_size': page_size,
         'pair_num_base': pair_idx+1,
@@ -723,6 +731,7 @@ def record_linkage(pid):
         'this_url': '/record_linkage/'+pid,
         'saved_answers': answers,
         'data_size': len(data),
+        'isfull': isfull,
     }
     return render_template('record_linkage_ppirl.html', data=ret_data)
 

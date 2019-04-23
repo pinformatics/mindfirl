@@ -22,7 +22,7 @@ class Assign_generator(object):
         self.size = len(self.idx)
 
         self.idx = self.idx + self.idx
-            
+
 
     def random_assign(self, tmp_file, pair_num, block_id):
         selected = self.idx[self.loc:self.loc+pair_num]
@@ -155,7 +155,7 @@ def save_project(mongo, data):
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -180,7 +180,8 @@ def save_project(mongo, data):
             'pair_idx': 0,
             'total_pairs': math.ceil(int(total_pairs*percentage)),
             'kapr_limit': cur_kapr, 
-            'current_kapr': 0
+            'isfull': isfull,
+            'current_kapr': 0,
         })
 
     project_key = owner+'-'+project_name+str(time.time())
@@ -356,6 +357,8 @@ def get_assignment_status(mongo, username, pid):
         user_idx += 1
     if user_idx == len(assignee_stat):
         print("error: cannot find user as assignee in this project, pid: %s, username: %s" % (pid, username))
+
+    return assignee_stat[user_idx]
     current_page = assignee_stat[user_idx]['current_page']
     page_size = assignee_stat[user_idx]['page_size']
     kapr_limit = assignee_stat[user_idx]['kapr_limit']
@@ -423,7 +426,7 @@ def update_kapr(mongo, username, pid, kapr):
 def update_kapr_conflicts(mongo, username, pid, kapr):
     mongo.db.conflicts.update({'pid': pid}, {'$set': {'current_kapr': kapr}})
 
-def get_data_mode(assignment_id, ids, r):
+def get_data_mode(assignment_id, ids, r, default_mode='M'):
     """
     if is None, then insert 'M' into the redis
     """
@@ -441,8 +444,8 @@ def get_data_mode(assignment_id, ids, r):
                 else:
                     cur_list.append(mode_dict[mode])
             else:
-                r.set(key, 'M')
-                cur_list.append('masked')
+                r.set(key, default_mode)
+                cur_list.append(mode_dict[default_mode])
         data_mode_list.append(cur_list)
 
     return data_mode_list
