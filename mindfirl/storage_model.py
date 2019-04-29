@@ -4,6 +4,7 @@ import hashlib
 import config
 import math
 from get_pair_file import generate_pair_file, generate_fake_file
+from get_pair_file_2 import generate_pair_file2
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
@@ -82,6 +83,63 @@ class Assign_generator(object):
 
         return grouped_assigned_id
 
+def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_path):
+    """
+    Please see MINDFIRL design document to see the format of input pairfile
+    The MINDFIRL system internally need 3 files: a different pairfile, file1, and file2
+    This function turn the input pairfile and name_freq_file into those 3 files
+    """
+    table_head = 'ID,voter_reg_num,first_name,last_name,dob,sex,race,type,file_id\n'
+    fout = open(internal_pairfile_path, 'w+')
+    fout.write(table_head)
+
+    pairfile = open(pairfile_path, 'r')
+    cnt = 0
+    for l in pairfile:
+        if cnt != 0:
+            l = l.strip().split(',')
+            newline = [l[0], l[4], l[5], l[6], l[7], l[8], l[9]]
+            newline.append('1')
+            if cnt%2 == 0:
+                newline.append('1-A')
+            else:
+                newline.append('1-B')
+            newline = ','.join(newline)
+            fout.write(newline+'\n')
+        cnt += 1
+
+    fout.close()
+    pairfile.close()
+
+
+def get_blockid_from_pairfile(pairfile_path):
+    cnt = 0
+    data = list()
+    with open(pairfile_path, 'r') as fin:
+        for line in fin:
+            if cnt != 0:
+                line = line.strip().split(',')
+                data.append([int(line[0]), int(line[1])])
+            cnt += 1
+
+    ret = list()
+    group_id = 1
+    while True:
+        cur_group = list()
+        for i in np.arange(0, len(data), 2):
+            if data[i][1] == group_id:
+                cur_group.append(data[i][0])
+
+        # no more pairs for this group_id
+        if len(cur_group) == 0:
+            break
+
+        ret.append(cur_group)
+
+        group_id += 1
+
+    return ret
+
 
 def delete_file(path):
     try:
@@ -99,6 +157,15 @@ def get_total_pairs_from_pairfile(pairfile):
 
     return (cnt-1)/2
 
+def get_blockid_from_groupfile(groupfile):
+    block_id = list()
+    with open(groupfile, 'r') as fin:
+        for line in fin:
+            data = line.rstrip().split(',')
+            if len(data) > 0:
+                data = [int(x) for x in data]
+                block_id.append(data)
+    return block_id
 
 def get_block_num(block_id, pf_file):
     """
@@ -130,12 +197,11 @@ def save_project(mongo, data):
     owner = data['owner']
 
     pair_file = data['pair_file']
-    file1 = data['file1']
-    file2 = data['file2']
+    name_freq_file = data['name_freq_file']
 
-    file1_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file1.csv')
-    file2_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_file2.csv')
-    pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
+    pairfile_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_pairfile.csv')
+    name_freq_file_path = os.path.join(config.DATA_DIR, 'database', owner+'_'+project_name+'_freqfile.csv')
+    internal_pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
     pf_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
     result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
 
@@ -144,13 +210,17 @@ def save_project(mongo, data):
     f.close()
 
     pair_file.save(pairfile_path)
-    file1.save(file1_path)
-    file2.save(file2_path)
-    pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
+    name_freq_file.save(name_freq_file_path)
+    build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_path)
+    pf_result = generate_pair_file2(internal_pairfile_path, name_freq_file_path, pf_path)
 
-    total_pairs = get_total_pairs_from_pairfile(pairfile_path)
+    total_pairs = get_total_pairs_from_pairfile(internal_pairfile_path)
 
-    assigner = Assign_generator(pairfile_path)
+    # get block_id
+    #block_id = get_blockid_from_groupfile(groupfile_path)
+    block_id = get_blockid_from_pairfile(pairfile_path)
+
+    assigner = Assign_generator(internal_pairfile_path)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
@@ -160,10 +230,14 @@ def save_project(mongo, data):
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = assigner.random_assign_pairfile(tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
+        #assigned_id = assigner.random_assign_pairfile(tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
-        pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
+        # TODO
+        pf_result = generate_pair_file2(tmp_file, name_freq_file_path, pf_file)
         delete_file(tmp_file)
+
+        total_blocks = get_block_num(block_id=block_id, pf_file=pf_file)
 
         # create assignee result file
         cur_result = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_result.csv')
@@ -176,7 +250,8 @@ def save_project(mongo, data):
             'result_path': cur_result,
             'assigned_id': assigned_id,
             'current_page': 0, 
-            'page_size': math.ceil(int(total_pairs*percentage)/6), 
+            #'page_size': math.ceil(int(total_pairs*percentage)/6), 
+            'page_size': total_blocks, 
             'pair_idx': 0,
             'total_pairs': math.ceil(int(total_pairs*percentage)),
             'kapr_limit': cur_kapr, 
@@ -194,11 +269,11 @@ def save_project(mongo, data):
         'project_des': project_des, 
         'owner': owner,
         'created_by': 'pairfile',
-        'file1_path': file1_path,
-        'file2_path': file2_path,
         'pairfile_path': pairfile_path,
+        'internal_pairfile_path': internal_pairfile_path,
         'pf_path': pf_path,
         'result_path': result_path,
+        'block_id': block_id,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
     }

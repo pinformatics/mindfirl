@@ -127,9 +127,8 @@ class ProjectForm(Form):
         render_kw={"class":"form-control"}
     )
 
-    data1 = FileField(u'Data File 1 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-    data2 = FileField(u'Data File 2 (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
-    data3 = FileField(u'Paired data file (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data1 = FileField(u'Pair File (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
+    data2 = FileField(u'Name Frequency (csv)*', render_kw={"class":"custom-file-input"}, validators=[validators.Optional()])
 
     assignee_area = TextAreaField(u'Assignee', [validators.optional(), validators.length(max=200)], render_kw={"class":"form-control", "id": "assignee_area"})
 
@@ -385,21 +384,16 @@ def save_project():
     users = {'users': user_list}
 
     if form.validate():
-        if 'data3' not in request.files or ('data1' not in request.files or 'data2' not in request.files):
+        if 'data1' not in request.files or 'data2' not in request.files:
             flask.flash('lack data files.', 'alert-danger')
             return render_template("createProject.html", form=form, data=users)
 
         data = form.data
 
-        if 'data3' in request.files:
-            pair_file = request.files['data3']
-            data['pair_file'] = pair_file
-            
-            file1 = request.files['data1']
-            file2 = request.files['data2']
-            data['file1'] = file1
-            data['file2'] = file2
-
+        pair_file = request.files['data1']
+        name_freq_file = request.files['data2']
+        data['pair_file'] = pair_file
+        data['name_freq_file'] = name_freq_file
         data['owner'] = user.username
 
         if storage_model.project_name_existed(mongo=mongo, data=data):
@@ -669,8 +663,6 @@ def record_linkage(pid):
     current_page = assignment_status['current_page']
     page_size = assignment_status['page_size']
     kapr_limit = assignment_status['kapr_limit']
-    print('-----------------------------')
-    print(kapr_limit)
     current_kapr = assignment_status['current_kapr']
     isfull = assignment_status['isfull']
     if isfull == 'true':

@@ -13,7 +13,7 @@
     <script src="../static/javascript/jquery-3.2.1.min.js"></script>
     <script src="../static/javascript/bootstrap.bundle.min.js"></script>
     <script src="../static/javascript/bootstrap-select.min.js"></script>
-    <script src="../static/javascript/createProject_pairfile.js?v=31"></script>
+    <script src="../static/javascript/createProject_pairfile.js?v=33"></script>
     <script>
         var user_list = [];
         {% for user in data['users'] %}
@@ -133,11 +133,6 @@
                                         <div class="file-div custom-file">{{ form.data2 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
                                         <div class="form-error" id="data2-error">{{ form.data2.errors.0 }}</div>
 
-                                        <div class="form-label">{{ form.data3.label }}</div>
-                                        <div class="file-div custom-file">{{ form.data3 }}<label class="custom-file-label" for="validatedCustomFile">Choose file...</label></div>
-                                        <div class="form-error" id="data3-error">{{ form.data3.errors.0 }}</div>
-                                        
-                                        
                                         <hr/>
 
                                         <div id="assignee_1">
