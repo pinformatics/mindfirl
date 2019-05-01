@@ -116,6 +116,7 @@
                             <div class="table_col3">
                                 <div class="sub_row1 tooltip1">
                                     {{ r[0][2]|safe }}
+                                    {% if data['isfull'] != 'true' %}
                                     <span class="tooltiptext1">
                                         {% if 'infinity' in r[0][2] %}
                                             Very common
@@ -127,11 +128,13 @@
                                             Unique name
                                         {% endif %}
                                     </span>
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row2">
                                 </div>
                                 <div class="sub_row3  tooltip1">
                                     {{ r[1][2]|safe }}
+                                    {% if data['isfull'] != 'true' %}
                                     <span class="tooltiptext1">
                                         {% if 'infinity' in r[1][2] %}
                                             Very common
@@ -143,6 +146,7 @@
                                             Unique name
                                         {% endif %}
                                     </span>
+                                    {% endif %}
                                 </div>
                             </div>
                             
@@ -176,6 +180,7 @@
                             <div class="table_col6">
                                 <div class="sub_row1 tooltip1">
                                     {{ r[0][5]|safe }}
+                                    {% if data['isfull'] != 'true' %}
                                     <span class="tooltiptext1">
                                         {% if 'infinity' in r[0][5] %}
                                             Very common
@@ -187,11 +192,13 @@
                                             Unique name
                                         {% endif %}
                                     </span>
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row2">
                                 </div>
                                 <div class="sub_row3 tooltip1">
                                     {{ r[1][5]|safe }}
+                                    {% if data['isfull'] != 'true' %}
                                     <span class="tooltiptext1">
                                         {% if 'infinity' in r[1][5] %}
                                             Very common
@@ -203,6 +210,7 @@
                                             Unique name
                                         {% endif %}
                                     </span>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="table_col7 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][3] }}">

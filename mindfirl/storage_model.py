@@ -204,9 +204,12 @@ def save_project(mongo, data):
     internal_pairfile_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pairfile.csv')
     pf_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_pf.csv')
     result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_result.csv')
+    final_result_path = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_finalresult.csv')
 
     # create result file
     f = open(result_path, 'w+')
+    f.close()
+    f = open(final_result_path, 'w+')
     f.close()
 
     pair_file.save(pairfile_path)
@@ -273,6 +276,7 @@ def save_project(mongo, data):
         'internal_pairfile_path': internal_pairfile_path,
         'pf_path': pf_path,
         'result_path': result_path,
+        'final_result_path': final_result_path,
         'block_id': block_id,
         'assignee': assignee_list,
         'assignee_stat': assignee_stat
@@ -372,16 +376,13 @@ def save_project2(mongo, data):
 def delete_project(mongo, pid, username):
     # delete related files
     project = mongo.db.projects.find_one({'pid': pid})
-    file1_path = project['file1_path']
-    file2_path = project['file2_path']
+
     if 'intfile_path' in project:
         intfile_path = project['intfile_path']
         delete_file(intfile_path)
     pairfile_path = project['pairfile_path']
     result_path = project['result_path']
 
-    delete_file(file1_path)
-    delete_file(file2_path)
     delete_file(pairfile_path)
     delete_file(result_path)
 
@@ -863,10 +864,38 @@ def update_result(mongo, pid):
     return True
 
 
+def generate_final_result(pairfile_path, result_path, final_result_path):
+    result = dict()
+    with open(result_path, 'r') as fin:
+        for line in fin:
+            data = line.strip().split(',')
+            result[int(data[0])] = [int(data[1]), int(data[2])]
+
+    table_head = 'PairID,GroupID,DB,ID,voter_reg_num,first_name,last_name,dob,sex,race,decision,choice\n'
+    f1 = open(pairfile_path, 'r')
+    f2 = open(final_result_path, 'w')
+
+    cnt = 0
+    for line in f1:
+        if cnt == 0:
+            f2.write(table_head)
+        else:
+            data = line.strip().split(',')
+            pair_id = int(data[0])
+            res = result[pair_id]
+            newline = line.rstrip() + ',' + str(res[0]) + ',' + str(res[1]) + '\n'
+            f2.write(newline)
+        cnt += 1
+
+    f1.close()
+    f2.close()
+
+
 def get_result_path(mongo, pid):
     project = mongo.db.projects.find_one({'pid': pid})
     if project['created_by'] == 'pairfile':
-        return project['result_path']
+        generate_final_result(project['pairfile_path'], project['result_path'], project['final_result_path'])
+        return project['final_result_path']
     else:
         return project['intfile_path']
 
