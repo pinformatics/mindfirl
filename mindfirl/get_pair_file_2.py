@@ -278,9 +278,9 @@ def get_star_vot_reg(n1, n2):
     n1 = str(n1)
     n2 = str(n2)
 
-    if (len(n1) < 10 and len(n2) < 10): return "",""
-    if len(n1) < 10: return "", n2
-    if len(n2) < 10: return n1, ""
+    #if (len(n1) < 10 and len(n2) < 10): return "",""
+    #if len(n1) < 10: return "", n2
+    #if len(n2) < 10: return n1, ""
 
     len_1 = len(n1)
     len_2 = len(n2)

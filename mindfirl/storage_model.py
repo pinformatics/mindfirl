@@ -29,6 +29,8 @@ class Assign_generator(object):
         selected = self.idx[self.loc:self.loc+pair_num]
         if self.loc + pair_num >= self.size:
             self.loc = pair_num - (self.size - self.loc)
+        else:
+            self.loc = self.loc + pair_num
         selected.sort()
 
         data = list()
@@ -60,6 +62,8 @@ class Assign_generator(object):
         selected = self.idx[self.loc:self.loc+pair_num]
         if self.loc + pair_num >= self.size:
             self.loc = pair_num - (self.size - self.loc)
+        else:
+            self.loc = self.loc + pair_num
         selected.sort()
 
         data = list()
@@ -234,7 +238,7 @@ def save_project(mongo, data):
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
         #assigned_id = assigner.random_assign_pairfile(tmp_file=tmp_file, pair_num=int(total_pairs*percentage))
-        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=math.ceil(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         # TODO
         pf_result = generate_pair_file2(tmp_file, name_freq_file_path, pf_file)

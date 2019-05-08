@@ -1124,8 +1124,8 @@ def save_data():
 
     storage_model.save_answers(mongo, pid, user.username, formatted_data)
 
-    user_data_key = assignment_id + '_user_data'
-    r.append(user_data_key, formatted_data)
+    #user_data_key = assignment_id + '_user_data'
+    #r.append(user_data_key, formatted_data)
     return 'data_saved.'
 
 

@@ -79,11 +79,14 @@ function add_assignee() {
 function check_assignee() {
     var ret = true;
 
+    var assignee_names = new Set([]);
+
     for(i = 0; i < assignee_list.length; i++) {
         var idx = assignee_list[i];
         var assignee = $('#assignto_'+idx).val();
         var kapr = $('#kapr_'+idx).val();
         var percentage = $('#percentage_'+idx).val();
+
         if(assignee == null || assignee == "") {
             ret = false;
         }
@@ -101,6 +104,13 @@ function check_assignee() {
             });
             ret = false;
         }
+
+        assignee_names.add(assignee);
+    }
+
+    if(assignee_names.size != assignee_list.length) {
+        alert("Duplicate assignee!");
+        ret = false;
     }
 
     return ret;
