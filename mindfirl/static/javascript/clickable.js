@@ -270,3 +270,34 @@ $(function() {
     refresh_delta();
 });
 
+
+jQuery(document).ready(function ($) {
+    // Hover over Cart Summary
+    var startHover = $.now();
+
+    $(".clickable_cell").hover(
+        function () {
+            startHover = $.now();
+        },
+        function () {
+            var endHover = $.now();
+            var msHovered = endHover - startHover;
+            var seconds = msHovered / 1000;
+            if (seconds >= 1) {
+                pid = this.children[0].id;
+                //alert(pid + ":" + seconds.toString());
+
+                $type = "type:hover";
+                $value = "value:" + seconds.toString();
+                $id = "id:" + pid;
+                var dt = new Date();
+                $click_timestamp = "timestamp:" + Math.round(dt.getTime()/1000);
+                $url = "url:" + $THIS_URL;
+                $data = [$type, $id, $value, $click_timestamp, $url].join();
+                $user_data += $data + ";";
+            }
+        }
+    );
+});
+
+

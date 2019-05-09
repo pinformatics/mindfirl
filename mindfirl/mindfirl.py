@@ -1114,7 +1114,7 @@ def save_data():
     assignment_id = pid + '-' + user.username
 
     user_data_raw = request.form['user_data']
-    print(user_data_raw)
+    #print(user_data_raw)
     data_list = user_data_raw.split(';')
     user_data = ''
     for line in data_list:
@@ -1126,6 +1126,16 @@ def save_data():
 
     #user_data_key = assignment_id + '_user_data'
     #r.append(user_data_key, formatted_data)
+
+    log_data = {
+        'username': user.username,
+        'timestamp': time.time(),
+        'url': '/save_data',
+        'pid': str(pid),
+        'assignment_id': str(assignment_id),
+        'log': user_data_raw,
+    }
+    storage_model.mlog(mongo=mongo, data=log_data)
     return 'data_saved.'
 
 
