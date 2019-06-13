@@ -1,0 +1,244 @@
+<html>
+<head>
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
+    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
+    <script src="../static/javascript/popper.min.js"></script>
+    <script src="../static/javascript/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+
+    <style>
+.card img {
+    width: 100%;
+}
+.card {
+    text-align: left;
+    margin-bottom: 10px;
+}
+    </style>
+
+    <style>
+ul, #myUL {
+  list-style-type: none;
+  margin-left: 0;
+  padding-left: 15px;
+}
+
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+.caret {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+.caret-down::before {
+  -ms-transform: rotate(90deg); /* IE 9 */
+  -webkit-transform: rotate(90deg); /* Safari */'
+  transform: rotate(90deg);  
+}
+
+.nested {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+</style>
+</head>
+
+<body>
+    <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
+        <h1 style="text-align: center; margin-bottom: 20px;">Frequently Asked Questions</h1>
+        <div class="row">
+            <div class="col-sm-4" style="border: 0px solid black;">
+                <ul id="myUL" style="width: 350px; position: -webkit-sticky; position: sticky; top: 0; bottom: 0; overflow-y:scroll; overflow-x:auto;">
+                    <li><span class="caret caret-down">Sections 2</span>
+                        <ul class="nested active">
+                          <li><span class="caret">Section 2.1</span>
+                            <ul class="nested active">
+                              <a href="#qq1" onclick="open_card('q1');"><li>2.1.1 Why is it important that you need to know who I am?</li></a>
+                              <a href="#qq2" onclick="open_card('q2');"><li>2.1.2 What are identifiers?</li></a>
+                              <a href="#qq3" onclick="open_card('q3');"><li>2.1.3 What information about me will the researchers see?</li></a>
+                              <a href="#qq4" onclick="open_card('q4');"><li>2.1.4 If a researcher sees my name in the data when matching, how much will they know about me?</li></a>
+                            </ul>
+                          </li>
+
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq5" onclick="open_card('q5');"><li>2.2.5a What is patient-matching?</li></a>
+                              <a href="#qq6" onclick="open_card('q6');"><li>2.2.5b What is MINDFIRL?</li></a>
+                            </ul>
+                          </li>  
+
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li> 
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li> 
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li> 
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li> 
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li> 
+                          <li><span class="caret">Section 2.2</span>
+                            <ul class="nested active">
+                              <a href="#qq3"><li>2.2.1</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq4"><li>2.2.2</li></a>
+                            </ul>
+                          </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-8" style="border: 0px solid black;">
+                <div class="card">
+                    <div class="card-header">
+                        Section 2.1: Questions about the data and identifiers
+                    </div>
+                    <div class="card-body">
+                        <a id="qq1" class="" data-toggle="collapse" href="#q1" role="button" aria-expanded="false" aria-controls="q1" style="text-decoration: underline;color:#000;">
+                            2.1.1 Why is it important that you need to know who I am?
+                        </a>
+                        <div class="collapse" id="q1">
+                            <div class="">
+                                When an <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="An organization or organisation is an entity comprising multiple people, such as an institution or an association, that has a particular purpose. The word is derived from the Greek word organon, which means tool or instrument, musical instrument, and organ.">organization</a>, such as a hospital, collects information about an individual, it stores that information in a record. If the organization collects information about someone else, that information is stored in a different record. The collection of all these records is stored in a system of records called a database. Our goal is to match records from different databases. This means that, we need to know some limited information about you so we do not mismatch your records with someone else’s. We refer to this limited information as ‘identifiers.’
+                            </div>
+                        </div>
+                        <br/>
+
+                        <a id="qq2" class="" data-toggle="collapse" href="#q2" role="button" aria-expanded="false" aria-controls="q2" style="text-decoration: underline;color:#000;">
+                            2.1.2 What are identifiers?
+                        </a>
+                        <div class="collapse" id="q2">
+                            <div class="">
+                            <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="An identifier is a name that identifies (that is, labels the identity of) either a unique object or a unique class of objects, where the &quot;object&quot; or class may be an idea, physical [countable] object (or class thereof), or physical [noncountable] substance (or class thereof). The abbreviation ID often refers to identity, identification (the process of identifying), or an identifier (that is, an instance of identification). An identifier may be a word, number, letter, symbol, or any combination of those.">Identifiers</a> are pieces of information that help us distinguish tell you apart from someone else. These may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things.
+                            </div>
+                        </div>
+                        <br/>
+
+                        <a id="qq3" class="" data-toggle="collapse" href="#q3" role="button" aria-expanded="false" aria-controls="q3" style="text-decoration: underline;color:#000;">
+                            2.1.3 What information about me will the researchers see?
+                        </a>
+                        <div class="collapse" id="q3">
+                            <div class="">
+                            We need different information for different steps of the research process. We only need identifiers to do patient matching. Additionally, we only need non-identifiers when we are using your health related data to learn more about science or medicine. We will use a software program called MINDFIRL (MINimum Necessary Disclosure For Interactive Record Linkage) to keep identifiers separate from non- identifiers and ensure that no one can access identifiers and non-identifiers together at the same time. In many cases, patient matching is done all with a linkage software, like MINDFIRL, and a person may never see your identifiers because the computer is automatically matching patients without human effort. For others records where the computer is not sure, researchers are asked to determine the match manually.<br/>
+                            <ul>
+                                <li>a. Who will be able to see the iIdentifiers?<br/>
+                            The researchers that will be doing the record matching will have access to identifiers. Information such as your name, date of birth, marital status, and gender help distinguish you from other people. Our rResearchers need to access identifiers to match patient records. We are using the MINDFIRL software to protect identifiers and prevent unnecessary privacy loss during this process. First, MINDFIRL separates identifiers from the non-identifiers. This means that, no one can access the identifiers AND the health-related data at the same time. For exampleSecond, MINDFIRL tells researchers when two records have the same identifiers without showing details. In these cases, our researchers might not need to see specific identifiers to make a match. MINDFIRL also tells researcher when records are highly similar without showing details. MINDFIRL only shows identifiers on an ‘as needed’ basis. For example, a researcher might want to see some details to know if a difference is important (e.g, to tell twins apart). This means that MINDFIRL can help catch common matching problems, such as nicknames (e.g., Pam v. Pamela) or typos (e.g., John v. Jonh), without showing the rest of your identifiers.</li>
+                                <li>b. Who will be able to see the Non-identifiers or, health-related study data?<br/>
+                            Non-identifiers are everything else in the data. Non-identifiers could include information such as diagnosis, medications, or blood pressure. We Our researchers will only use the non-identifiers for the main research after the matching is done. In some cases, the same researchers who match the records will use the non-identifiers for the main research. However, After matching records, MINDFIRL separates identifiers from the non-identifiers. This means that, no one can access the identifiers AND the health-related data at the same time. We will code your non-identifiers to protect your identity. This allows us to use your information to make scientific or medical discoveries without knowing which information belongs to you.</li>
+                            </ul>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <a id="qq4" class="" data-toggle="collapse" href="#q4" role="button" aria-expanded="false" aria-controls="q4" style="text-decoration: underline;color:#000;">
+                            2.1.4 If a researcher sees my name in the data when matching, how much will they know about me?
+                        </a>
+                        <div class="collapse" id="q4">
+                            <div class="">
+                            If a researcher sees your name in the data, they might see some more identifiers about you (e.g., birth dates, identification numbers, race, gender). But they will not see other health details, such as your diagnosis, health status, blood pressure, etc. Your name is an identifier. We only use identifiers during the patient-matching step of the research to help link records from different databases. In this step other details about you, such as your health information, are not used to match records. We only use this health- related data once we remove your identifiers to protect your privacy.
+                            </div>
+                        </div>
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        Section 2.2: Questions about MINDFIRL and the patient matching process
+                    </div>
+                    <div class="card-body">
+                        <a id="qq5" class="" data-toggle="collapse" href="#q5" role="button" aria-expanded="false" aria-controls="q5" style="text-decoration: underline;color:#000;">
+                            2.2.5.a What is patient-matching?
+                        </a>
+                        <div class="collapse" id="q5">
+                            <div class="">
+                            Patient Matching is the process of linking records of the same real-world person from different databases. Patient matching helps researchers answer difficult questions. For example, is disease treatment A better than treatment B for keeping patients healthy? To do this, we might want to count the number of emergency room visits Jane Doe made this year across several hospitals. This requires linking records from all the hospitals she visited. This is hard because a universal identification number does not exist to easily link records in different systems. Instead, we have to use the personally identifiable information (PII), like social security numbers (SSNs), first &amp; last names, birthdates, race, and gender to decide which records belong to the same person. Still, patient matching is hard. Identifiers are not unique. Different people may share the same name. Names are inconsistent (e.g. nicknames). Data is sometimes missing (e.g. SSNs are often missing). Names change over time (e.g., changing a last name at marriage). Data can have errors (e.g. typos). Below is an example of what patient- matching might look like:
+                            <img src="../static/images/1.png" alt="1"/>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <a id="qq6" class="" data-toggle="collapse" href="#q6" role="button" aria-expanded="false" aria-controls="q6" style="text-decoration: underline;color:#000;">
+                            2.2.5b What is MINDFIRL?
+                        </a>
+                        <div class="collapse" id="q6">
+                            <div class="">
+                            MINDFIRL (Minimum Necessary Disclosure for Interactive Record Linkage) is a software that we use to help protect privacy in the patient matching process of our research. It protects privacy in a few ways. First, it separates the identifiers from the health-related study information. That way, the researchers can view identifiers to help them accurately match records without seeing sensitive information.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+</script>
+<script>
+function open_card(id) {
+    $('#'+id).addClass('show');
+}
+</script>
+</body>
+</html>
+

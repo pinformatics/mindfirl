@@ -251,6 +251,10 @@ def index():
     return redirect(url_for('project'))
 
 
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
+
 @app.route('/project')
 @login_required
 def project():
@@ -267,6 +271,8 @@ def project():
             total_pairs += int(assignee['total_pairs'])
         progress = float(pair_idx)/total_pairs
         progress = round(100*progress, 2)
+        if progress > 100:
+            progress = 100
         p['progress'] = progress
 
     assignments = storage_model.get_projects_assigned(mongo=mongo, user=user.username)
@@ -280,6 +286,8 @@ def project():
                 total_pairs = int(assignee['total_pairs'])
                 progress = float(pair_idx)/total_pairs
                 progress = round(100*progress, 2)
+                if progress > 100:
+                    progress = 100
                 a['progress'] = progress
                 break
 
@@ -309,6 +317,8 @@ def project_list():
             total_pairs += int(assignee['total_pairs'])
         progress = float(pair_idx)/total_pairs
         progress = round(100*progress, 2)
+        if progress > 100:
+            progress = 100
         p['progress'] = progress
 
     data = {
@@ -333,6 +343,8 @@ def assignment_list():
                 total_pairs = int(assignee['total_pairs'])
                 progress = float(pair_idx)/total_pairs
                 progress = round(100*progress, 2)
+                if progress > 100:
+                    progress = 100
                 kapr = round(100*float(assignee['current_kapr']), 1)
                 break
         a['progress'] = progress
@@ -471,6 +483,8 @@ def project_detail(pid):
         assignee['progress'] = assignee_progress
     progress = float(pair_idx)/total_pairs
     progress = round(100*progress, 2)
+    if progress > 100:
+        progress = 100
     project['progress'] = progress
 
     indices = storage_model.detect_result_conflicts(mongo, pid)
@@ -502,6 +516,8 @@ def assignment_detail(pid):
             total_pairs = int(assignee['total_pairs'])
             progress = float(pair_idx)/total_pairs
             progress = round(100*progress, 2)
+            if progress > 100:
+                progress = 100
             kapr = round(100*float(assignee['current_kapr']), 1)
             break
     assignment['progress'] = progress

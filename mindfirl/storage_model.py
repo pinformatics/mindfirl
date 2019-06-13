@@ -5,6 +5,7 @@ import config
 import math
 from get_pair_file import generate_pair_file, generate_fake_file
 from get_pair_file_2 import generate_pair_file2
+from get_pair_file import generate_pair_file
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
@@ -12,35 +13,52 @@ from collections import defaultdict
 
 
 class Assign_generator(object):
-    def __init__(self, pair_file):
+    def __init__(self, pair_file, block_id):
+        # create a dict {id: line_num}
+        self.line_dict = dict()
         with open(pair_file, 'r') as fin:
             self.lines = fin.readlines()
+            for i in range(1, len(self.lines), 2):
+                cur_id = int(self.lines[i].split(',')[0])
+                self.line_dict[cur_id] = i
 
-        self.idx = list(range(1, len(self.lines), 2))
-        np.random.shuffle(self.idx)
+        self.block_id = block_id
+        self.block_list = list(range(len(block_id)))
+        np.random.shuffle(self.block_list)
 
         self.loc = 0
-        self.size = len(self.idx)
-
-        self.idx = self.idx + self.idx
-
+        self.size = len(self.block_list)
+        self.block_list = self.block_list + self.block_list
 
     def random_assign(self, tmp_file, pair_num, block_id):
+        selected = list()
+        cnt = 0
+        while(cnt < pair_num):
+            # assign one block
+            cur_block_id = self.block_list[self.loc]
+            cur_block = self.block_id[cur_block_id]
+            for pair_id in cur_block:
+                selected.append(pair_id)
+                cnt += 1
+            self.loc += 1
+            if self.loc >= self.size:
+                self.loc = 0
+
+        '''
         selected = self.idx[self.loc:self.loc+pair_num]
         if self.loc + pair_num >= self.size:
             self.loc = pair_num - (self.size - self.loc)
         else:
             self.loc = self.loc + pair_num
+        '''
         selected.sort()
 
         data = list()
         data.append(self.lines[0])
-        assigned_id = list()
-        for i in selected:
-            data.append(self.lines[i])
-            data.append(self.lines[i+1])
-            cur_id = int(self.lines[i].split(',')[0])
-            assigned_id.append(cur_id)
+        for cur_id in selected:
+            line_num = self.line_dict[cur_id]
+            data.append(self.lines[line_num])
+            data.append(self.lines[line_num+1])
 
         with open(tmp_file, 'w+') as fout:
             for line in data:
@@ -50,7 +68,7 @@ class Assign_generator(object):
         grouped_assigned_id = list()
         for block in block_id:
             cur_block = list()
-            for idx in assigned_id:
+            for idx in selected:
                 if idx in block:
                     cur_block.append(idx)
             if cur_block:
@@ -58,34 +76,6 @@ class Assign_generator(object):
 
         return grouped_assigned_id
 
-    def random_assign_pairfile(self, tmp_file, pair_num):
-        selected = self.idx[self.loc:self.loc+pair_num]
-        if self.loc + pair_num >= self.size:
-            self.loc = pair_num - (self.size - self.loc)
-        else:
-            self.loc = self.loc + pair_num
-        selected.sort()
-
-        data = list()
-        data.append(self.lines[0])
-        assigned_id = list()
-        for i in selected:
-            data.append(self.lines[i])
-            data.append(self.lines[i+1])
-            cur_id = int(self.lines[i].split(',')[0])
-            assigned_id.append(cur_id)
-
-        with open(tmp_file, 'w+') as fout:
-            for line in data:
-                fout.write(line)
-
-        # make assigned_id grouped in page of 6
-        grouped_assigned_id = list()
-        for i in range(0, len(assigned_id), 6):
-            cur_block = assigned_id[i:i+6]
-            grouped_assigned_id.append(cur_block)
-
-        return grouped_assigned_id
 
 def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_path):
     """
@@ -219,7 +209,8 @@ def save_project(mongo, data):
     pair_file.save(pairfile_path)
     name_freq_file.save(name_freq_file_path)
     build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_path)
-    pf_result = generate_pair_file2(internal_pairfile_path, name_freq_file_path, pf_path)
+    #pf_result = generate_pair_file2(internal_pairfile_path, name_freq_file_path, pf_path)
+    pf_result = generate_pair_file(internal_pairfile_path, internal_pairfile_path, internal_pairfile_path, pf_path)
 
     total_pairs = get_total_pairs_from_pairfile(internal_pairfile_path)
 
@@ -227,7 +218,7 @@ def save_project(mongo, data):
     #block_id = get_blockid_from_groupfile(groupfile_path)
     block_id = get_blockid_from_pairfile(pairfile_path)
 
-    assigner = Assign_generator(internal_pairfile_path)
+    assigner = Assign_generator(internal_pairfile_path, block_id)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()

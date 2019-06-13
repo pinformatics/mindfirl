@@ -481,6 +481,8 @@ def pre_processing(pair_filename, name_frequency_file):
                 fn = row[2].strip(' ')
                 ln = row[3].strip(' ')
 
+                #print(fn)
+
                 cntfn = firstname[fn]
                 cntln = lastname[ln]
 
