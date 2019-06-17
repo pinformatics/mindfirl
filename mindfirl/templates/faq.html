@@ -1,9 +1,9 @@
 <html>
 <head>
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
-    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
-    <script src="../static/javascript/popper.min.js"></script>
-    <script src="../static/javascript/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <script src="javascript/jquery-3.2.1.min.js"></script>
+    <script src="javascript/popper.min.js"></script>
+    <script src="javascript/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function () {
             $('[data-toggle="popover"]').popover()
@@ -17,6 +17,10 @@
 .card {
     text-align: left;
     margin-bottom: 10px;
+}
+
+.card-header a{
+    cursor: pointer;
 }
     </style>
 
@@ -60,89 +64,76 @@ ul, #myUL {
 .active {
   display: block;
 }
+
+.ol-bullet {
+    width: 13%;
+    float: left;
+}
+
+.ol-content {
+    width: 85%;
+    float: right;
+}
+
+.clear-fix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+#topBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 100px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+#topBtn:hover {
+  background-color: #555;
+}
+
+
 </style>
 </head>
 
 <body>
+    <button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
-        <h1 style="text-align: center; margin-bottom: 20px;">Frequently Asked Questions</h1>
+        <h1 style="text-align: center; margin-bottom: 20px;">MINDFIRL: Frequently Asked Questions</h1>
         <div class="row">
             <div class="col-sm-4" style="border: 0px solid black;">
-                <ul id="myUL" style="width: 90%; position: -webkit-sticky; position: sticky; top: 0; bottom: 0; overflow-y:scroll; overflow-x:auto;">
-                    <li><span class="caret caret-down">Sections 2</span>
-                        <ul class="nested active">
-                          <li><span class="caret">Section 2.1</span>
+                <ul id="myUL" style="width: 95%; position: -webkit-sticky; position: sticky; top: 0; bottom: 0; overflow-y:scroll; overflow-x:auto;">
+                          <li><span class="caret caret-down">Section 2.1</span>
                             <ul class="nested active">
-                              <a href="#qq1" onclick="open_card('q1');"><li>2.1.1 Why is it important that you need to know who I am?</li></a>
-                              <a href="#qq2" onclick="open_card('q2');"><li>2.1.2 What are identifiers?</li></a>
-                              <a href="#qq3" onclick="open_card('q3');"><li>2.1.3 What information about me will the researchers see?</li></a>
-                              <a href="#qq4" onclick="open_card('q4');"><li>2.1.4 If a researcher sees my name in the data when matching, how much will they know about me?</li></a>
+                              <a href="#qq1" onclick="open_card('q1');" class="clear-fix"><li><span class="ol-bullet">2.1.1</span> <span class="ol-content">Why is it important that you need to know who I am?</span></li></a>
+                              
+                              <a href="#qq2" onclick="open_card('q2');" class="clear-fix"><li><span class="ol-bullet">2.1.2</span> <span class="ol-content">What are identifiers?</span></li></a>
+                              <a href="#qq3" onclick="open_card('q3');" class="clear-fix"><li><span class="ol-bullet">2.1.3</span> <span class="ol-content">What information about me will the researchers see?</span></li></a>
+                              <a href="#qq4" onclick="open_card('q4');" class="clear-fix"><li><span class="ol-bullet">2.1.4</span> <span class="ol-content">If a researcher sees my name in the data when matching, how much will they know about me?</span></li></a>
                             </ul>
                           </li>
 
-                          <li><span class="caret">Section 2.2</span>
+                          <li><span class="caret caret-down">Section 2.2</span>
                             <ul class="nested active">
-                              <a href="#qq5" onclick="open_card('q5');"><li>2.2.5a What is patient-matching?</li></a>
-                              <a href="#qq6" onclick="open_card('q6');"><li>2.2.5b What is MINDFIRL?</li></a>
-                            </ul>
-                          </li>  
-
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
+                              <a href="#qq5" onclick="open_card('q5');" class="clear-fix"><li><span class="ol-bullet">2.2.5a</span> <span class="ol-content">What is patient-matching?</span></li></a>
+                              <a href="#qq6" onclick="open_card('q6');" class="clear-fix"><li><span class="ol-bullet">2.2.5b</span> <span class="ol-content">What is MINDFIRL?</span></li></a>
                             </ul>
                           </li> 
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                            </ul>
-                          </li> 
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                            </ul>
-                          </li> 
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                            </ul>
-                          </li> 
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                            </ul>
-                          </li> 
-                          <li><span class="caret">Section 2.2</span>
-                            <ul class="nested active">
-                              <a href="#qq3"><li>2.2.1</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                              <a href="#qq4"><li>2.2.2</li></a>
-                            </ul>
-                          </li>
-                        </ul>
-                    </li>
                 </ul>
             </div>
             <div class="col-sm-8" style="border: 0px solid black;">
                 <div class="card">
                     <div class="card-header">
-                        Section 2.1: Questions about the data and identifiers
+                        <a class="collapse_all">Section 2.1: Questions about the data and identifiers</a>
                     </div>
                     <div class="card-body">
                         <a id="qq1" class="" data-toggle="collapse" href="#q1" role="button" aria-expanded="false" aria-controls="q1" style="text-decoration: underline;color:#000;">
@@ -195,7 +186,7 @@ ul, #myUL {
 
                 <div class="card">
                     <div class="card-header">
-                        Section 2.2: Questions about MINDFIRL and the patient matching process
+                        <a class="collapse_all">Section 2.2: Questions about MINDFIRL and the patient matching process</a>
                     </div>
                     <div class="card-body">
                         <a id="qq5" class="" data-toggle="collapse" href="#q5" role="button" aria-expanded="false" aria-controls="q5" style="text-decoration: underline;color:#000;">
@@ -204,7 +195,7 @@ ul, #myUL {
                         <div class="collapse" id="q5">
                             <div class="">
                             Patient Matching is the process of linking records of the same real-world person from different databases. Patient matching helps researchers answer difficult questions. For example, is disease treatment A better than treatment B for keeping patients healthy? To do this, we might want to count the number of emergency room visits Jane Doe made this year across several hospitals. This requires linking records from all the hospitals she visited. This is hard because a universal identification number does not exist to easily link records in different systems. Instead, we have to use the personally identifiable information (PII), like social security numbers (SSNs), first &amp; last names, birthdates, race, and gender to decide which records belong to the same person. Still, patient matching is hard. Identifiers are not unique. Different people may share the same name. Names are inconsistent (e.g. nicknames). Data is sometimes missing (e.g. SSNs are often missing). Names change over time (e.g., changing a last name at marriage). Data can have errors (e.g. typos). Below is an example of what patient- matching might look like:
-                            <img src="../static/images/1.png" alt="1"/>
+                            <img src="image/1.png" alt="1"/>
                             </div>
                         </div>
                         <br/>
@@ -237,6 +228,33 @@ for (i = 0; i < toggler.length; i++) {
 <script>
 function open_card(id) {
     $('#'+id).addClass('show');
+}
+
+$(".collapse_all").click(function() {
+    state = $(this).parent().next().find('.show');
+    if(state.length < 1) {
+        $(this).parent().next().find('.collapse').addClass('show');
+    }
+    else {
+        $(this).parent().next().find('.collapse').removeClass('show');
+    }
+})
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    document.getElementById("topBtn").style.display = "block";
+  } else {
+    document.getElementById("topBtn").style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
 }
 </script>
 </body>
