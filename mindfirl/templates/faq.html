@@ -11,6 +11,10 @@
     </script>
 
     <style>
+
+.container {
+  max-width: 1360px;
+}
 .card img {
     width: 100%;
 }
@@ -66,12 +70,12 @@ ul, #myUL {
 }
 
 .ol-bullet {
-    width: 13%;
+    width: 8%;
     float: left;
 }
 
 .ol-content {
-    width: 85%;
+    width: 91%;
     float: right;
 }
 
@@ -112,8 +116,8 @@ ul, #myUL {
         <div class="row">
             <div class="col-sm-4" style="border: 0px solid black;">
                 <ul id="myUL" style="width: 95%; position: -webkit-sticky; position: sticky; top: 0; bottom: 0; overflow-y:scroll; overflow-x:auto;">
-                          <li><span class="caret caret-down">Section 1: Data and identifying information</span>
-                            <ul class="nested active">
+                          <li><span class="caret">Section 1: Data and identifying information</span>
+                            <ul class="nested">
                               <a href="#qq1" onclick="open_card('q1');" class="clear-fix"><li><span class="ol-bullet">1.1</span> <span class="ol-content">Why do you need to know who I am?</span></li></a>
                               <a href="#qq2" onclick="open_card('q2');" class="clear-fix"><li><span class="ol-bullet">1.2</span> <span class="ol-content">What is identifying information?</span></li></a>
 							  <a href="#qq24" onclick="open_card('q24');" class="clear-fix"><li><span class="ol-bullet">1.3</span> <span class="ol-content">What is non-identifying information?</span></li></a>
@@ -122,8 +126,8 @@ ul, #myUL {
                             </ul>
                           </li>
 
-                          <li><span class="caret caret-down">Section 2: MINDFIRL and the patient matching process</span>
-                            <ul class="nested active">
+                          <li><span class="caret">Section 2: MINDFIRL and the patient matching process</span>
+                            <ul class="nested">
                               <a href="#qq5" onclick="open_card('q5');" class="clear-fix"><li><span class="ol-bullet">2.1</span> <span class="ol-content">What is patient-matching?</span></li></a>
                               <a href="#qq6" onclick="open_card('q6');" class="clear-fix"><li><span class="ol-bullet">2.2</span> <span class="ol-content">What is MINDFIRL?</span></li></a>
 							  <a href="#qq7" onclick="open_card('q7');" class="clear-fix"><li><span class="ol-bullet">2.3</span> <span class="ol-content">What does MINDFIRL look like?</span></li></a>
@@ -136,33 +140,29 @@ ul, #myUL {
 							 </ul>
                           </li> 
 						  
-						  <li><span class="caret caret-down">Section 3: Protection and storage of my matched data</span>
-                            <ul class="nested active">
+						  <li><span class="caret">Section 3: Protection and storage of my matched data</span>
+                            <ul class="nested">
                               <a href="#qq14" onclick="open_card('q14');" class="clear-fix"><li><span class="ol-bullet">3.1</span> <span class="ol-content">Where will data about me be kept?</span></li></a>
                               <a href="#qq15" onclick="open_card('q15');" class="clear-fix"><li><span class="ol-bullet">3.2</span> <span class="ol-content">What security are you using to protect me?</span></li></a>
 							  <a href="#qq16" onclick="open_card('q16);" class="clear-fix"><li><span class="ol-bullet">3.3</span> <span class="ol-content">What are you doing to make sure that my data is being used responsibly?</span></li></a>
 							  <a href="#qq17" onclick="open_card('q17');" class="clear-fix"><li><span class="ol-bullet">3.4</span> <span class="ol-content">What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused?</span></li></a>
+                <a href="#qq18" onclick="open_card('q18');" class="clear-fix"><li><span class="ol-bullet">3.5</span> <span class="ol-content">Who will have access to my data?</span></li></a>
 							 </ul>
                           </li> 
+						
 						  
-						  <li><span class="caret caret-down">Section 4: Researchers' access to the data</span>
-                            <ul class="nested active">
-                              <a href="#qq18" onclick="open_card('q18');" class="clear-fix"><li><span class="ol-bullet">4.1</span> <span class="ol-content">Who will have access to my data?</span></li></a>
+						  <li><span class="caret">Section 4: Importance and impact of using my data</span>
+                            <ul class="nested">
+                              <a href="#qq19" onclick="open_card('q19');" class="clear-fix"><li><span class="ol-bullet">4.1</span> <span class="ol-content">Why is my data needed?</span></li></a>
+							  <a href="#qq20" onclick="open_card('q20');" class="clear-fix"><li><span class="ol-bullet">4.2</span> <span class="ol-content">What difference is my data going to make?</span></li></a>
                             </ul>
                           </li> 
 						  
-						  <li><span class="caret caret-down">Section 5: Importance and impact of using my data</span>
-                            <ul class="nested active">
-                              <a href="#qq19" onclick="open_card('q19');" class="clear-fix"><li><span class="ol-bullet">5.1</span> <span class="ol-content">Why is my data needed?</span></li></a>
-							  <a href="#qq20" onclick="open_card('q20');" class="clear-fix"><li><span class="ol-bullet">5.2</span> <span class="ol-content">What difference is my data going to make?</span></li></a>
-                            </ul>
-                          </li> 
-						  
-						  <li><span class="caret caret-down">Section 6: Data handling after the completion of the study</span>
-                            <ul class="nested active">
-                              <a href="#qq21" onclick="open_card('q21');" class="clear-fix"><li><span class="ol-bullet">6.1</span> <span class="ol-content">What will happen to my data after this study is completed?</span></li></a>
-							  <a href="#qq22" onclick="open_card('q22');" class="clear-fix"><li><span class="ol-bullet">6.2</span> <span class="ol-content">Will my matched data be used for other research studies?</span></li></a>
-							  <a href="#qq23" onclick="open_card('q23');" class="clear-fix"><li><span class="ol-bullet">6.3</span> <span class="ol-content">Where can I get more information?</span></li></a>
+						  <li><span class="caret">Section 5: Data handling after the completion of the study</span>
+                            <ul class="nested">
+                              <a href="#qq21" onclick="open_card('q21');" class="clear-fix"><li><span class="ol-bullet">5.1</span> <span class="ol-content">What will happen to my data after this study is completed?</span></li></a>
+							  <a href="#qq22" onclick="open_card('q22');" class="clear-fix"><li><span class="ol-bullet">5.2</span> <span class="ol-content">Will my matched data be used for other research studies?</span></li></a>
+							  <a href="#qq23" onclick="open_card('q23');" class="clear-fix"><li><span class="ol-bullet">5.3</span> <span class="ol-content">Where can I get more information?</span></li></a>
                             </ul>
                           </li> 
                 </ul>
@@ -401,16 +401,9 @@ ul, #myUL {
                             </div>
                         </div>
                         <br/>
-                    </div>
-                </div>
-				
-				<div class="card">
-                    <div class="card-header">
-                        <a class="collapse_all">Section 4: Researchers' access to the data</a>
-                    </div>
-                    <div class="card-body">
+
                         <a id="qq18" class="" data-toggle="collapse" href="#q18" role="button" aria-expanded="false" aria-controls="q18" style="text-decoration: underline;color:#000;">
-                            4.1 Who will have access to my data?
+                            3.5 Who will have access to my data?
                         </a>
                         <div class="collapse" id="q18">
                             <div class="">
@@ -418,16 +411,16 @@ ul, #myUL {
                             </div>
                         </div>
                         <br/>
-						</div>
-					</div>
-					
+                    </div>
+                </div>
+				
 					<div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 5: Importance and impact of using my data</a>
+                        <a class="collapse_all">Section 4: Importance and impact of using my data</a>
                     </div>
                     <div class="card-body">
                         <a id="qq19" class="" data-toggle="collapse" href="#q19" role="button" aria-expanded="false" aria-controls="q19" style="text-decoration: underline;color:#000;">
-                            5.1 Why is my data needed?
+                            4.1 Why is my data needed?
                         </a>
                         <div class="collapse" id="q19">
                             <div class="">
@@ -438,7 +431,7 @@ ul, #myUL {
                         <br/>
 						
 						 <a id="qq20" class="" data-toggle="collapse" href="#q20" role="button" aria-expanded="false" aria-controls="q20" style="text-decoration: underline;color:#000;">
-                            5.2 What difference is my data going to make?
+                            4.2 What difference is my data going to make?
                         </a>
                         <div class="collapse" id="q20">
                             <div class="">
@@ -453,11 +446,11 @@ ul, #myUL {
 				
 						<div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 6: Data handling after the completion of the study</a>
+                        <a class="collapse_all">Section 5: Data handling after the completion of the study</a>
                     </div>
                     <div class="card-body">
                         <a id="qq21" class="" data-toggle="collapse" href="#q21" role="button" aria-expanded="false" aria-controls="q21" style="text-decoration: underline;color:#000;">
-                            6.1 What will happen to my data after this study is completed?
+                            5.1 What will happen to my data after this study is completed?
                         </a>
                         <div class="collapse" id="q21">
                             <div class="">
@@ -467,7 +460,7 @@ ul, #myUL {
                         <br/>
 						
 						 <a id="qq22" class="" data-toggle="collapse" href="#q22" role="button" aria-expanded="false" aria-controls="q22" style="text-decoration: underline;color:#000;">
-                            6.2 Will my matched data be used for other research studies?
+                            5.2 Will my matched data be used for other research studies?
                         </a>
                         <div class="collapse" id="q22">
                             <div class="">
@@ -477,7 +470,7 @@ ul, #myUL {
                         <br/>
 						
 						 <a id="qq23" class="" data-toggle="collapse" href="#q23" role="button" aria-expanded="false" aria-controls="q23" style="text-decoration: underline;color:#000;">
-                            6.3 Where can I get more information?
+                            5.3 Where can I get more information?
                         </a>
                         <div class="collapse" id="q23">
                             <div class="">
