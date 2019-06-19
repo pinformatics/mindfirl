@@ -61,6 +61,21 @@ ul, #myUL {
   transform: rotate(90deg);  
 }
 
+.caret2 {
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none;
+}
+
+.caret2::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 2px;
+}
+
 .nested {
   display: none;
 }
@@ -170,11 +185,11 @@ ul, #myUL {
             <div class="col-sm-8" style="border: 0px solid black;">
                 <div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 1: <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database.">Data</a> and identifying information</a>
+                        <a class="collapse_all"><span class="caret2">Section 1: <a href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database.">Data</a> and identifying information</span></a>
                     </div>
                     <div class="card-body">
-                        <a id="qq1" class="" data-toggle="collapse" href="#q1" role="button" aria-expanded="false" aria-controls="q1" style="text-decoration: underline;color:#000;">
-                            1.1 Why do you need to know who I am?
+                        <a id="qq1" class="expand" data-toggle="collapse" href="#q1" role="button" aria-expanded="false" aria-controls="q1" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 1.1 Why do you need to know who I am?
                         </a>
                         <div class="collapse" id="q1">
                             <div class="">
@@ -183,8 +198,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq2" class="" data-toggle="collapse" href="#q2" role="button" aria-expanded="false" aria-controls="q2" style="text-decoration: underline;color:#000;">
-                            1.2 What is identifying information?
+                        <a id="qq2" class="expand" data-toggle="collapse" href="#q2" role="button" aria-expanded="false" aria-controls="q2" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 1.2 What is identifying information?
                         </a>
                         <div class="collapse" id="q2">
                             <div class="">
@@ -193,8 +208,8 @@ ul, #myUL {
                         </div>
                         <br/>
 						
-						 <a id="qq24" class="" data-toggle="collapse" href="#q24" role="button" aria-expanded="false" aria-controls="q24" style="text-decoration: underline;color:#000;">
-                            1.3 What is non-identifying information?
+						 <a id="qq24" class="expand" data-toggle="collapse" href="#q24" role="button" aria-expanded="false" aria-controls="q24" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 1.3 What is non-identifying information?
                         </a>
                         <div class="collapse" id="q24">
                             <div class="">
@@ -204,8 +219,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq3" class="" data-toggle="collapse" href="#q3" role="button" aria-expanded="false" aria-controls="q3" style="text-decoration: underline;color:#000;">
-                            1.4 What pieces of information about me will the researchers see?
+                        <a id="qq3" class="expand" data-toggle="collapse" href="#q3" role="button" aria-expanded="false" aria-controls="q3" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 1.4 What pieces of information about me will the researchers see?
                         </a>
                         <div class="collapse" id="q3">
                             <div class="">
@@ -224,8 +239,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq4" class="" data-toggle="collapse" href="#q4" role="button" aria-expanded="false" aria-controls="q4" style="text-decoration: underline;color:#000;">
-                            1.5 If a researcher sees my name in the data when matching, how much will they know about me?
+                        <a id="qq4" class="expand" data-toggle="collapse" href="#q4" role="button" aria-expanded="false" aria-controls="q4" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 1.5 If a researcher sees my name in the data when matching, how much will they know about me?
                         </a>
                         <div class="collapse" id="q4">
                             <div class="">
@@ -238,11 +253,11 @@ ul, #myUL {
 
                 <div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 2: MINDFIRL and the patient matching process</a>
+                        <a class="collapse_all"><span class="caret2">Section 2: MINDFIRL and the patient matching process</span></a>
                     </div>
                     <div class="card-body">
-                        <a id="qq5" class="" data-toggle="collapse" href="#q5" role="button" aria-expanded="false" aria-controls="q5" style="text-decoration: underline;color:#000;">
-                            2.1 What is patient-matching?
+                        <a id="qq5" class="expand" data-toggle="collapse" href="#q5" role="button" aria-expanded="false" aria-controls="q5" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.1 What is patient-matching?
                         </a>
                         <div class="collapse" id="q5">
                             <div class="">
@@ -254,8 +269,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq6" class="" data-toggle="collapse" href="#q6" role="button" aria-expanded="false" aria-controls="q6" style="text-decoration: underline;color:#000;">
-                            2.2 What is MINDFIRL?
+                        <a id="qq6" class="expand" data-toggle="collapse" href="#q6" role="button" aria-expanded="false" aria-controls="q6" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.2 What is MINDFIRL?
                         </a>
                         <div class="collapse" id="q6">
                             <div class="">
@@ -272,8 +287,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq7" class="" data-toggle="collapse" href="#q7" role="button" aria-expanded="false" aria-controls="q7" style="text-decoration: underline;color:#000;">
-                            2.3 What does MINDFIRL look like?
+						<a id="qq7" class="expand" data-toggle="collapse" href="#q7" role="button" aria-expanded="false" aria-controls="q7" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.3 What does MINDFIRL look like?
                         </a>
                         <div class="collapse" id="q7">
                             <div class="">
@@ -282,8 +297,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq8" class="" data-toggle="collapse" href="#q8" role="button" aria-expanded="false" aria-controls="q8" style="text-decoration: underline;color:#000;">
-                            2.4 What information do you need in order to match my records?
+						<a id="qq8" class="expand" data-toggle="collapse" href="#q8" role="button" aria-expanded="false" aria-controls="q8" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.4 What information do you need in order to match my records?
                         </a>
                         <div class="collapse" id="q8">
                             <div class="">
@@ -292,8 +307,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq9" class="" data-toggle="collapse" href="#q9" role="button" aria-expanded="false" aria-controls="q9" style="text-decoration: underline;color:#000;">
-                            2.5 Can I be identified in the linked data?
+						<a id="qq9" class="expand" data-toggle="collapse" href="#q9" role="button" aria-expanded="false" aria-controls="q9" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.5 Can I be identified in the linked data?
                         </a>
                         <div class="collapse" id="q9">
                             <div class="">
@@ -302,8 +317,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq10" class="" data-toggle="collapse" href="#q10" role="button" aria-expanded="false" aria-controls="q10" style="text-decoration: underline;color:#000;">
-                            2.6 Are there risks to patient matching?
+						<a id="qq10" class="expand" data-toggle="collapse" href="#q10" role="button" aria-expanded="false" aria-controls="q10" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.6 Are there risks to patient matching?
                         </a>
                         <div class="collapse" id="q10">
                             <div class="">
@@ -312,8 +327,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq11" class="" data-toggle="collapse" href="#q11" role="button" aria-expanded="false" aria-controls="q11" style="text-decoration: underline;color:#000;">
-                            2.7 How does MINDFIRL lower the risks of patient matching?
+						<a id="qq11" class="expand" data-toggle="collapse" href="#q11" role="button" aria-expanded="false" aria-controls="q11" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.7 How does MINDFIRL lower the risks of patient matching?
                         </a>
                         <div class="collapse" id="q11">
                             <div class="">
@@ -323,8 +338,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-							<a id="qq12" class="" data-toggle="collapse" href="#q12" role="button" aria-expanded="false" aria-controls="q12" style="text-decoration: underline;color:#000;">
-                            2.8 How does MINDFIRL enhance privacy?
+							<a id="qq12" class="expand" data-toggle="collapse" href="#q12" role="button" aria-expanded="false" aria-controls="q12" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.8 How does MINDFIRL enhance privacy?
                         </a>
                         <div class="collapse" id="q12">
                             <div class="">
@@ -333,8 +348,8 @@ ul, #myUL {
                         </div>
 						<br/>
 						
-						<a id="qq13" class="" data-toggle="collapse" href="#q13" role="button" aria-expanded="false" aria-controls="q13" style="text-decoration: underline;color:#000;">
-                            2.9 Does MINDFIRL reduce the quality of matched records?
+						<a id="qq13" class="expand" data-toggle="collapse" href="#q13" role="button" aria-expanded="false" aria-controls="q13" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 2.9 Does MINDFIRL reduce the quality of matched records?
                         </a>
                         <div class="collapse" id="q13">
                             <div class="">
@@ -347,11 +362,11 @@ ul, #myUL {
 						
 						<div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 3: Protection and storage of my matched data<br><br><b><span style="color:DodgerBlue;">[Suggestion for researchers using this FAQ: The following sections contain FAQ questions that might have different answers depending on the specific research project. Researchers who use this FAQ for their projects will have to fill out the answers with information specific to their project.]</span></b></a>
+                        <a class="collapse_all"><span class="caret2">Section 3: Protection and storage of my matched data<br><br><b><span style="color:DodgerBlue;">[Suggestion for researchers using this FAQ: The following sections contain FAQ questions that might have different answers depending on the specific research project. Researchers who use this FAQ for their projects will have to fill out the answers with information specific to their project.]</span></b></span></a>
                     </div>
                     <div class="card-body">
-                        <a id="qq14" class="" data-toggle="collapse" href="#q14" role="button" aria-expanded="false" aria-controls="q14" style="text-decoration: underline;color:#000;">
-                            3.1 Where will data about me be kept?
+                        <a id="qq14" class="expand" data-toggle="collapse" href="#q14" role="button" aria-expanded="false" aria-controls="q14" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 3.1 Where will data about me be kept?
                         </a>
                         <div class="collapse" id="q14">
                             <div class="">
@@ -364,8 +379,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq15" class="" data-toggle="collapse" href="#q15" role="button" aria-expanded="false" aria-controls="q15" style="text-decoration: underline;color:#000;">
-                            3.2 What security measures are you using to protect me?
+                        <a id="qq15" class="expand" data-toggle="collapse" href="#q15" role="button" aria-expanded="false" aria-controls="q15" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 3.2 What security measures are you using to protect me?
                         </a>
                         <div class="collapse" id="q15">
                             <div class="">
@@ -377,8 +392,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq16" class="" data-toggle="collapse" href="#q16" role="button" aria-expanded="false" aria-controls="q16" style="text-decoration: underline;color:#000;">
-                            3.3 What are you doing to make sure that my data is being used responsibly?
+                        <a id="qq16" class="expand" data-toggle="collapse" href="#q16" role="button" aria-expanded="false" aria-controls="q16" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 3.3 What are you doing to make sure that my data is being used responsibly?
                         </a>
                         <div class="collapse" id="q16">
                             <div class="">
@@ -389,8 +404,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq17" class="" data-toggle="collapse" href="#q17" role="button" aria-expanded="false" aria-controls="q17" style="text-decoration: underline;color:#000;">
-                            3.4 What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused? 
+                        <a id="qq17" class="expand" data-toggle="collapse" href="#q17" role="button" aria-expanded="false" aria-controls="q17" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 3.4 What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused? 
                         </a>
                         <div class="collapse" id="q17">
                             <div class="">
@@ -402,8 +417,8 @@ ul, #myUL {
                         </div>
                         <br/>
 
-                        <a id="qq18" class="" data-toggle="collapse" href="#q18" role="button" aria-expanded="false" aria-controls="q18" style="text-decoration: underline;color:#000;">
-                            3.5 Who will have access to my data?
+                        <a id="qq18" class="expand" data-toggle="collapse" href="#q18" role="button" aria-expanded="false" aria-controls="q18" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 3.5 Who will have access to my data?
                         </a>
                         <div class="collapse" id="q18">
                             <div class="">
@@ -416,11 +431,11 @@ ul, #myUL {
 				
 					<div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 4: Importance and impact of using my data</a>
+                        <a class="collapse_all"><span class="caret2">Section 4: Importance and impact of using my data</span></a>
                     </div>
                     <div class="card-body">
-                        <a id="qq19" class="" data-toggle="collapse" href="#q19" role="button" aria-expanded="false" aria-controls="q19" style="text-decoration: underline;color:#000;">
-                            4.1 Why is my data needed?
+                        <a id="qq19" class="expand" data-toggle="collapse" href="#q19" role="button" aria-expanded="false" aria-controls="q19" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 4.1 Why is my data needed?
                         </a>
                         <div class="collapse" id="q19">
                             <div class="">
@@ -430,8 +445,8 @@ ul, #myUL {
                         </div>
                         <br/>
 						
-						 <a id="qq20" class="" data-toggle="collapse" href="#q20" role="button" aria-expanded="false" aria-controls="q20" style="text-decoration: underline;color:#000;">
-                            4.2 What difference is my data going to make?
+						 <a id="qq20" class="expand" data-toggle="collapse" href="#q20" role="button" aria-expanded="false" aria-controls="q20" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 4.2 What difference is my data going to make?
                         </a>
                         <div class="collapse" id="q20">
                             <div class="">
@@ -446,11 +461,11 @@ ul, #myUL {
 				
 						<div class="card">
                     <div class="card-header">
-                        <a class="collapse_all">Section 5: Data handling after the completion of the study</a>
+                        <a class="collapse_all"><span class="caret2">Section 5: Data handling after the completion of the study</span></a>
                     </div>
                     <div class="card-body">
-                        <a id="qq21" class="" data-toggle="collapse" href="#q21" role="button" aria-expanded="false" aria-controls="q21" style="text-decoration: underline;color:#000;">
-                            5.1 What will happen to my data after this study is completed?
+                        <a id="qq21" class="expand" data-toggle="collapse" href="#q21" role="button" aria-expanded="false" aria-controls="q21" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 5.1 What will happen to my data after this study is completed?
                         </a>
                         <div class="collapse" id="q21">
                             <div class="">
@@ -459,8 +474,8 @@ ul, #myUL {
                         </div>
                         <br/>
 						
-						 <a id="qq22" class="" data-toggle="collapse" href="#q22" role="button" aria-expanded="false" aria-controls="q22" style="text-decoration: underline;color:#000;">
-                            5.2 Will my matched data be used for other research studies?
+						 <a id="qq22" class="expand" data-toggle="collapse" href="#q22" role="button" aria-expanded="false" aria-controls="q22" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 5.2 Will my matched data be used for other research studies?
                         </a>
                         <div class="collapse" id="q22">
                             <div class="">
@@ -469,8 +484,8 @@ ul, #myUL {
                         </div>
                         <br/>
 						
-						 <a id="qq23" class="" data-toggle="collapse" href="#q23" role="button" aria-expanded="false" aria-controls="q23" style="text-decoration: underline;color:#000;">
-                            5.3 Where can I get more information?
+						 <a id="qq23" class="expand" data-toggle="collapse" href="#q23" role="button" aria-expanded="false" aria-controls="q23" style="text-decoration: underline;color:#000;">
+                            <span class="expand-sign">+</span> 5.3 Where can I get more information?
                         </a>
                         <div class="collapse" id="q23">
                             <div class="">
@@ -497,19 +512,42 @@ for (i = 0; i < toggler.length; i++) {
     this.classList.toggle("caret-down");
   });
 }
+
+var toggler2 = document.getElementsByClassName("caret2");
+for (i = 0; i < toggler2.length; i++) {
+  toggler2[i].addEventListener("click", function() {
+    this.classList.toggle("caret-down");
+  });
+}
+
+var exp_element = document.getElementsByClassName("expand");
+for (i = 0; i < exp_element.length; i++) {
+  exp_element[i].addEventListener("click", function() {
+    var cur_sign = $(this).find('.expand-sign').html();
+    if(cur_sign == '+') {
+      $(this).find('.expand-sign').html('-');
+    }
+    else {
+      $(this).find('.expand-sign').html('+');
+    }
+  });
+}
 </script>
 <script>
 function open_card(id) {
     $('#'+id).addClass('show');
+    $('#'+id).prev().find('.expand-sign').html('-');
 }
 
 $(".collapse_all").click(function() {
     state = $(this).parent().next().find('.show');
     if(state.length < 1) {
         $(this).parent().next().find('.collapse').addClass('show');
+        $(this).parent().next().find('.expand-sign').html('-');
     }
     else {
         $(this).parent().next().find('.collapse').removeClass('show');
+        $(this).parent().next().find('.expand-sign').html('+');
     }
 })
 
