@@ -599,7 +599,9 @@ function eventFire(el, etype){
 
 var qid = window.location.hash.substr(1);
 //open_card(qid);
-eventFire(document.getElementById(qid), 'click');
+if(qid) {
+  eventFire(document.getElementById(qid), 'click');
+}
 
 $(".collapse_all").click(function() {
     state = $(this).parent().next().find('.show');
