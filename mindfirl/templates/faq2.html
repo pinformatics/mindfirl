@@ -58,10 +58,16 @@ ul, #myUL {
 }
 
 .caret::before {
-  content: "\25B6";
+  content: "\f0da";
   color: black;
   display: inline-block;
-  margin-right: 2px;
+  margin-right: 5px;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 20px;
+  margin-left: 2px;
 }
 
 .caret-down::before {
@@ -80,10 +86,15 @@ ul, #myUL {
 }
 
 .caret2::before {
-  content: "\25B6";
+  content: "\f0da";
   color: black;
   display: inline-block;
-  margin-right: 2px;
+  margin-right: 5px;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 20px;
 }
 
 .nested {
@@ -608,10 +619,13 @@ $(".collapse_all").click(function() {
     if(state.length < 1) {
         $(this).parent().next().find('.collapse').addClass('show');
         $(this).parent().next().find('.expand-sign').html('-');
+        $(this).find('.caret2').removeClass('caret-down');
+        $(this).find('.caret2').addClass('caret-down');
     }
     else {
         $(this).parent().next().find('.collapse').removeClass('show');
         $(this).parent().next().find('.expand-sign').html('+');
+        $(this).find('.caret2').removeClass('caret-down');
     }
 })
 
