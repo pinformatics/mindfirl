@@ -253,7 +253,7 @@ def index():
 
 @app.route("/faq")
 def faq():
-    return render_template("faq.html")
+    return render_template("faq2.html")
 
 @app.route("/faq2")
 def faq2():
