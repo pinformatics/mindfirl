@@ -901,7 +901,7 @@ def detect_result_conflicts(mongo, pid):
     result_file = project['result_path']
 
     pair_id = dict()
-    conflicts = list()
+    conflicts = set()
     with open(result_file, 'r') as fin:
         for line in fin:
             if line.strip() == '':
@@ -909,11 +909,11 @@ def detect_result_conflicts(mongo, pid):
             data = line.split(',')
             cur_id = int(data[0])
             if cur_id in pair_id:
-                conflicts.append(cur_id)
+                conflicts.add(cur_id)
             else:
                 pair_id[cur_id] = 1
 
-    return conflicts
+    return list(conflicts)
 
 def save_conflict_project(mongo, data):
     mongo.db.conflicts.insert(data)

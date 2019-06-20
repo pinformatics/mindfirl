@@ -255,6 +255,10 @@ def index():
 def faq():
     return render_template("faq.html")
 
+@app.route("/faq2")
+def faq2():
+    return render_template("faq2.html")
+
 @app.route('/project')
 @login_required
 def project():
