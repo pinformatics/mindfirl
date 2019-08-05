@@ -42,6 +42,18 @@
             $DATA_SIZE = "{{ data['data_size'] }}";
 
             $user_data = '';
+
+            {% if data['isfull'] == 'true' %}
+            setTimeout(function (){
+                $('.clickable_cell').each(function() {
+                    this.classList.remove("clickable_cell");
+                });
+                $('.clickable_big_cell').each(function() {
+                    this.classList.remove("clickable_big_cell");
+                });
+            }, 50);
+                
+            {% endif %}
         </script>
     </head>
 
@@ -94,6 +106,7 @@
                     </div>
                     <div id="table_content">
                         {% set ids = data['ids'] %}
+                        {% set isfull = data['isfull'] %}
                         {% set icons = data['icons'] %}
                         {% for r in data['data'] %}
                             {% if loop.index is divisibleby 2 %}
@@ -101,13 +114,18 @@
                             {% else %}
                         <div class="table_row table_row_odd">
                             {% endif %}
-                            <div class="table_col1 pair_number">{{ loop.index0+data['pair_num_base'] }}</div>
+                            <div class="table_col1 pair_number tooltip1">
+                                {{ loop.index0+data['pair_num_base'] }}
+                                <span class="tooltiptext1">{{ ids[loop.index0][0][0] }}</span>
+                            </div>
                             <div class="table_col2 clickable_cell" id = "test_col" mode="{{ data['data_mode_list'][loop.index0][0] }}">
                                 <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
                                     {{ r[0][1]|safe }}
                                 </div>
                                 <div class="sub_row2">
-                                    {{ icons[loop.index0][0]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][0]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][0] }}">
                                     {{ r[1][1]|safe }}
@@ -156,7 +174,9 @@
                                     {{ r[0][3]|safe }}
                                 </div>
                                 <div class="sub_row2">
-                                    {{ icons[loop.index0][1]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][1]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][1] }}">
                                     {{ r[1][3]|safe }}
@@ -170,7 +190,9 @@
                                     {{ r[0][4]|safe }}
                                 </div>
                                 <div class="sub_row2">
-                                    {{ icons[loop.index0][3]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][3]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][2] }}">
                                     {{ r[1][4]|safe }}
@@ -218,7 +240,9 @@
                                     {{ r[0][6]|safe }}
                                 </div>
                                 <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
                                     {{ icons[loop.index0][4]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][3] }}">
                                     {{ r[1][6]|safe }}
@@ -229,7 +253,9 @@
                                     {{ r[0][7]|safe }}
                                 </div>
                                 <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
                                     {{ icons[loop.index0][5]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][4] }}">
                                     {{ r[1][7]|safe }}
@@ -240,7 +266,9 @@
                                     {{ r[0][8]|safe }}
                                 </div>
                                 <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
                                     {{ icons[loop.index0][6]|safe }}
+                                    {% endif %}
                                 </div>
                                 <div class="sub_row3" id="{{ ids[loop.index0][1][5] }}">
                                     {{ r[1][8]|safe }}

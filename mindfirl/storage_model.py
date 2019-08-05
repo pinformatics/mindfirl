@@ -184,6 +184,11 @@ def get_block_num(block_id, pf_file):
 
     return pair_num
 
+def get_block_id_len(block_id):
+    total = 0
+    for i in block_id:
+        total += len(i)
+    return total
 
 def save_project(mongo, data):
     project_name = data['project_name']
@@ -251,7 +256,7 @@ def save_project(mongo, data):
             #'page_size': math.ceil(int(total_pairs*percentage)/6), 
             'page_size': total_blocks, 
             'pair_idx': 0,
-            'total_pairs': math.ceil(int(total_pairs*percentage)),
+            'total_pairs': get_block_id_len(assigned_id),
             'kapr_limit': cur_kapr, 
             'isfull': isfull,
             'current_kapr': 0,
@@ -501,7 +506,7 @@ def get_data_mode(assignment_id, ids, r, default_mode='M'):
     """
     if is None, then insert 'M' into the redis
     """
-    mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full'}
+    mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full', 'B': 'base'}
     data_mode_list = []
 
     for (id1, id2) in ids:
@@ -510,7 +515,7 @@ def get_data_mode(assignment_id, ids, r, default_mode='M'):
             key = assignment_id + '-' + attribute_id1
             mode = r.get(key)
             if mode != None:
-                if mode in ['masked', 'partial', 'full']:
+                if mode in ['masked', 'partial', 'full', 'base']:
                     cur_list.append(mode)
                 else:
                     cur_list.append(mode_dict[mode])
@@ -532,10 +537,14 @@ def _union_data_mode(list1, list2):
     return ret
 
 
-def get_conflict_data_mode(pid, ids, mongo, r, manager_assignment_id):
+def get_conflict_data_mode(pid, ids, mongo, r, manager_assignment_id, isfull=False):
     """
     the data mode for resolve conflicts is the Union of each assignee's data mode
     """
+    if isfull:
+        data_mode_list = len(ids)*[6*['base']]
+        return data_mode_list
+
     data_mode_list = len(ids)*[6*['masked']]
 
     project = mongo.db.projects.find_one({'pid': pid})
@@ -643,6 +652,8 @@ def save_answers(mongo, pid, username, data):
 def update_resolve_conflicts(mongo, pid):
     """
     update the result file
+    if pair_id not in the conflicts: copy it to the final result
+    else: use the resolve conflicts result as the final result
     """
     conflict_project = mongo.db.conflicts.find_one({'pid': pid})
     conflict_result = conflict_project['result_path']
@@ -956,6 +967,13 @@ def get_users_choices(mongo, pid, indices):
 
     return choices, choice_cnt
 
+def has_full_assignee(mongo, pid):
+    project = mongo.db.projects.find_one({'pid': pid})
+    assignee_stat = project['assignee_stat']
+    for assignee in assignee_stat:
+        if assignee['isfull'] == 'true':
+            return True
+    return False
 
 def new_blocking(mongo, data):
     project = mongo.db.projects.find_one({'pid': data['pid']})

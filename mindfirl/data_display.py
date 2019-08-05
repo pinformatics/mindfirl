@@ -25,8 +25,14 @@ def get_string_display(attr1, attr2, helper1, helper2, attribute_mode):
         ['*******<span style="color:red">4</span>**', '*******<span style="color:red">5</span>**']
     """
     if attribute_mode == 'base':
-        attr1_display = attr1
-        attr2_display = attr2
+        if not attr1:
+            attr1_display = '<img src="/static/images/site/missing.png" alt="missing" class="missing_icon">'
+        else:
+            attr1_display = attr1
+        if not attr2:
+            attr2_display = '<img src="/static/images/site/missing.png" alt="missing" class="missing_icon">'
+        else:
+            attr2_display = attr2
         return [attr1_display, attr2_display]
     elif attribute_mode == 'full':
         if not attr1 or not attr2:
@@ -204,8 +210,14 @@ def get_date_display(attr1, attr2, helper1, helper2, attribute_mode):
         ['**/**/**<span style="color:blue">50</span>', '**/**/**<span style="color:blue">05</span>']
     """
     if attribute_mode == 'base':
-        attr1_display = attr1
-        attr2_display = attr2
+        if not attr1:
+            attr1_display = '<img src="/static/images/site/missing.png" alt="missing" class="missing_icon">'
+        else:
+            attr1_display = attr1
+        if not attr2:
+            attr2_display = '<img src="/static/images/site/missing.png" alt="missing" class="missing_icon">'
+        else:
+            attr2_display = attr2
         return [attr1_display, attr2_display]
     elif attribute_mode == 'full':
         if not attr1 or not attr2:

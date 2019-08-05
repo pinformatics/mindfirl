@@ -686,7 +686,7 @@ def record_linkage(pid):
     current_kapr = assignment_status['current_kapr']
     isfull = assignment_status['isfull']
     if isfull == 'true':
-        default_mode = 'F'
+        default_mode = 'B'
     else:
         default_mode = 'M'
     if current_page >= page_size:
@@ -951,6 +951,8 @@ def create_resolve_conflict_project(pid):
     f = open(result_path, 'w+')
     f.close()
 
+    isfull = storage_model.has_full_assignee(mongo, pid)
+
     conflict_project = {
         'pid': pid,
         'project_name': project['project_name'],
@@ -961,7 +963,8 @@ def create_resolve_conflict_project(pid):
         'current_kapr': current_kapr,
         'pair_idx': 0,
         'total_pairs': len(conflict_indices),
-        'result_path': result_path
+        'result_path': result_path,
+        'isfull': isfull,
     }
 
     storage_model.save_conflict_project(mongo, conflict_project)
@@ -1001,12 +1004,15 @@ def resolve_conflicts2(pid):
     working_data.set_kapr_size(full_project_pairs)
     full_data = dl.load_data_from_csv(project_pairfile)
 
+    isfull = assignment['isfull']
+
     # prepare return data
     icons = working_data.get_icons()
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
-    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id)
+    data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id, isfull)
+    print(data_mode_list)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
@@ -1047,6 +1053,7 @@ def resolve_conflicts2(pid):
         'data_size': len(data),
         'choices': choices,
         'choice_cnt': choice_cnt,
+        'isfull': isfull,
     }
     return render_template('resolve_conflicts2.html', data=ret_data)
 
