@@ -5,7 +5,6 @@ import config
 import math
 from get_pair_file import generate_pair_file, generate_fake_file
 from get_pair_file_2 import generate_pair_file2
-from get_pair_file import generate_pair_file
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
@@ -802,6 +801,27 @@ def get_current_block(mongo, pid, assignee):
 
     return ret, pair_idx
 
+def get_record_id_by_pair_id(mongo, pid, indices):
+    project = mongo.db.projects.find_one({'pid': pid})
+    pairfile_path = project['pairfile_path']
+
+    id_dict = dict()
+    with open(pairfile_path, 'r') as fin:
+        lines = fin.readlines()
+        for i in range(1, len(lines), 2):
+            line1 = lines[i]
+            line2 = lines[i+1]
+            data1 = line1.split(',')
+            data2 = line2.split(',')
+            id1 = data1[2]+'-'+data1[3]
+            id2 = data2[2]+'-'+data2[3]
+            pid = data1[0]
+            id_dict[int(pid)] = (id1, id2)
+
+    ret = list()
+    for pair_id in indices:
+        ret.append(id_dict[int(pair_id)])
+    return ret
 
 def combine_result(mongo, pid):
     """

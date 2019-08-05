@@ -6,7 +6,7 @@
         <link rel="shortcut icon" href="../static/images/site/favicon.ico" type="image/x-icon" />
 
         <link rel="stylesheet" href="../static/css/site.css?q=5" type="text/css">
-        <link rel="stylesheet" href="../static/css/style.css?q=63" type="text/css">
+        <link rel="stylesheet" href="../static/css/style.css?q=66" type="text/css">
         <link rel="stylesheet" href="../static/css/ionicons.min.css" type="text/css">
         <link rel="stylesheet" href="../static/css/select.css?q=13" type="text/css">
         <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
@@ -114,9 +114,13 @@
                             {% else %}
                         <div class="table_row table_row_odd">
                             {% endif %}
-                            <div class="table_col1 pair_number tooltip1">
+                            <div class="table_col1 pair_number tooltip2">
                                 {{ loop.index0+data['pair_num_base'] }}
-                                <span class="tooltiptext1">{{ ids[loop.index0][0][0] }}</span>
+                                <span class="tooltiptext2">
+                                    {{ data['pair_ids'][loop.index0] }}<br/>
+                                    {{ data['record_ids'][loop.index0][0] }}<br/>
+                                    {{ data['record_ids'][loop.index0][1] }}
+                                </span>
                             </div>
                             <div class="table_col2 clickable_cell" id = "test_col" mode="{{ data['data_mode_list'][loop.index0][0] }}">
                                 <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
@@ -143,7 +147,7 @@
                                         {% elif 'rare' in r[0][2] %}
                                             Rare name
                                         {% else %}
-                                            Unique name
+                                            Rare name
                                         {% endif %}
                                     </span>
                                     {% endif %}
@@ -161,7 +165,7 @@
                                         {% elif 'rare' in r[1][2] %}
                                             Rare name
                                         {% else %}
-                                            Unique name
+                                            Rare name
                                         {% endif %}
                                     </span>
                                     {% endif %}
@@ -211,7 +215,7 @@
                                         {% elif 'rare' in r[0][5] %}
                                             Rare name
                                         {% else %}
-                                            Unique name
+                                            Rare name
                                         {% endif %}
                                     </span>
                                     {% endif %}
@@ -229,7 +233,7 @@
                                         {% elif 'rare' in r[1][5] %}
                                             Rare name
                                         {% else %}
-                                            Unique name
+                                            Rare name
                                         {% endif %}
                                     </span>
                                     {% endif %}
@@ -333,4 +337,17 @@
         <!-- End of div wrapper -->
         <!-- {% include "footer.html" ignore missing %} -->
     </body>
+    <script>
+        // change name freq tooltip to include actual number
+        jQuery(document).ready(function ($) {
+            $('.tooltiptext1').each(function() {
+                var $this = $(this);
+                var value = $this.html();
+                if(value.includes("common") || value.includes("Common")) {
+                    freq = $this.prev().attr("value");
+                    $this.html(value + "<br/>(" + freq + ")");
+                }
+            });
+        });
+    </script>
 </html>

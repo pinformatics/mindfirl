@@ -711,6 +711,9 @@ def record_linkage(pid):
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
+    pair_ids = indices
+    record_ids = storage_model.get_record_id_by_pair_id(mongo, pid, indices)
+
     # get the delta information
     delta = list()
     for i in range(working_data.size()):
@@ -733,6 +736,8 @@ def record_linkage(pid):
         'data_mode_list': data_mode_list,
         'icons': icons,
         'ids': ids,
+        'record_ids': record_ids,
+        'pair_ids': pair_ids,
         'title': project['project_name'],
         'kapr': round(100*float(current_kapr), 1),
         'kapr_limit': float(kapr_limit), 

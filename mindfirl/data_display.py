@@ -407,9 +407,9 @@ def get_name_freq(freq, mode):
     elif freq <= 5:
         return '<img src="/static/images/site/rare.png" alt="rare" class="freq_icon">'
     elif freq <= 100:
-        return '<img src="/static/images/site/common.png" alt="common" class="freq_icon">'
+        return '<img src="/static/images/site/common.png" alt="common" class="freq_icon" value="%s">'%freq
     else:
-        return '<img src="/static/images/site/infinity.png" alt="infinity" class="freq_icon">'
+        return '<img src="/static/images/site/infinity.png" alt="infinity" class="freq_icon" value="">'%freq
 
 
 def get_ffreq(freq, mode='full'):
