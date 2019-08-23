@@ -432,6 +432,9 @@ def save_project():
 @app.route('/saveProject2', methods=["POST"])
 @login_required
 def save_project2():
+    """
+    creating project by blocking
+    """
     user = current_user
     form = ProjectForm2(formdata=request.form)
 

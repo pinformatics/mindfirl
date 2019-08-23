@@ -311,17 +311,17 @@ def save_project2(mongo, data):
     f.close()
 
     # assign the pairfile to each assignee, generate pf_file for them
-    assigner = Assign_generator(pairfile_path)
+    assigner = Assign_generator(pairfile_path, block_id)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=math.ceil(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
@@ -344,6 +344,7 @@ def save_project2(mongo, data):
             'current_kapr': 0,
             'pair_idx': 0,
             'total_pairs': pf_result['size'],
+            'isfull': isfull,
         })
 
     project_key = owner+'-'+project_name+str(time.time())
@@ -813,9 +814,14 @@ def get_record_id_by_pair_id(mongo, pid, indices):
             line2 = lines[i+1]
             data1 = line1.split(',')
             data2 = line2.split(',')
-            id1 = data1[2]+'-'+data1[3]
-            id2 = data2[2]+'-'+data2[3]
-            pid = data1[0]
+            if project['created_by'] == 'pairfile':
+                id1 = data1[2]+'-'+data1[3]
+                id2 = data2[2]+'-'+data2[3]
+                pid = data1[0]
+            else:
+                id1 = data1[8]
+                id2 = data2[8]
+                pid = data1[0]
             id_dict[int(pid)] = (id1, id2)
 
     ret = list()
