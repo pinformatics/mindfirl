@@ -723,7 +723,7 @@ def record_linkage(pid):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
+        delta += dm.KAPR_delta(full_data, data_pair, 11*['M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -753,6 +753,7 @@ def record_linkage(pid):
         'data_size': len(data),
         'isfull': isfull,
     }
+    print(ids)
     return render_template('record_linkage_ppirl.html', data=ret_data)
 
 

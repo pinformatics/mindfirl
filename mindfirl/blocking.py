@@ -21,7 +21,7 @@ def generate_pairs(block, start_id):
     find a centroid: have a minimum average hamming distance to other records.
     build pairs between centroid and others.
     """
-    m_distance = 6*len(block)
+    m_distance = 11*len(block)
     m_idx = 0
 
     for i in range(len(block)):
@@ -40,8 +40,8 @@ def generate_pairs(block, start_id):
     for i in range(len(block)):
         if i == m_idx:
             continue
-        pairs.append([pid, block[m_idx][1], block[m_idx][2], block[m_idx][3], block[m_idx][4], block[m_idx][5], block[m_idx][6], 1, block[m_idx][0]])
-        pairs.append([pid, block[i][1], block[i][2], block[i][3], block[i][4], block[i][5], block[i][6], 1, block[i][0]])
+        pairs.append([pid, block[m_idx][1], block[m_idx][2], block[m_idx][3], block[m_idx][4], block[m_idx][5], block[m_idx][6],block[m_idx][7],block[m_idx][8],block[m_idx][9],block[m_idx][10],block[m_idx][11], 1, block[m_idx][0]])
+        pairs.append([pid, block[i][1], block[i][2], block[i][3], block[i][4], block[i][5], block[i][6],block[i][7],block[i][8],block[i][9],block[i][10],block[i][11], 1, block[i][0]])
         pid += 1
 
     return pairs
@@ -62,7 +62,8 @@ def blocking_and_generate_pairs(blocking, intfile, pair_file):
                 continue
 
             data = line.rstrip('\n').split(',')
-            if pos == int(data[7]):
+            #if pos == int(data[7]):
+            if pos == int(data[12]):
                 db.append(data)
 
             pos += 1
@@ -113,7 +114,7 @@ def blocking_and_generate_pairs(blocking, intfile, pair_file):
         return 0, []
 
     with open(pair_file, 'w+') as fout:
-        fout.write('ID,voter_reg_num,first_name,last_name,dob,sex,race,type,file_id\n')
+        fout.write('ID,voter_reg_num,first_name,last_name,dob,sex,race,info1,info2,info3,info4,info5,type,file_id\n')
         for dp in data_pair:
             fout.write(','.join([str(x) for x in dp])+'\n')
 

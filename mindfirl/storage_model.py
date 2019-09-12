@@ -3,7 +3,7 @@ import time
 import hashlib
 import config
 import math
-from get_pair_file import generate_pair_file, generate_fake_file
+from get_pair_file_extra import generate_pair_file
 from get_pair_file_2 import generate_pair_file2
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
@@ -303,6 +303,10 @@ def save_project2(mongo, data):
     file2.save(file2_path)
 
     total_pairs, block_id = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
+    print('--------')
+    print(total_pairs)
+    print(block_id)
+    print('--------')
     # if blocking_result is False, need to consider this
     pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
 

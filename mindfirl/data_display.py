@@ -487,6 +487,12 @@ def format_pair(p1, p2, data_mode):
     race_format = get_character_display(attr1=p1[8], attr2=p2[8], helper1='', helper2='', attribute_mode=mode[5])
     result1.append(race_format[0])
     result2.append(race_format[1])
+
+    # info 1-5
+    for k in range(5):
+        info_format = get_character_display(attr1=p1[9+k], attr2=p2[9+k], helper1='', helper2='', attribute_mode=mode[5])
+        result1.append(info_format[0])
+        result2.append(info_format[1])
     
     return [result1, result2]
 

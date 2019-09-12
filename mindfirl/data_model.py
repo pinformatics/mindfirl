@@ -3,6 +3,7 @@ import copy
 import data_display as dd
 from util import RET
 
+NUM_ATTR = 11
 
 class DataPair(object):
     """
@@ -25,6 +26,8 @@ class DataPair(object):
         data_attribute_types: data types, for now it is hard coded
         data_display: this is different from the data_attribute_display: this includes the name frequency, name swap and so on.
         """
+        self.num_of_attr = 11
+
         self._data1_raw = data1_raw
         self._data2_raw = data2_raw
         self._pair_num = int(self._data1_raw[0])
@@ -43,7 +46,7 @@ class DataPair(object):
         self._data2_attributes_full = list()
         self._data2_attributes_partial = list()
         self._data2_attributes_masked = list()
-        self._data_attribute_types = ['string', 'string', 'string', 'date', 'character', 'character']
+        self._data_attribute_types = ['string', 'string', 'string', 'date', 'character', 'character', 'character', 'character', 'character', 'character', 'character']
         self._data_display = dict()
 
         self._initialize_data()
@@ -51,6 +54,8 @@ class DataPair(object):
         self._generate_ids()
         self._generate_data_attributes_display()
         self._generate_data_display()
+
+        
 
 
     def _initialize_data(self):
@@ -62,11 +67,11 @@ class DataPair(object):
         self._data1_helpers = []
         self._data2_helpers = []
 
-        attribute_idx = [1, 3, 4, 6, 7, 8]
+        attribute_idx = [1, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13]
         for i in attribute_idx:
             self._data1_attributes.append(self._data1_raw[i])
             self._data2_attributes.append(self._data2_raw[i])
-        helper_idx = [9, 10, 11, 12, 13, 14]
+        helper_idx = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
         for i in helper_idx:
             self._data1_helpers.append(self._data1_raw[i])
             self._data2_helpers.append(self._data2_raw[i])
@@ -80,7 +85,7 @@ class DataPair(object):
     def _generate_ids(self):
         self._data1_ids = []
         self._data2_ids = []
-        for i in range(6):
+        for i in range(self.num_of_attr):
             self._data1_ids.append(str(self._pair_num) + '-1-' + str(i))
             self._data2_ids.append(str(self._pair_num) + '-2-' + str(i))
 
@@ -95,7 +100,7 @@ class DataPair(object):
         self._data2_attributes_partial = []
         self._data2_attributes_masked = []
 
-        for i in range(6):
+        for i in range(self.num_of_attr):
             if self._data_attribute_types[i] == 'string':
                 get_display = dd.get_string_display
             elif self._data_attribute_types[i] == 'date':
@@ -147,7 +152,7 @@ class DataPair(object):
             self._data2_attributes_masked.append(display_masked[1])
 
         # all the attributes has base, full, and masked mode, but not necessary partial mode
-        for i in range(6):
+        for i in range(self.num_of_attr):
             if self._data1_attributes_partial[i] == self._data1_attributes_masked[i] and self._data2_attributes_partial[i] == self._data2_attributes_masked[i]:
                 self._data1_attributes_partial[i] = None
                 self._data2_attributes_partial[i] = None
@@ -163,13 +168,13 @@ class DataPair(object):
         return self._data1_attributes[i] == self._data2_attributes[i]
 
     def has_partial_mode(self, i):
-        if i < 0 or i > 6:
+        if i < 0 or i > self.num_of_attr:
             logging.error('Wrong attribute index: ' + str(i))
             return False
         return not (self._data1_attributes_partial[i] is None and self._data2_attributes_partial[i] is None)
 
     def get_attribute_display(self, i, attribute_mode):
-        if i < 0 or i >= 6:
+        if i < 0 or i >= self.num_of_attr:
             logging.error('Error: attribute index not in range.')
             return RET(status=1, return_data='Error: attribute index not in range.')
 
@@ -202,13 +207,13 @@ class DataPair(object):
 
 
     def get_attributes(self, i):
-        if i not in range(6):
+        if i not in range(self.num_of_attr):
             logging.error('Error: attribute index out of range.')
         return [self._data1_attributes[i], self._data2_attributes[i]]
 
 
     def get_helpers(self, i):
-        if i not in range(6):
+        if i not in range(self.num_of_attr):
             logging.error('Error: attribute index out of range.')
         return [self._data1_helpers[i], self._data2_helpers[i]]
 
@@ -231,8 +236,8 @@ class DataPair(object):
 
 
     def get_ids(self):
-        id1_list = [str(self._pair_num)+'-1-'+str(i) for i in range(6)]
-        id2_list = [str(self._pair_num)+'-2-'+str(i) for i in range(6)]
+        id1_list = [str(self._pair_num)+'-1-'+str(i) for i in range(self.num_of_attr)]
+        id2_list = [str(self._pair_num)+'-2-'+str(i) for i in range(self.num_of_attr)]
         return [id1_list, id2_list]
 
 
@@ -431,7 +436,7 @@ class DataPairList(object):
             for d in self._data[left:right]:
                 # use this data structure, to get the ffreq data
                 display = d.get_data_display(data_mode)
-                display_idx = [1, 3, 4, 6, 7, 8]
+                display_idx = [1, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13]
 
                 attribute_modes = data_mode_list[i]
                 i += 1
@@ -479,7 +484,7 @@ class DataPairList(object):
     def get_kapr_size(self):
         return self._kapr_size
 
-    def set_kapr_size(self, size=6):
+    def set_kapr_size(self, size=NUM_ATTR):
         self._kapr_size = size
 
 
@@ -509,7 +514,7 @@ def get_KAPR_for_dp(dataset, data_pair, display_status, M):
     # calculating P
     character_disclosed_num1 = 0
     character_disclosed_num2 = 0
-    for j in range(6):
+    for j in range(NUM_ATTR):
         character_disclosed_num1 += data_pair.get_character_disclosed_num(1, j, display_status[j])
         character_disclosed_num2 += data_pair.get_character_disclosed_num(2, j, display_status[j])
 
@@ -520,13 +525,13 @@ def get_KAPR_for_dp(dataset, data_pair, display_status, M):
     P2 = 1.0*character_disclosed_num2 / total_characters2
 
     # calculating K
-    col_list_F = [1, 3, 4, 6, 7, 8]
-    col_list_P = [9, 10, 11, 12, 13, 14]
+    col_list_F = [1, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13]
+    col_list_P = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
     K1 = 0
     K2 = 0
     for i in range(len(dataset)):
         match_flag = True
-        for j in range(6):
+        for j in range(NUM_ATTR):
             if display_status[j] == 'F':
                 col = col_list_F[j]
             elif display_status[j] == 'P':
@@ -543,7 +548,7 @@ def get_KAPR_for_dp(dataset, data_pair, display_status, M):
 
     for i in range(len(dataset)):
         match_flag = True
-        for j in range(6):
+        for j in range(NUM_ATTR):
             if display_status[j] == 'F':
                 col = col_list_F[j]
             elif display_status[j] == 'P':
@@ -565,7 +570,7 @@ def get_KAPR_for_dp(dataset, data_pair, display_status, M):
         logging.error('Cannot find data in full dataset.')
         K2 = 1
     # if everything is opened for a data, the K-anonymity should be 1
-    if display_status.count('F') == 6:
+    if display_status.count('F') == NUM_ATTR:
         K1 = 1
         K2 = 1
     
@@ -587,7 +592,7 @@ def KAPR_delta(DATASET, data_pair, display_status, M):
     """
     delta = list()
     current_KAPR = get_KAPR_for_dp(DATASET, data_pair, display_status, M)
-    for i in range(6):
+    for i in range(NUM_ATTR):
         state = display_status[i]
         next_display = data_pair.get_next_display(i, state)
         if next_display[0] == 'full':
@@ -637,7 +642,7 @@ def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, ka
     old_display_status2 = list()
     key1_prefix = user_key + '-' + pair_num + '-1-'
     key2_prefix = user_key + '-' + pair_num + '-2-'
-    for attr_i in range(6):
+    for attr_i in range(NUM_ATTR):
         old_display_status1.append(r.get(key1_prefix + str(attr_i)))
         old_display_status2.append(r.get(key2_prefix + str(attr_i)))
     new_display_status = copy.deepcopy(old_display_status1)
@@ -677,7 +682,7 @@ def open_cell(user_key, full_data, working_data, pair_num, attr_num, mode, r, ka
 def batched_open_cell(user_key, full_data, working_data, ids, data_mode_list, r, kapr_limit=100):
     size = len(ids)
     for i in range(size):
-        for j in range(6):
+        for j in range(NUM_ATTR):
             id1 = ids[i][0][j]
             pair_num = str(id1.split('-')[0])
             attr_num = str(id1.split('-')[2])
@@ -695,7 +700,7 @@ def get_kaprlimit(full_data, working_data, data_mode):
     for dp in working_data:
         display_status = list()
         if data_mode == 'minimum':
-            for i in range(6):
+            for i in range(NUM_ATTR):
                 if dd.DATA_MODE_MINIMUM[i] == 'partial':
                     if dp.has_partial_mode(i):
                         display_status.append('P')
@@ -704,7 +709,7 @@ def get_kaprlimit(full_data, working_data, data_mode):
                 else:
                     display_status.append(dd.DATA_MODE_MINIMUM[i][0].upper())
         elif data_mode == 'moderate':
-            for i in range(6):
+            for i in range(NUM_ATTR):
                 if i == 0:
                     if dd.DATA_MODE_MINIMUM[i] == 'partial':
                         if dp.has_partial_mode(i):
