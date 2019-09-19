@@ -55,8 +55,6 @@ class DataPair(object):
         self._generate_data_attributes_display()
         self._generate_data_display()
 
-        
-
 
     def _initialize_data(self):
         """

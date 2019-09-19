@@ -4,7 +4,7 @@ import hashlib
 import config
 import math
 from get_pair_file_extra import generate_pair_file
-from get_pair_file_2 import generate_pair_file2
+from get_pair_file_2_extra import generate_pair_file2
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
@@ -82,7 +82,7 @@ def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_
     The MINDFIRL system internally need 3 files: a different pairfile, file1, and file2
     This function turn the input pairfile and name_freq_file into those 3 files
     """
-    table_head = 'ID,voter_reg_num,first_name,last_name,dob,sex,race,type,file_id\n'
+    table_head = 'ID,voter_reg_num,first_name,last_name,dob,sex,race,info1,info2,info3,info4,info5,type,file_id\n'
     fout = open(internal_pairfile_path, 'w+')
     fout.write(table_head)
 
@@ -91,7 +91,7 @@ def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_
     for l in pairfile:
         if cnt != 0:
             l = l.strip().split(',')
-            newline = [l[0], l[4], l[5], l[6], l[7], l[8], l[9]]
+            newline = [l[0], l[4], l[5], l[6], l[7], l[8], l[9], l[10], l[11], l[12], l[13], l[14]]
             newline.append('1')
             if cnt%2 == 0:
                 newline.append('1-A')
@@ -303,10 +303,7 @@ def save_project2(mongo, data):
     file2.save(file2_path)
 
     total_pairs, block_id = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
-    print('--------')
-    print(total_pairs)
-    print(block_id)
-    print('--------')
+
     # if blocking_result is False, need to consider this
     pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
 
