@@ -683,19 +683,25 @@ def get_icon_for_pair(p1, p2):
     icon = list()
 
     # icon for ID
-    icon.append(get_icon_string(p1[1], p2[1], p1[9], p2[9]))
+    icon.append(get_icon_string(p1[1], p2[1], p1[14], p2[14]))
     # icon for firstname
-    icon.append(get_icon_string(p1[3], p2[3], p1[10], p2[10]))
+    icon.append(get_icon_string(p1[3], p2[3], p1[15], p2[15]))
     # icon for name swap
     icon.append(get_icon_nameswap(p1[3], p1[4], p2[3], p2[4]))
     # icon for lastname
-    icon.append(get_icon_string(p1[4], p2[4], p1[11], p2[11]))
+    icon.append(get_icon_string(p1[4], p2[4], p1[16], p2[16]))
     # icon for DoB
-    icon.append(get_icon_date(p1[6], p2[6], p1[12], p2[12]))
+    icon.append(get_icon_date(p1[6], p2[6], p1[17], p2[17]))
     # icon for sex
     icon.append(get_icon_character(p1[7], p2[7]))
     # icon for race
     icon.append(get_icon_character(p1[8], p2[8]))
+    # icon for additional columns
+    icon.append(get_icon_string(p1[9], p2[9], p1[20], p2[20]))
+    icon.append(get_icon_string(p1[10], p2[10], p1[21], p2[21]))
+    icon.append(get_icon_string(p1[11], p2[11], p1[22], p2[22]))
+    icon.append(get_icon_string(p1[12], p2[12], p1[23], p2[23]))
+    icon.append(get_icon_string(p1[13], p2[13], p1[24], p2[24]))
 
     if icon[2] != '':
         icon[1] = ''

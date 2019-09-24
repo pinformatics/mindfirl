@@ -278,9 +278,9 @@ def get_star_vot_reg(n1, n2):
     n1 = str(n1)
     n2 = str(n2)
 
-    if (len(n1) < 10 and len(n2) < 10): return "",""
-    if len(n1) < 10: return "", n2
-    if len(n2) < 10: return n1, ""
+    #if (len(n1) < 10 and len(n2) < 10): return "",""
+    #if len(n1) < 10: return "", n2
+    #if len(n2) < 10: return n1, ""
 
     len_1 = len(n1)
     len_2 = len(n2)
@@ -389,7 +389,7 @@ def make_list_dict(file_path,id_name):
         "info4":index_info4-1,
         "info5":index_info5-1,
     }
-
+    
     data = {}
     ff = {}
     lf = {}
@@ -478,34 +478,21 @@ def write_data(data_list,file_name, title_array):
     f.close()
 
 
-def pre_processing(pair_filename, fileA, fileB):
+def pre_processing(pair_filename, name_frequency_file):
     # 1. count name frequency
     # 2. add same column to the end
 
-    firstname_A = defaultdict(int)
-    lastname_A = defaultdict(int)
-    firstname_B = defaultdict(int)
-    lastname_B = defaultdict(int)
+    firstname = defaultdict(int)
+    lastname = defaultdict(int)
 
-    with open(fileA, 'r') as fin:
-        i = 0
+    with open(name_frequency_file, 'r') as fin:
         for line in fin:
-            if i > 0:
-                row = line.split(',')
-                row = [r.strip(' ') for r in row]
-                firstname_A[row[2]] += 1
-                lastname_A[row[3]] += 1
-            i += 1
-
-    with open(fileB, 'r') as fin:
-        i = 0
-        for line in fin:
-            if i > 0:
-                row = line.split(',')
-                row = [r.strip(' ') for r in row]
-                firstname_B[row[2]] += 1
-                lastname_B[row[3]] += 1
-            i += 1
+            row = line.strip().split(',')
+            row = [r.strip(' ') for r in row]
+            if row[0] == 'F':
+                firstname[row[1]] += int(row[2])
+            else:
+                lastname[row[1]] += int(row[2])
 
     data = list()
     with open(pair_filename, 'r') as fin:
@@ -517,12 +504,12 @@ def pre_processing(pair_filename, fileA, fileB):
                 row = line.rstrip('\n').split(',')
                 fn = row[2].strip(' ')
                 ln = row[3].strip(' ')
-                if i % 2 == 1:
-                    cntfn = firstname_A[fn]
-                    cntln = lastname_A[ln]
-                else:
-                    cntfn = firstname_B[fn]
-                    cntln = lastname_B[ln]
+
+                #print(fn)
+
+                cntfn = firstname[fn]
+                cntln = lastname[ln]
+
                 data.append(line.rstrip('\n')+','+str(cntfn)+','+str(cntln)+',0\n')
             i += 1
 
@@ -539,8 +526,6 @@ def post_processing(filename, out_filename):
             row = line.rstrip('\n').split(',')
             if len(row) == 28:
                 data.append([row[0], row[2], row[24], row[3], row[4], row[25], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21],row[22],row[23], 0, 0, 0])
-            else:
-                print('Error: get_pair_file - wrong number of column.')
 
     with open(out_filename, 'w+') as fout:
         for d in data:
@@ -548,26 +533,21 @@ def post_processing(filename, out_filename):
             fout.write('\n')
 
 
-def generate_pair_file(filename, fileA, fileB, out_filename):
+def generate_pair_file2(filename, name_frequency_file, out_filename):
     """
     filename: the input pair-file
     fileA: database A
     fileB: database B
     out_filename: result pair file
     """
-    pre_processing(filename, fileA, fileB)
+    pre_processing(filename, name_frequency_file)
 
     d ,title, star_indices , ff, lf, index_file_id = make_list_dict(filename,"ID")
-
     print("The number of items in d are", len(d))
     print(title)
     print(star_indices)
     data = star_similarities(d, star_indices,index_file_id,title)
     print("The number of items in data are", len(data))
-
-    print('\n')
-    print(data)
-
     # data_starred = reorganize_cols(data, star_indices, ["voter_reg_num","first_name", "last_name", "dob","sex","race"])
     title_array = [b'Group ID', b'Record ID',b'Reg No.',b'First Name', b'Last Name', b'DoB',b'Sex', b"Race",b"Info1",b"Info2",b"Info3",b"Info4",b"Info5", b'Reg No.',b'First Name', b'Last Name', b'DoB',b'Sex',b'Race',b"Info1",b"Info2",b"Info3",b"Info4",b"Info5",b'FF',b'LF',b'type',b'Same']
     write_data(data, out_filename, title_array)
@@ -594,12 +574,5 @@ def generate_fake_file(out_filename):
 
 #generate_pair_file('data/sample.csv', 'data/test.csv')
 
-if __name__ == '__main__':
-    pairfile = 'data/dev/dev_pairfile_2.csv'
-    file1 = 'data/dev/dev_file1.csv'
-    file2 = 'data/dev/dev_file2.csv'
-    outfile = 'data/dev/dev_pf.csv'
-
-    generate_pair_file(pairfile, file1, file2, outfile)
 
 

@@ -707,6 +707,7 @@ def record_linkage(pid):
 
     # prepare return data
     icons = working_data.get_icons()
+    #print(icons)
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
