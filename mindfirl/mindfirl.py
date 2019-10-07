@@ -805,7 +805,8 @@ def record_linkage_next(pid):
         flask.flash('You have completed the project.', 'alert-success')
         return redirect('project')
 
-    return redirect('record_linkage/'+pid)
+    return redirect(url_for('record_linkage', pid=pid))
+    #return redirect('record_linkage/'+pid)
 
 
 @app.route('/get_cell', methods=['GET', 'POST'])
