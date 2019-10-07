@@ -1,6 +1,6 @@
 import csv
 from collections import defaultdict
-
+ 
 def substring_at_ends(s1, s2):
     len1 = len(s1)
     len2 = len(s2)
