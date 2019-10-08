@@ -551,7 +551,7 @@ def delete_project(pid):
 
     flask.flash('Project has been deleted.', 'alert-success')
 
-    return redirect('/project_list')
+    return redirect(url_for('project_list'))
 
 
 @app.route('/viewProjectConfig/<pid>')
@@ -694,7 +694,7 @@ def record_linkage(pid):
         default_mode = 'M'
     if current_page >= page_size:
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
     # get working data and full data
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
@@ -803,7 +803,7 @@ def record_linkage_next(pid):
             create_resolve_conflict_project(pid)
 
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
     return redirect(url_for('record_linkage', pid=pid))
 
@@ -1002,7 +1002,7 @@ def resolve_conflicts2(pid):
     current_kapr = assignment['current_kapr']
     if current_page >= page_size:
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
     # get working data and full data
     pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
@@ -1108,9 +1108,9 @@ def resolve_conflicts2_next(pid):
         # flush redis data
         storage_model.clear_working_page_cache(assignment_id, r)
         flask.flash('You have completed resolve conflicts of this project.', 'alert-success')
-        return redirect('project/'+pid)
+        return redirect(url_for('project', pid=pid))
 
-    return redirect('resolve_conflicts2/'+pid)
+    return redirect(url_for('resolve_conflicts2', pid=pid))
 
 
 @app.route('/resolve_conflicts/<pid>')
