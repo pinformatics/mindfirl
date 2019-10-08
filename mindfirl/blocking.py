@@ -195,8 +195,9 @@ def new_blocking(blocking, intfile, pair_file):
 
 
 def get_id_by_pair_id(pair_id, pairs):
+    # 8 for original, 13 for additional columns
     data = pairs[pair_id]
-    return data[0][8], data[1][8]
+    return data[0][13], data[1][13]
 
 
 
@@ -208,9 +209,10 @@ def find_pos_by_iid(int_data, iid):
 
 
 def disjoint_find_root(int_data, pos):
-    if int(int_data[pos][7]) == pos:
+    # last column, 7 for original, 12 for additional column
+    if int(int_data[pos][12]) == pos:
         return pos
-    return disjoint_find_root(int_data, int(int_data[pos][7]))
+    return disjoint_find_root(int_data, int(int_data[pos][12]))
 
 
 def disjoint_merge(int_data, iid1, iid2):
