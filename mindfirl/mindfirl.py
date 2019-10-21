@@ -1271,7 +1271,9 @@ def get_file(pid):
 
     path = storage_model.get_result_path(mongo=mongo, pid=pid)
     result_file_name = '%s_result.csv' % project['project_name']
-    return send_from_directory('', path, as_attachment=True, attachment_filename=result_file_name)
+    #filename = path.split('/')[-1]
+    filename = os.path.split(path)[-1]
+    return send_from_directory(os.path.join('data', 'internal'), filename, as_attachment=True, attachment_filename=result_file_name)
 
 
 

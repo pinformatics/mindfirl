@@ -904,7 +904,7 @@ def generate_final_result(pairfile_path, result_path, final_result_path):
             data = line.strip().split(',')
             result[int(data[0])] = [int(data[1]), int(data[2])]
 
-    table_head = 'PairID,GroupID,DB,ID,voter_reg_num,first_name,last_name,dob,sex,race,decision,choice\n'
+    table_head = 'PairID,GroupID,DB,ID,voter_reg_num,first_name,last_name,dob,sex,race,info1,info2,info3,info4,info5,decision,choice\n'
     f1 = open(pairfile_path, 'r')
     f2 = open(final_result_path, 'w')
 
