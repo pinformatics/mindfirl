@@ -46,7 +46,7 @@ class DataPair(object):
         self._data2_attributes_full = list()
         self._data2_attributes_partial = list()
         self._data2_attributes_masked = list()
-        self._data_attribute_types = ['string', 'string', 'string', 'date', 'character', 'character', 'character', 'character', 'character', 'character', 'character']
+        self._data_attribute_types = ['string', 'string', 'string', 'date', 'character', 'character', 'string', 'string', 'string', 'string', 'string']
         self._data_display = dict()
 
         self._initialize_data()

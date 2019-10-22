@@ -440,7 +440,7 @@ def format_pair(p1, p2, data_mode):
     result2.append(p2[0])
 
     # record attribute ID
-    id_format = get_string_display(p1[1], p2[1], p1[9], p2[9], mode[0])
+    id_format = get_string_display(p1[1], p2[1], p1[14], p2[14], mode[0])
     result1.append(id_format[0])
     result2.append(id_format[1])
 
@@ -452,12 +452,12 @@ def format_pair(p1, p2, data_mode):
     result2.append(get_ffreq(p2[2], mode=freq_mode))
 
     # first name
-    first_name_format = get_string_display(p1[3], p2[3], p1[10], p2[10], mode[1])
+    first_name_format = get_string_display(p1[3], p2[3], p1[15], p2[15], mode[1])
     result1.append(first_name_format[0])
     result2.append(first_name_format[1])
 
     # last name
-    last_name_format = get_string_display(p1[4], p2[4], p1[11], p2[11], mode[2])
+    last_name_format = get_string_display(p1[4], p2[4], p1[16], p2[16], mode[2])
     result1.append(last_name_format[0])
     result2.append(last_name_format[1])
 
@@ -474,7 +474,7 @@ def format_pair(p1, p2, data_mode):
     result2.append(get_lfreq(p2[5], mode=freq_mode))
 
     # DoB
-    DoB_format = get_date_display(p1[6], p2[6], p1[12], p2[12], mode[3])
+    DoB_format = get_date_display(p1[6], p2[6], p1[17], p2[17], mode[3])
     result1.append(DoB_format[0])
     result2.append(DoB_format[1])
 
@@ -490,10 +490,10 @@ def format_pair(p1, p2, data_mode):
 
     # info 1-5
     for k in range(5):
-        info_format = get_character_display(attr1=p1[9+k], attr2=p2[9+k], helper1='', helper2='', attribute_mode=mode[5])
+        info_format = get_string_display(attr1=p1[9+k], attr2=p2[9+k], helper1=p1[20+k], helper2=p2[20+k], attribute_mode=mode[5])
         result1.append(info_format[0])
         result2.append(info_format[1])
-    
+
     return [result1, result2]
 
 
