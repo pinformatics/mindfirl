@@ -53,7 +53,7 @@ class DataPair(object):
         self._generate_icons()
         self._generate_ids()
         self._generate_data_attributes_display()
-        self._generate_data_display()
+        #self._generate_data_display()
 
 
     def _initialize_data(self):
@@ -89,6 +89,9 @@ class DataPair(object):
 
 
     def _generate_data_attributes_display(self):
+        """
+        For each data attributes, generate 4 data displays: base, full, partial, masked
+        """
         self._data1_attributes_base = []
         self._data1_attributes_full = []
         self._data1_attributes_partial = []
@@ -197,6 +200,9 @@ class DataPair(object):
     def get_data_display(self, data_mode):
         if data_mode not in ['base', 'full', 'masked', 'minimum', 'moderate']:
             logging.error('Error: unsupported data mode')
+
+        if len(self._data_display) == 0:
+            self._generate_data_display()
         return self._data_display[data_mode]
 
 
