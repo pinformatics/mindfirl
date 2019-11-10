@@ -1026,13 +1026,15 @@ def resolve_conflicts2(pid):
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
+    record_ids = storage_model.get_record_id_by_pair_id(mongo, pid, indices)
+
     # get the delta information
     delta = list()
     for i in range(working_data.size()):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
+        delta += dm.KAPR_delta(full_data, data_pair, 11*['M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -1051,6 +1053,8 @@ def resolve_conflicts2(pid):
         'data_mode_list': data_mode_list,
         'icons': icons,
         'ids': ids,
+        'pair_ids': indices,
+        'record_ids': record_ids,
         'title': 'resolve conflicts',
         'kapr': round(100*float(current_kapr), 1),
         'kapr_limit': kapr_limit, 

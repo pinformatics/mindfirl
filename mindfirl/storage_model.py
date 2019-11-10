@@ -529,8 +529,8 @@ def get_data_mode(assignment_id, ids, r, default_mode='M'):
 
 
 def _union_data_mode(list1, list2):
-    ret = 6*['masked']
-    for i in range(6):
+    ret = 11*['masked']
+    for i in range(11):
         if list1[i] == 'full' or list2[i] == 'full':
             ret[i] = 'full'
         elif list1[i] == 'partial' or list2[i] == 'partial':
@@ -543,10 +543,10 @@ def get_conflict_data_mode(pid, ids, mongo, r, manager_assignment_id, isfull=Fal
     the data mode for resolve conflicts is the Union of each assignee's data mode
     """
     if isfull:
-        data_mode_list = len(ids)*[6*['base']]
+        data_mode_list = len(ids)*[11*['base']]
         return data_mode_list
 
-    data_mode_list = len(ids)*[6*['masked']]
+    data_mode_list = len(ids)*[11*['masked']]
 
     project = mongo.db.projects.find_one({'pid': pid})
     assignee_stat = project['assignee_stat']
