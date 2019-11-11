@@ -687,7 +687,9 @@ def record_linkage(pid):
     page_size = assignment_status['page_size']
     kapr_limit = assignment_status['kapr_limit']
     current_kapr = assignment_status['current_kapr']
-    isfull = assignment_status['isfull']
+    isfull = False
+    if 'isfull' in assignment_status:
+        isfull = assignment_status['isfull']
     if isfull == 'true':
         default_mode = 'B'
     else:

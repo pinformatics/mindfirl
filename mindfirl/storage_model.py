@@ -1015,7 +1015,7 @@ def new_blocking(mongo, data):
 
     total_pairs, block_id = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
 
-    assigner = Assign_generator(pairfile_path)
+    assigner = Assign_generator(pairfile_path, block_id)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
