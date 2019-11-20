@@ -226,7 +226,8 @@ def disjoint_merge(int_data, iid1, iid2):
     pos2 = find_pos_by_iid(int_data, iid2)
     root1 = disjoint_find_root(int_data, pos1)
     root2 = disjoint_find_root(int_data, pos2)
-    int_data[root2][7] = root1
+    # 7 for original, 12 for additional column
+    int_data[root2][12] = root1
 
 
 

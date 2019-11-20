@@ -756,7 +756,6 @@ def record_linkage(pid):
         'data_size': len(data),
         'isfull': isfull,
     }
-    print(ids)
     return render_template('record_linkage_ppirl.html', data=ret_data)
 
 
@@ -1024,7 +1023,6 @@ def resolve_conflicts2(pid):
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
     data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id, isfull)
-    print(data_mode_list)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
@@ -1225,7 +1223,6 @@ def save_data_resolve_conflicts():
         if line:
             user_data += ('uid:'+user.username+','+line+';')
     formatted_data = ud.parse_user_data(user_data)
-    print(formatted_data)
 
     storage_model.save_resolve_conflicts(mongo, pid, user.username, formatted_data)
 
