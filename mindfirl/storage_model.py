@@ -190,6 +190,9 @@ def get_block_id_len(block_id):
     return total
 
 def save_project(mongo, data):
+    """
+    by pair file
+    """
     project_name = data['project_name']
     project_des = data['project_des']
     owner = data['owner']
@@ -286,6 +289,9 @@ def save_project(mongo, data):
 
 
 def save_project2(mongo, data):
+    """
+    by blocking
+    """
     project_name = data['project_name']
     project_des = data['project_des']
     owner = data['owner']
