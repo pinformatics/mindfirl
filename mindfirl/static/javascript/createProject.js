@@ -51,7 +51,17 @@ function add_assignee() {
                                 Assignment percentage:
                                 <input class="form-control" type="number" placeholder="Assignment percentage (%)" step="1" min="0" max="100" name="percentage_${next}" id="percentage_${next}" value="">
                                 <div class="form-error" id="percentage_${next}-error"></div>
-                                <label><input type="checkbox" id="full_${next}" name="full_${next}" value="full">Fully open</label><br>
+                                <div class="form-group">
+                                    <label for="display_mode_${next}">Display mode</label>
+                                    <select class="form-control" id="display_mode_${next}">
+                                        <option>Masked</option>
+                                        <option>Minimum</option>
+                                        <option>Moderate</option>
+                                        <option>Full</option>
+                                        <option>Base</option>
+                                    </select>
+                                </div>
+                                <label style="display: none;"><input type="checkbox" id="full_${next}" name="full_${next}" value="full">Fully open</label>
                             </div>
                             <div class="remove-me" id="remove-${next}" style="color: red; cursor: pointer; margin-top: 0px; margin-bottom: 5px">
                                 - <span style="text-decoration: underline;">Remove this</span>
@@ -126,9 +136,10 @@ function encode_assignee() {
         var assignee = $('#assignto_'+idx).val();
         var kapr = $('#kapr_'+idx).val();
         var percentage = $('#percentage_'+idx).val();
+        var display_mode = $('#display_mode').val();
         var full = $('#full_'+idx).is(':checked');
         
-        encoded_assignee += (assignee + ',' + kapr + ',' + percentage + ',' + full + ';');
+        encoded_assignee += (assignee + ',' + kapr + ',' + percentage + ',' + display_mode + ',' + full + ';');
         total_percentage += parseInt(percentage);
     }
     $("#assignee_area").html(encoded_assignee);

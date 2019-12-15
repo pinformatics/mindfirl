@@ -230,7 +230,7 @@ def save_project(mongo, data):
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage, isfull = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -260,6 +260,7 @@ def save_project(mongo, data):
             'pair_idx': 0,
             'total_pairs': get_block_id_len(assigned_id),
             'kapr_limit': cur_kapr, 
+            'display_mode': display_mode,
             'isfull': isfull,
             'current_kapr': 0,
         })
@@ -323,7 +324,7 @@ def save_project2(mongo, data):
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage, isfull = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -351,6 +352,7 @@ def save_project2(mongo, data):
             'current_kapr': 0,
             'pair_idx': 0,
             'total_pairs': pf_result['size'],
+            'display_mode': display_mode,
             'isfull': isfull,
         })
 
@@ -509,12 +511,24 @@ def update_kapr(mongo, username, pid, kapr):
 def update_kapr_conflicts(mongo, username, pid, kapr):
     mongo.db.conflicts.update({'pid': pid}, {'$set': {'current_kapr': kapr}})
 
-def get_data_mode(assignment_id, ids, r, default_mode='M'):
+def get_data_mode(assignment_id, ids, r, data_mode='masked', default_mode='M'):
     """
     if is None, then insert 'M' into the redis
     """
+    data_modes = {
+        'base': ['base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base'],
+        'full': ['full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full'],
+        'masked': ['masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+        'minimum': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+        'moderate': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+    }
+    print(data_mode)
+    print(data_modes[data_mode])
+
     mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full', 'B': 'base'}
+    mode_dict2 = {'masked': 'M', 'partial': 'P', 'full': 'F', 'base': 'B'}
     data_mode_list = []
+    print(ids)
 
     for (id1, id2) in ids:
         cur_list = []
@@ -527,8 +541,10 @@ def get_data_mode(assignment_id, ids, r, default_mode='M'):
                 else:
                     cur_list.append(mode_dict[mode])
             else:
-                r.set(key, default_mode)
-                cur_list.append(mode_dict[default_mode])
+                attribute = int(attribute_id1.split('-')[-1])
+                default_mode = data_modes[data_mode][attribute]
+                r.set(key, mode_dict2[default_mode])
+                cur_list.append(default_mode)
         data_mode_list.append(cur_list)
 
     return data_mode_list

@@ -687,6 +687,7 @@ def record_linkage(pid):
     page_size = assignment_status['page_size']
     kapr_limit = assignment_status['kapr_limit']
     current_kapr = assignment_status['current_kapr']
+    display_mode = assignment_status['display_mode']
     isfull = False
     if 'isfull' in assignment_status:
         isfull = assignment_status['isfull']
@@ -712,8 +713,8 @@ def record_linkage(pid):
     #print(icons)
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
-    data_mode = 'masked'
-    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r, default_mode=default_mode)
+    data_mode = display_mode.lower()
+    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r, data_mode=data_mode, default_mode=default_mode)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
