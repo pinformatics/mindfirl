@@ -155,8 +155,31 @@
                                     </ul>
                                     <br/>
                                     <ul class="choice-result">
-                                        <li class="diff">Different</li>
-                                        <li class="same">Same</li>
+                                        <div class="tooltip2">
+                                            <span class="tooltiptext2" style="text-align: left;">
+                                                <div style="width: 80px; float:left;">
+                                                Different:<br/>
+                                                {% for choice in data['choices'][r[0][0]|int] %}
+                                                    {%  if choice[1]|int == 0 %}
+                                                        {{ choice[0] }} - {{ choice[2] }}
+                                                        <br/>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </div>
+                                                <div style="width: 80px; float:right;">
+                                                Same:<br/>
+                                                {% for choice in data['choices'][r[0][0]|int] %}
+                                                    {%  if choice[1]|int == 1 %}
+                                                        {{ choice[0] }} - {{ choice[2] }}
+                                                        <br/>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div style="clear:both"></div>
+                                            </span>
+                                        <li class="diff">Diff: {{ data['choice_cnt'][r[0][0]|int][0] }}</li>
+                                        <li class="same">Same: {{ data['choice_cnt'][r[0][0]|int][1] }}</li>
+                                        </div>
                                     </ul>
                                 </div>
                             </div>

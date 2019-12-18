@@ -522,13 +522,10 @@ def get_data_mode(assignment_id, ids, r, data_mode='masked', default_mode='M'):
         'minimum': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
         'moderate': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
     }
-    print(data_mode)
-    print(data_modes[data_mode])
 
     mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full', 'B': 'base'}
     mode_dict2 = {'masked': 'M', 'partial': 'P', 'full': 'F', 'base': 'B'}
     data_mode_list = []
-    print(ids)
 
     for (id1, id2) in ids:
         cur_list = []

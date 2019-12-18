@@ -1048,6 +1048,7 @@ def resolve_conflicts2(pid):
 
     # get users' choices information
     choices, choice_cnt = storage_model.get_users_choices(mongo=mongo, pid=pid, indices=indices)
+    print(choices)
 
     ret_data = {
         'data': data,
