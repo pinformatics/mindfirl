@@ -136,7 +136,7 @@ function encode_assignee() {
         var assignee = $('#assignto_'+idx).val();
         var kapr = $('#kapr_'+idx).val();
         var percentage = $('#percentage_'+idx).val();
-        var display_mode = $('#display_mode').val();
+        var display_mode = $('#display_mode_'+idx).val();
         var full = $('#full_'+idx).is(':checked');
         
         encoded_assignee += (assignee + ',' + kapr + ',' + percentage + ',' + display_mode + ',' + full + ';');
