@@ -3,7 +3,7 @@
 DATA_MODE_BASE = ['base', 'base', 'base', 'base', 'base', 'base']
 DATA_MODE_FULL = ['full', 'full', 'full', 'full', 'full', 'full']
 DATA_MODE_MASKED = ['masked', 'masked', 'masked', 'masked', 'masked', 'masked']
-DATA_MODE_MINIMUM = ['partial', 'partial', 'partial', 'partial', 'full', 'masked']
+DATA_MODE_MINIMUM = ['masked', 'partial', 'partial', 'partial', 'full', 'masked']
 DATA_MODE_MODERATE = ['partial', 'partial', 'partial', 'partial', 'full', 'masked']
 
 

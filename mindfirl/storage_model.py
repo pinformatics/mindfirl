@@ -231,6 +231,8 @@ def save_project(mongo, data):
     assignee_stat = list()
     for assignee_item in assignee_items:
         cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
+        if display_mode.lower() == 'base':
+            isfull = 'true'
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -1039,7 +1041,7 @@ def new_blocking(mongo, data):
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -1068,6 +1070,8 @@ def new_blocking(mongo, data):
             'current_kapr': 0,
             'pair_idx': 0,
             'total_pairs': pf_result['size'],
+            'isfull': isfull,
+            'display_mode': display_mode,
         })
 
     mongo.db.projects.update( {"pid": pid}, {"$set": {"assignee": assignee_list}})
