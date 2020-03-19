@@ -56,23 +56,16 @@
         </script>
     </head>
 
-    <body style="padding-bottom: 0px; min-height: 0px;">
+    <body style="padding-bottom: 0px; height: 100%; position: fixed; overflow-y: hidden; width: 100%;">
         <div id="wrapper">
-            <div id="title">
+            <div id="title" style="position: static; text-align: center; width: 100%;">
                 <h3 style="font-size:24px;">{{ data['title'] | safe }}</h3>
             </div>
             
             <div id="content">
                 <div class="tool-bar">
-                {% if data['isfull'] != True %}
-                <div class="privacy-budget-div">
-                    <!--
-                    <div>Character disclosed: <span id="character-disclosed-value">0%</span></div>
-                    <div class="progress">
-                        <div id="character-disclosed-bar" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    -->
+                {% if data['isfull'] != 'true' %}
+                <div class="privacy-budget-div" style=" position: fixed; left: 50px; top:50px; width: 1600px;">
                     <script>
                         $(function() {
                             $("[title]").tooltip({'placement': "bottom"});
@@ -80,28 +73,22 @@
                     </script>
                     <div>Privacy risk: <span id="privacy-risk-value">{{ data['kapr'] }}%</span><span id="privacy-risk-delta-value"></span></div>
                     <div class="progress border">
-                        <!--
-                        <div style="width: 6px; height: 18px; position: absolute; background: red; margin-left: {{ data['kapr_limit']*16.1 }}px;" title="privacy risk cannot exceed this limit">
-                        </div>-->
+                        <div style="width: 6px; height: 18px; position: absolute; background: red; margin-left: {{ data['kapr_limit']*15.87 }}px;" title="privacy risk cannot exceed this limit">
+                        </div>
                         
                         <div id="privacy-risk-bar" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{ data['kapr'] }}%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
                         <div id="privacy-risk-delta" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                        
                     </div>
                 </div>
                 {% endif %}
 
-            
-                <div id="page-number" class="page-number-div-meter">
-                    page: <span id="page-number">{{ data['page_number'] }}/{{ data['page_size'] }}</span>
-                </div>
-
-                
                 </div>
                 <div style="clear:both"></div>
-                <div id="table">
+                <div id="table" style=" width: 1600px; height: 700px; margin-top: 60px; overflow-x: auto; overflow-y: auto;">  
+                    <div style="width: 2250px;">
                     <div id="table_head">
                         <div class="table_col1">Pair</div>
+                        <div class="table_col10">Choice Panel</div>
                         <div class="table_col2">ID</div>
                         <div class="table_col3">FFreq</div>
                         <div class="table_col4 table_names">First Name</div>
@@ -110,12 +97,16 @@
                         <div class="table_col6">LFreq</div>
                         <div class="table_col7">DoB(M/D/Y)</div>
                         <div class="table_col8">Sex</div>
-                        <div class="table_col9">Race</div>
-                        <div class="table_col10">Choice Panel</div>
+                        <div class="table_col9">MI</div>
+                        <div class="table_col4 table_names">Email</div>
+                        <div class="table_col4 table_names">Zip</div>
+                        <div class="table_col4 table_names">State</div>
+                        <div class="table_col4 table_names">Rheumatologist NPI</div>
+                        <div class="table_col4 table_names">Rheumatologist name</div>
                     </div>
                     <div id="table_content">
-                        {% set isfull = data['isfull'] %}
                         {% set ids = data['ids'] %}
+                        {% set isfull = data['isfull'] %}
                         {% set icons = data['icons'] %}
                         {% for r in data['data'] %}
                             {% if loop.index is divisibleby 2 %}
@@ -123,189 +114,44 @@
                             {% else %}
                         <div class="table_row table_row_odd">
                             {% endif %}
-                            <div class="table_col1 pair_number">{{ loop.index0+data['pair_num_base'] }}</div>
-                            <div class="table_col2 clickable_cell" id = "test_col" mode="{{ data['data_mode_list'][loop.index0][0] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
-                                    {{ r[0][1]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][0]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][0] }}">
-                                    {{ r[1][1]|safe }}
-                                </div>
+                            <div class="table_col1 pair_number tooltip2">
+                                {{ loop.index0+data['pair_num_base'] }}
+                                <span class="tooltiptext2">
+                                    {{ data['pair_ids'][loop.index0] }}<br/>
+                                    {{ data['record_ids'][loop.index0][0] }}<br/>
+                                    {{ data['record_ids'][loop.index0][1] }}
+                                </span>
                             </div>
-                            <div class="table_col3">
-                                <div class="sub_row1 tooltip1">
-                                    {{ r[0][2]|safe }}
-                                    <span class="tooltiptext1">
-                                        {% if 'infinity' in r[0][2] %}
-                                            Very common
-                                        {% elif 'common' in r[0][2] %}
-                                            Common name
-                                        {% elif 'rare' in r[0][2] %}
-                                            Rare name
-                                        {% else %}
-                                            Unique name
-                                        {% endif %}
-                                    </span>
-                                </div>
-                                <div class="sub_row2">
-                                </div>
-                                <div class="sub_row3  tooltip1">
-                                    {{ r[1][2]|safe }}
-                                    <span class="tooltiptext1">
-                                        {% if 'infinity' in r[1][2] %}
-                                            Very common
-                                        {% elif 'common' in r[1][2] %}
-                                            Common name
-                                        {% elif 'rare' in r[1][2] %}
-                                            Rare name
-                                        {% else %}
-                                            Unique name
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="{% if 'name_swap' in icons[loop.index0][2] %}names_big_cell clickable_big_cell{% endif %}">
-                            <div class="table_col4 table_names {% if 'name_swap' not in icons[loop.index0][2] %}clickable_cell{% endif %}" mode="{{ data['data_mode_list'][loop.index0][1] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][1] }}">
-                                    {{ r[0][3]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][1]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][1] }}">
-                                    {{ r[1][3]|safe }}
-                                </div>
-                            </div>
-                            <div class="table_col4_5">
-                                {% if data['isfull'] != True %}
-                                {{ icons[loop.index0][2]|safe }}
-                                {% endif %}
-                            </div>
-                            <div class="table_col5 table_names {% if 'name_swap' not in icons[loop.index0][2] %}clickable_cell{% endif %}" mode="{{ data['data_mode_list'][loop.index0][2] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][2] }}">
-                                    {{ r[0][4]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][3]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][2] }}">
-                                    {{ r[1][4]|safe }}
-                                </div>
-                            </div>
-                            </div>
-                            <div class="table_col6">
-                                <div class="sub_row1 tooltip1">
-                                    {{ r[0][5]|safe }}
-                                    <span class="tooltiptext1">
-                                        {% if 'infinity' in r[0][5] %}
-                                            Very common
-                                        {% elif 'common' in r[0][5] %}
-                                            Common name
-                                        {% elif 'rare' in r[0][5] %}
-                                            Rare name
-                                        {% else %}
-                                            Unique name
-                                        {% endif %}
-                                    </span>
-                                </div>
-                                <div class="sub_row2">
-                                </div>
-                                <div class="sub_row3 tooltip1">
-                                    {{ r[1][5]|safe }}
-                                    <span class="tooltiptext1">
-                                        {% if 'infinity' in r[1][5] %}
-                                            Very common
-                                        {% elif 'common' in r[1][5] %}
-                                            Common name
-                                        {% elif 'rare' in r[1][5] %}
-                                            Rare name
-                                        {% else %}
-                                            Unique name
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="table_col7 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][3] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][3] }}">
-                                    {{ r[0][6]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][4]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][3] }}">
-                                    {{ r[1][6]|safe }}
-                                </div>
-                            </div>
-                            <div class="table_col8 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][4] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][4] }}">
-                                    {{ r[0][7]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][5]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][4] }}">
-                                    {{ r[1][7]|safe }}
-                                </div>
-                            </div>
-                            <div class="table_col9 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][5] }}">
-                                <div class="sub_row1" id="{{ ids[loop.index0][0][5] }}">
-                                    {{ r[0][8]|safe }}
-                                </div>
-                                <div class="sub_row2">
-                                    {% if data['isfull'] != True %}
-                                    {{ icons[loop.index0][6]|safe }}
-                                    {% endif %}
-                                </div>
-                                <div class="sub_row3" id="{{ ids[loop.index0][1][5] }}">
-                                    {{ r[1][8]|safe }}
-                                </div>
-                            </div>
+
                             <div class="table_col10">
                                 <div class="choice-panel">
                                     <div class="choice-label">
-                                        <span class="fill"></span>
+                                        <span class="fill1"></span>
                                         <span>H</span>
-                                        <span class="fill"></span>
-                                        <span>M</span>
-                                        <span class="fill"></span>
+                                        <span style="margin-left: 5px;">M</span>
+                                        <span style="margin-left: 5px;">L</span>
+                                        <span class="fill1"></span>
                                         <span>L</span>
-                                        <span class="fill"></span>
-                                        <span>L</span>
-                                        <span class="fill"></span>
-                                        <span>M</span>
-                                        <span class="fill"></span>
-                                        <span>H</span>
-                                        <span class="fill"></span>
+                                        <span style="margin-left: 5px;">M</span>
+                                        <span style="margin-left: 5px;">H</span>
+                                        <span class="fill1"></span>
                                     </div>
                                     <br/>
                                     <ul class="mrate choice-button">
                                         <li class="ion-android-arrow-back"></li>
                                         <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a1" status="{% if 'p'+r[0][0]+'a1' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a2" status="{% if 'p'+r[0][0]+'a2' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a3" status="{% if 'p'+r[0][0]+'a3' in data['saved_answers'] %}on{% endif %}"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a2" status="{% if 'p'+r[0][0]+'a2' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a3" status="{% if 'p'+r[0][0]+'a3' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
                                         <li class="ion-android-add"></li>
                                         <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a4" status="{% if 'p'+r[0][0]+'a4' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a5" status="{% if 'p'+r[0][0]+'a5' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a6" status="{% if 'p'+r[0][0]+'a6' in data['saved_answers'] %}on{% endif %}"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a5" status="{% if 'p'+r[0][0]+'a5' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a6" status="{% if 'p'+r[0][0]+'a6' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
                                         <li class="ion-android-arrow-forward"></li>
+                                        
                                     </ul>
                                     <br/>
                                     <ul class="choice-result">
@@ -331,24 +177,252 @@
                                             </div>
                                             <div style="clear:both"></div>
                                             </span>
-                                        <li class="diff">Different: {{ data['choice_cnt'][r[0][0]|int][0] }}</li>
+                                        <li class="diff">Diff: {{ data['choice_cnt'][r[0][0]|int][0] }}</li>
                                         <li class="same">Same: {{ data['choice_cnt'][r[0][0]|int][1] }}</li>
                                         </div>
                                     </ul>
                                 </div>
                             </div>
+
+                            <div class="table_col2 clickable_cell" id = "test_col" mode="{{ data['data_mode_list'][loop.index0][0] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
+                                    {{ r[0][1]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][0]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][0] }}">
+                                    {{ r[1][1]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col3">
+                                <div class="sub_row1 tooltip1">
+                                    {{ r[0][2]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                    <span class="tooltiptext1">
+                                        {% if 'infinity' in r[0][2] %}
+                                            Very common
+                                        {% elif 'common' in r[0][2] %}
+                                            Common name
+                                        {% elif 'rare' in r[0][2] %}
+                                            Rare name
+                                        {% else %}
+                                            Rare name
+                                        {% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row2">
+                                </div>
+                                <div class="sub_row3  tooltip1">
+                                    {{ r[1][2]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                    <span class="tooltiptext1">
+                                        {% if 'infinity' in r[1][2] %}
+                                            Very common
+                                        {% elif 'common' in r[1][2] %}
+                                            Common name
+                                        {% elif 'rare' in r[1][2] %}
+                                            Rare name
+                                        {% else %}
+                                            Rare name
+                                        {% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="{% if 'name_swap' in icons[loop.index0][2] %}names_big_cell clickable_big_cell{% endif %}">
+                            <div class="table_col4 table_names {% if 'name_swap' not in icons[loop.index0][2] %}clickable_cell{% endif %}" mode="{{ data['data_mode_list'][loop.index0][1] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][1] }}">
+                                    {{ r[0][3]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][1]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][1] }}">
+                                    {{ r[1][3]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4_5">
+                                {{ icons[loop.index0][2]|safe }}
+                            </div>
+                            <div class="table_col5 table_names {% if 'name_swap' not in icons[loop.index0][2] %}clickable_cell{% endif %}" mode="{{ data['data_mode_list'][loop.index0][2] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][2] }}">
+                                    {{ r[0][4]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                        {{ icons[loop.index0][3]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][2] }}">
+                                    {{ r[1][4]|safe }}
+                                </div>
+                            </div>
+                            </div>
+                            <div class="table_col6">
+                                <div class="sub_row1 tooltip1">
+                                    {{ r[0][5]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                    <span class="tooltiptext1">
+                                        {% if 'infinity' in r[0][5] %}
+                                            Very common
+                                        {% elif 'common' in r[0][5] %}
+                                            Common name
+                                        {% elif 'rare' in r[0][5] %}
+                                            Rare name
+                                        {% else %}
+                                            Rare name
+                                        {% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row2">
+                                </div>
+                                <div class="sub_row3 tooltip1">
+                                    {{ r[1][5]|safe }}
+                                    {% if data['isfull'] != 'true' %}
+                                    <span class="tooltiptext1">
+                                        {% if 'infinity' in r[1][5] %}
+                                            Very common
+                                        {% elif 'common' in r[1][5] %}
+                                            Common name
+                                        {% elif 'rare' in r[1][5] %}
+                                            Rare name
+                                        {% else %}
+                                            Rare name
+                                        {% endif %}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="table_col7 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][3] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][3] }}">
+                                    {{ r[0][6]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][4]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][3] }}">
+                                    {{ r[1][6]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col8 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][4] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][4] }}">
+                                    {{ r[0][7]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][5]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][4] }}">
+                                    {{ r[1][7]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col9 clickable_cell" mode="{{ data['data_mode_list'][loop.index0][5] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][5] }}">
+                                    {{ r[0][8]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][6]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][5] }}">
+                                    {{ r[1][8]|safe }}
+                                </div>
+                            </div>
+
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][6] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][6] }}">
+                                    {{ r[0][9]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][7]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][6] }}">
+                                    {{ r[1][9]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][7] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][7] }}">
+                                    {{ r[0][10]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][8]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][7] }}">
+                                    {{ r[1][10]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][8] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][8] }}">
+                                    {{ r[0][11]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][9]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][8] }}">
+                                    {{ r[1][11]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][9] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][9] }}">
+                                    {{ r[0][12]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][10]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][9] }}">
+                                    {{ r[1][12]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][10] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][10] }}">
+                                    {{ r[0][13]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][11]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][10] }}">
+                                    {{ r[1][13]|safe }}
+                                </div>
+                            </div>
+                            
                         </div>
                         <div style="clear:both"></div>
                         {% endfor %}
                     </div>
+                    </div>
+                </div>
+                <div id="page-number" class="page-number-div-meter">
+                    page: <span id="page-number">{{ data['page_number'] }}/{{ data['page_size'] }}</span>
                 </div>
 
                 <div id="feedback">
                 </div>
 
                 <div class="submit_div">
-                    <button id="save_exit" class="submit_button" style="">Save & Exit</button>
-                    <button id="button_next_rl" class="submit_button" style="">Submit</button>
+                    <button id="save_exit" class="submit_button" style="width: 150px;">Save & Exit</button>
+                    <button id="button_next_rl" class="submit_button" style="width: 150px;">Submit</button>
                 </div>
             </div>
             <!-- End of div content -->
@@ -356,4 +430,17 @@
         <!-- End of div wrapper -->
         <!-- {% include "footer.html" ignore missing %} -->
     </body>
+    <script>
+        // change name freq tooltip to include actual number
+        jQuery(document).ready(function ($) {
+            $('.tooltiptext1').each(function() {
+                var $this = $(this);
+                var value = $this.html();
+                if(value.includes("common") || value.includes("Common")) {
+                    freq = $this.prev().attr("value");
+                    $this.html(value + "<br/>(" + freq + ")");
+                }
+            });
+        });
+    </script>
 </html>

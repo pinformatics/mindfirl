@@ -1,9 +1,13 @@
-<html>
-<head>
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
-    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
-    <script src="../static/javascript/popper.min.js"></script>
-    <script src="../static/javascript/bootstrap.min.js"></script>
+
+<!-- saved from url=(0036) -->
+<html data-blockbyte-bs-uid="26585"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="http://mindfirl-v1.herokuapp.com/static/images/site/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./faq_files/bootstrap.min.css" type="text/css">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <!--<link rel="stylesheet" href="../static/css/font-awesome.min.css" type="text/css">-->
+    <script src="./faq_files/jquery-3.2.1.min.js"></script>
+    <script src="./faq_files/popper.min.js"></script>
+    <script src="./faq_files/bootstrap.min.js"></script>
     <script type="text/javascript">
         $(function () {
             $('[data-toggle="popover"]').popover()
@@ -11,7 +15,10 @@
     </script>
 
     <style>
-
+body {
+  background-color: #f2f2f2;
+  overscroll-behavior-y: none !important;
+}
 .container {
   max-width: 1360px;
 }
@@ -53,10 +60,16 @@ ul, #myUL {
 }
 
 .caret::before {
-  content: "\25B6";
+  content: "\f0da";
   color: black;
   display: inline-block;
-  margin-right: 2px;
+  margin-right: 5px;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 20px;
+  margin-left: 2px;
 }
 
 .caret-down::before {
@@ -75,10 +88,15 @@ ul, #myUL {
 }
 
 .caret2::before {
-  content: "\25B6";
+  content: "\f0da";
   color: black;
   display: inline-block;
-  margin-right: 2px;
+  margin-right: 5px;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  font-size: 20px;
 }
 
 .nested {
@@ -95,7 +113,7 @@ ul, #myUL {
 }
 
 .ol-content {
-    width: 91%;
+    width: 92%;
     float: right;
 }
 
@@ -108,17 +126,31 @@ ul, #myUL {
 #topBtn {
   display: none;
   position: fixed;
-  bottom: 20px;
+  bottom: 100px;
   right: 100px;
   z-index: 99;
-  font-size: 18px;
   border: none;
   outline: none;
   background-color: gray;
   color: white;
   cursor: pointer;
-  padding: 15px;
   border-radius: 4px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  padding: 0;
+}
+
+#topBtn:before {
+  content: "\f077";
+  font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+/*--adjust as necessary--*/
+    color: #fff;
+    font-size: 2em;
+    line-height: 50px;
 }
 
 #topBtn:hover {
@@ -135,62 +167,70 @@ a {
 
 
 </style>
-</head>
+<style class="blockbyte-bs-style" data-name="content">body>div#blockbyte-bs-indicator>div{opacity:0;pointer-events:none}body>iframe#blockbyte-bs-sidebar.blockbyte-bs-visible,body>iframe#blockbyte-bs-overlay.blockbyte-bs-visible{opacity:1;pointer-events:auto}body.blockbyte-bs-noscroll{overflow:hidden !important}body>div#blockbyte-bs-indicator>div{position:absolute;transform:translate3d(-40px, 0, 0);top:0;left:0;width:40px !important;height:100%;background:rgba(0,0,0,0.5);border-radius:0 10px 10px 0;transition:opacity 0.3s, transform 0.3s;z-index:2}body>div#blockbyte-bs-indicator>div>span{-webkit-mask:no-repeat center/32px;-webkit-mask-image:url(chrome-extension://jdbnofccmhefkmjbkkdkfiicjkgofkdh/img/icon-bookmark.svg);background-color:#ffffff;position:absolute;display:block;top:0;left:0;width:100%;height:100%}body>div#blockbyte-bs-indicator[data-pos='right']{left:auto;right:0}body>div#blockbyte-bs-indicator[data-pos='right']>div{transform:translate3d(40px, 0, 0);left:auto;right:0;border-radius:10px 0 0 10px}body>div#blockbyte-bs-indicator.blockbyte-bs-fullHeight>div{border-radius:0}body>div#blockbyte-bs-indicator.blockbyte-bs-hover>div{transform:translate3d(0, 0, 0);opacity:1}body>div#blockbyte-bs-indicator[data-pos='left'].blockbyte-bs-has-lsb{height:100% !important;top:0 !important}body>div#blockbyte-bs-indicator[data-pos='left'].blockbyte-bs-has-lsb>div{background:transparent}body>div#blockbyte-bs-indicator[data-pos='left'].blockbyte-bs-has-lsb>div>span{-webkit-mask-position-y:20px}body>iframe#blockbyte-bs-sidebar{width:350px;max-width:none;height:0;z-index:2147483646;background-color:rgba(255,255,255,0.8) !important;border:none;display:block !important;transform:translate3d(-350px, 0, 0);will-change:width, height, opacity, transform;transition:width 0s 0.3s, height 0s 0.3s, opacity 0.3s, transform 0.3s}body>iframe#blockbyte-bs-sidebar[data-pos='right']{left:auto;right:0;transform:translate3d(350px, 0, 0)}body>iframe#blockbyte-bs-sidebar.blockbyte-bs-visible{width:calc(100% + 350px);height:100%;transform:translate3d(0, 0, 0);transition:opacity 0.3s, transform 0.3s}body>iframe#blockbyte-bs-sidebar.blockbyte-bs-hideMask{background:none !important}body>iframe#blockbyte-bs-sidebar.blockbyte-bs-hideMask:not(.blockbyte-bs-hover){width:calc(350px + 50px)}body>iframe#blockbyte-bs-overlay{width:100%;max-width:none;height:100%;z-index:2147483647;border:none;background:rgba(0,0,0,0.5) !important;transition:opacity 0.3s}
+</style></head>
 
 <body>
-    <button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
+    <button onclick="topFunction()" id="topBtn" title="Go to top"></button>
+
+    <nav class="navbar navbar-light" style="background-color: #500000!important; border-bottom: 1px solid #bbb;">
+        <div class="container">
+            <a class="navbar-brand" href="#" style="color: white; font-weight: bolder; font-family: Tahoma, Helvetica, Arial;">MInimum &amp; Necessary Disclosure For Interactive Record Linkage (MINDFIRL)</a>
+        </div>
+    </nav>
+
     <div class="container" style="margin-top: 50px; margin-bottom: 100px;">
-        <h1 style="text-align: center; margin-bottom: 20px;">MINDFIRL: Frequently Asked Questions</h1>
+        <h1 style="text-align: center; margin-bottom: 20px;">Frequently Asked Questions</h1>
         <div class="row">
             <div class="col-sm-4" style="border: 0px solid black;">
                 <ul id="myUL" style="width: 95%; position: -webkit-sticky; position: sticky; top: 0; bottom: 0; overflow-y:scroll; overflow-x:auto;">
                           <li><span class="caret">Section 1: Data and identifying information</span>
                             <ul class="nested">
-                              <a href="#qq1" onclick="open_card('q1');" class="clear-fix"><li><span class="ol-bullet">1.1</span> <span class="ol-content">Why do you need to know who I am?</span></li></a>
-                              <a href="#qq2" onclick="open_card('q2');" class="clear-fix"><li><span class="ol-bullet">1.2</span> <span class="ol-content">What is identifying information?</span></li></a>
-							  <a href="#qq24" onclick="open_card('q24');" class="clear-fix"><li><span class="ol-bullet">1.3</span> <span class="ol-content">What is non-identifying information?</span></li></a>
-                              <a href="#qq3" onclick="open_card('q3');" class="clear-fix"><li><span class="ol-bullet">1.4</span> <span class="ol-content">What pieces of information about me will the researchers see?</span></li></a>
-                              <a href="#qq4" onclick="open_card('q4');" class="clear-fix"><li><span class="ol-bullet">1.5</span> <span class="ol-content">If a researcher sees my name in the data when matching, how much will they know about me?</span></li></a>
+                              <a href="#qq1" onclick="open_card(&#39;q1&#39;);" class="clear-fix"><li><span class="ol-bullet">1.1</span> <span class="ol-content">Why do you need to know who I am?</span></li></a>
+                              <a href="#qq2" onclick="open_card(&#39;q2&#39;);" class="clear-fix"><li><span class="ol-bullet">1.2</span> <span class="ol-content">What is identifying information?</span></li></a>
+							  <a href="#qq24" onclick="open_card(&#39;q24&#39;);" class="clear-fix"><li><span class="ol-bullet">1.3</span> <span class="ol-content">What is non-identifying information?</span></li></a>
+                              <a href="#qq3" onclick="open_card(&#39;q3&#39;);" class="clear-fix"><li><span class="ol-bullet">1.4</span> <span class="ol-content">What pieces of information about me will the researchers see?</span></li></a>
+                              <a href="#qq4" onclick="open_card(&#39;q4&#39;);" class="clear-fix"><li><span class="ol-bullet">1.5</span> <span class="ol-content">If a researcher sees my name in the data when matching, how much will they know about me?</span></li></a>
                             </ul>
                           </li>
 
                           <li><span class="caret">Section 2: MINDFIRL and the patient matching process</span>
                             <ul class="nested">
-                              <a href="#qq5" onclick="open_card('q5');" class="clear-fix"><li><span class="ol-bullet">2.1</span> <span class="ol-content">What is patient-matching?</span></li></a>
-                              <a href="#qq6" onclick="open_card('q6');" class="clear-fix"><li><span class="ol-bullet">2.2</span> <span class="ol-content">What is MINDFIRL?</span></li></a>
-							  <a href="#qq7" onclick="open_card('q7');" class="clear-fix"><li><span class="ol-bullet">2.3</span> <span class="ol-content">What does MINDFIRL look like?</span></li></a>
-							  <a href="#qq8" onclick="open_card('q8');" class="clear-fix"><li><span class="ol-bullet">2.4</span> <span class="ol-content">What information do you need in order to match my records?</span></li></a>
-							  <a href="#qq9" onclick="open_card('q9');" class="clear-fix"><li><span class="ol-bullet">2.5</span> <span class="ol-content">Can I be identified in the linked data?</span></li></a>
-							  <a href="#qq10" onclick="open_card('q10');" class="clear-fix"><li><span class="ol-bullet">2.6</span> <span class="ol-content">Are there risks to patient matching?</span></li></a>
-							  <a href="#qq11" onclick="open_card('q11');" class="clear-fix"><li><span class="ol-bullet">2.7</span> <span class="ol-content">How does MINDFIRL lower the risks of patient matching?</span></li></a>
-							  <a href="#qq12" onclick="open_card('q12');" class="clear-fix"><li><span class="ol-bullet">2.8</span> <span class="ol-content">How does MINDFIRL enhance privacy?</span></li></a>
-							  <a href="#qq13" onclick="open_card('q13');" class="clear-fix"><li><span class="ol-bullet">2.9</span> <span class="ol-content">Does MINDFIRL reduce the quality of matched records?</span></li></a>
+                              <a href="#qq5" onclick="open_card(&#39;q5&#39;);" class="clear-fix"><li><span class="ol-bullet">2.1</span> <span class="ol-content">What is patient-matching?</span></li></a>
+                              <a href="#qq6" onclick="open_card(&#39;q6&#39;);" class="clear-fix"><li><span class="ol-bullet">2.2</span> <span class="ol-content">What is MINDFIRL?</span></li></a>
+							  <a href="#qq7" onclick="open_card(&#39;q7&#39;);" class="clear-fix"><li><span class="ol-bullet">2.3</span> <span class="ol-content">What does MINDFIRL look like?</span></li></a>
+							  <a href="#qq8" onclick="open_card(&#39;q8&#39;);" class="clear-fix"><li><span class="ol-bullet">2.4</span> <span class="ol-content">What information do you need in order to match my records?</span></li></a>
+							  <a href="#qq9" onclick="open_card(&#39;q9&#39;);" class="clear-fix"><li><span class="ol-bullet">2.5</span> <span class="ol-content">Can I be identified in the linked data?</span></li></a>
+							  <a href="#qq10" onclick="open_card(&#39;q10&#39;);" class="clear-fix"><li><span class="ol-bullet">2.6</span> <span class="ol-content">Are there risks to patient matching?</span></li></a>
+							  <a href="#qq11" onclick="open_card(&#39;q11&#39;);" class="clear-fix"><li><span class="ol-bullet">2.7</span> <span class="ol-content">How does MINDFIRL lower the risks of patient matching?</span></li></a>
+							  <a href="#qq12" onclick="open_card(&#39;q12&#39;);" class="clear-fix"><li><span class="ol-bullet">2.8</span> <span class="ol-content">How does MINDFIRL enhance privacy?</span></li></a>
+							  <a href="#qq13" onclick="open_card(&#39;q13&#39;);" class="clear-fix"><li><span class="ol-bullet">2.9</span> <span class="ol-content">Does MINDFIRL reduce the quality of matched records?</span></li></a>
 							 </ul>
                           </li> 
 						  
 						  <li><span class="caret">Section 3: Protection and storage of my matched data</span>
                             <ul class="nested">
-                              <a href="#qq14" onclick="open_card('q14');" class="clear-fix"><li><span class="ol-bullet">3.1</span> <span class="ol-content">Where will data about me be kept?</span></li></a>
-                              <a href="#qq15" onclick="open_card('q15');" class="clear-fix"><li><span class="ol-bullet">3.2</span> <span class="ol-content">What security are you using to protect me?</span></li></a>
-							  <a href="#qq16" onclick="open_card('q16);" class="clear-fix"><li><span class="ol-bullet">3.3</span> <span class="ol-content">What are you doing to make sure that my data is being used responsibly?</span></li></a>
-							  <a href="#qq17" onclick="open_card('q17');" class="clear-fix"><li><span class="ol-bullet">3.4</span> <span class="ol-content">What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused?</span></li></a>
-                <a href="#qq18" onclick="open_card('q18');" class="clear-fix"><li><span class="ol-bullet">3.5</span> <span class="ol-content">Who will have access to my data?</span></li></a>
+                              <a href="#qq14" onclick="open_card(&#39;q14&#39;);" class="clear-fix"><li><span class="ol-bullet">3.1</span> <span class="ol-content">Where will data about me be kept?</span></li></a>
+                              <a href="#qq15" onclick="open_card(&#39;q15&#39;);" class="clear-fix"><li><span class="ol-bullet">3.2</span> <span class="ol-content">What security are you using to protect me?</span></li></a>
+							  <a href="#qq16" onclick="open_card(&#39;q16);" class="clear-fix"><li><span class="ol-bullet">3.3</span> <span class="ol-content">What are you doing to make sure that my data is being used responsibly?</span></li></a>
+							  <a href="#qq17" onclick="open_card(&#39;q17&#39;);" class="clear-fix"><li><span class="ol-bullet">3.4</span> <span class="ol-content">What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused?</span></li></a>
+                <a href="#qq18" onclick="open_card(&#39;q18&#39;);" class="clear-fix"><li><span class="ol-bullet">3.5</span> <span class="ol-content">Who will have access to my data?</span></li></a>
 							 </ul>
                           </li> 
 						
 						  
 						  <li><span class="caret">Section 4: Importance and impact of using my data</span>
                             <ul class="nested">
-                              <a href="#qq19" onclick="open_card('q19');" class="clear-fix"><li><span class="ol-bullet">4.1</span> <span class="ol-content">Why is my data needed?</span></li></a>
-							  <a href="#qq20" onclick="open_card('q20');" class="clear-fix"><li><span class="ol-bullet">4.2</span> <span class="ol-content">What difference is my data going to make?</span></li></a>
+                              <a href="#qq19" onclick="open_card(&#39;q19&#39;);" class="clear-fix"><li><span class="ol-bullet">4.1</span> <span class="ol-content">Why is my data needed?</span></li></a>
+							  <a href="#qq20" onclick="open_card(&#39;q20&#39;);" class="clear-fix"><li><span class="ol-bullet">4.2</span> <span class="ol-content">What difference is my data going to make?</span></li></a>
                             </ul>
                           </li> 
 						  
 						  <li><span class="caret">Section 5: Data handling after the completion of the study</span>
                             <ul class="nested">
-                              <a href="#qq21" onclick="open_card('q21');" class="clear-fix"><li><span class="ol-bullet">5.1</span> <span class="ol-content">What will happen to my data after this study is completed?</span></li></a>
-							  <a href="#qq22" onclick="open_card('q22');" class="clear-fix"><li><span class="ol-bullet">5.2</span> <span class="ol-content">Will my matched data be used for other research studies?</span></li></a>
-							  <a href="#qq23" onclick="open_card('q23');" class="clear-fix"><li><span class="ol-bullet">5.3</span> <span class="ol-content">Where can I get more information?</span></li></a>
+                              <a href="#qq21" onclick="open_card(&#39;q21&#39;);" class="clear-fix"><li><span class="ol-bullet">5.1</span> <span class="ol-content">What will happen to my data after this study is completed?</span></li></a>
+							  <a href="#qq22" onclick="open_card(&#39;q22&#39;);" class="clear-fix"><li><span class="ol-bullet">5.2</span> <span class="ol-content">Will my matched data be used for other research studies?</span></li></a>
+							  <a href="#qq23" onclick="open_card(&#39;q23&#39;);" class="clear-fix"><li><span class="ol-bullet">5.3</span> <span class="ol-content">Where can I get more information?</span></li></a>
                             </ul>
                           </li> 
                 </ul>
@@ -209,7 +249,7 @@ a {
                                 When an organization, such as a hospital, collects information about an individual, it stores that information in a record. If the organization collects information about someone else, that information is stored in a different record. The collection of all these records is stored in a system of records called a database. Our goal is to match records from different databases. This means that, we need to know some limited information about you so we do not mismatch your records with someone else’s. We refer to this limited information as ‘identifying information.’ 
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq2" class="expand" data-toggle="collapse" href="#q2" role="button" aria-expanded="false" aria-controls="q2" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 1.2 What is identifying information?
@@ -219,26 +259,26 @@ a {
                             Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process.
                             </div>
                         </div>
-                        <br/>
+                        <br>
 						
 						 <a id="qq24" class="expand" data-toggle="collapse" href="#q24" role="button" aria-expanded="false" aria-controls="q24" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 1.3 What is non-identifying information?
                         </a>
                         <div class="collapse" id="q24">
                             <div class="regular">
-                            Non-identifying information is everything else in the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database.">data</a>.
+                            Non-identifying information is everything else in the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database." data-original-title="" title="">data</a>.
 							Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question (see section 5.1).
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq3" class="expand" data-toggle="collapse" href="#q3" role="button" aria-expanded="false" aria-controls="q3" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 1.4 What pieces of information about me will the researchers see?
                         </a>
                         <div class="collapse" id="q3">
                             <div class="regular">
-                            We need different information for different steps of the research process. We need <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process.">identifying information</a> only to do patient matching (see section 2.1). 
-							Additionally, we need <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question.">non-identifying information</a> only when we are using your health related data to learn more about science or medicine. We will use a software program called MINDFIRL (MINimum Necessary Disclosure For Interactive Record Linkage) to keep identifying information separate from non-identifying information and <b>ensure that no one can access identifying information and non-identifying information together at the same time. </b>(for MINDFIRL, see sections 2.2 & 2.3)<br><br>
+                            We need different information for different steps of the research process. We need <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process." data-original-title="" title="">identifying information</a> only to do patient matching (see section 2.1). 
+							Additionally, we need <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question." data-original-title="" title="">non-identifying information</a> only when we are using your health related data to learn more about science or medicine. We will use a software program called MINDFIRL (MINimum Necessary Disclosure For Interactive Record Linkage) to keep identifying information separate from non-identifying information and <b>ensure that no one can access identifying information and non-identifying information together at the same time. </b>(for MINDFIRL, see sections 2.2 &amp; 2.3)<br><br>
 							In many cases, patient matching is done entirely with a linkage software, like MINDFIRL, and <b>a human may never see your identifying information</b> because the computer is automatically matching patients without human effort. For others records where the computer is not sure, researchers must manually make the matches.<br><br> 
 							<i>a.	Who will be able to see the <u>identifying information</u>?</i><br><br> 
 							The researchers who will be doing the record matching will have access to identifying information. Information such as your name, date of birth, marital status, and gender help distinguish you from other people. Our researchers need to access identifying information to match patient records.<br><br> 
@@ -250,17 +290,17 @@ a {
 
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq4" class="expand" data-toggle="collapse" href="#q4" role="button" aria-expanded="false" aria-controls="q4" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 1.5 If a researcher sees my name in the data when matching, how much will they know about me?
                         </a>
                         <div class="collapse" id="q4">
                             <div class="regular">
-                           If a researcher sees your name in the  <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database.">data</a>, they might see some more identifying information about you (e.g., birth dates, identification numbers, race, gender). But <b>they will not see other health details, such as your diagnosis, health status, blood pressure, etc.</b>  Your name is an identifier.  We use identifying information only during the patient-matching step of the research to help link records from different databases.  In this step, other details about you, such as your health information, are not used to match records.<b> We only use this health-related data once we remove your identifying information to protect your privacy.</b>
+                           If a researcher sees your name in the  <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="When we use the term data, we are talking about a collection of information. Data can refer to all information within a record or all the records within a database." data-original-title="" title="">data</a>, they might see some more identifying information about you (e.g., birth dates, identification numbers, race, gender). But <b>they will not see other health details, such as your diagnosis, health status, blood pressure, etc.</b>  Your name is an identifier.  We use identifying information only during the patient-matching step of the research to help link records from different databases.  In this step, other details about you, such as your health information, are not used to match records.<b> We only use this health-related data once we remove your identifying information to protect your privacy.</b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
                     </div>
                 </div>
 
@@ -274,61 +314,61 @@ a {
                         </a>
                         <div class="collapse" id="q5">
                             <div class="regular">
-                            <b>Patient-matching is the process of linking records of the same real-world person from different databases.</b> Patient matching helps researchers answer difficult questions. For example, is disease treatment A better than treatment B for keeping patients healthy? To do this, we might want to count the number of emergency room visits Jane Doe made this year across several hospitals. This requires linking records from all the hospitals she visited. After patient-matching, no identifying information is needed; it is removed from the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a 'linked data record.' We call the collection of all linked data records the “linked data.”">linked data</a>.<br><br>
+                            <b>Patient-matching is the process of linking records of the same real-world person from different databases.</b> Patient matching helps researchers answer difficult questions. For example, is disease treatment A better than treatment B for keeping patients healthy? To do this, we might want to count the number of emergency room visits Jane Doe made this year across several hospitals. This requires linking records from all the hospitals she visited. After patient-matching, no identifying information is needed; it is removed from the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a &#39;linked data record.&#39; We call the collection of all linked data records the “linked data.”" data-original-title="" title="">linked data</a>.<br><br>
 							Patient-matching is challenging because a universal identification number does not exist to easily link records in different systems. Instead, <b>we have to use identifying information, like first and last names, birthdates, race, and gender to decide which records belong to the same person.</b> Below is an example of what patient-matching might look like:<br><br>
 							<i>Figure 1: This image shows what patient matching looks like without MINDFIRL. In this example, the researchers can see all identifying information.</i><br>
-                            <img src="../static/images/1.png" alt="1"/>
+                            <img src="./faq_files/1.png" alt="1">
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq6" class="expand" data-toggle="collapse" href="#q6" role="button" aria-expanded="false" aria-controls="q6" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.2 What is MINDFIRL?
                         </a>
                         <div class="collapse" id="q6">
                             <div class="regular">
-                            MINDFIRL (Minimum Necessary Disclosure for Interactive Record Linkage) is a software that we use to help protect privacy in the patient matching process of our research. It protects privacy in a few ways. First, <b>it separates the identifying information from the health-related study information.</b> That way, the researchers can view <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process.">identifying information</a> to help them accurately match records without seeing sensitive information.<br><br>
-							The image below shows how MINDFIRL works. Data owners use MINDFIRL to give us their data for research. <b>MINDFIRL separates the identifying and <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question.">non-identifying information</a> immediately.</b>  In this way, if a researcher sees identifying information during the patient-matching process, the researcher cannot see any other sensitive information at the same time. After the patient-matching process, MINDFIRL gives us the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a 'linked data record.' We call the collection of all linked data records the “linked data.”">linked data</a> without any identifying information.<br><br>
+                            MINDFIRL (Minimum Necessary Disclosure for Interactive Record Linkage) is a software that we use to help protect privacy in the patient matching process of our research. It protects privacy in a few ways. First, <b>it separates the identifying information from the health-related study information.</b> That way, the researchers can view <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process." data-original-title="" title="">identifying information</a> to help them accurately match records without seeing sensitive information.<br><br>
+							The image below shows how MINDFIRL works. Data owners use MINDFIRL to give us their data for research. <b>MINDFIRL separates the identifying and <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question." data-original-title="" title="">non-identifying information</a> immediately.</b>  In this way, if a researcher sees identifying information during the patient-matching process, the researcher cannot see any other sensitive information at the same time. After the patient-matching process, MINDFIRL gives us the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a &#39;linked data record.&#39; We call the collection of all linked data records the “linked data.”" data-original-title="" title="">linked data</a> without any identifying information.<br><br>
 							<i>Figure 2: This image shows how MINDFIRL helps the patient-matching process while limiting access to sensitive information. MINDFIRL uses encryption to separate identifying and non-identifying information during patient-matching and the main research.</i><br><br>
-							<img src="../static/images/Fig2_new.PNG" alt="1"/><br><br>
+							<img src="./faq_files/Fig2_new.PNG" alt="1"><br><br>
 							Second, MINDFIRL hides identifying information, while giving our researchers clues about how similar or different the same identifier is in two records. That way, <b>MINDFIRL allows our researcher to match records without seeing the specific identifying information.</b> See below.<br><br>
 							<i>Figure 3: This image shows what researchers would see when they use MINFIRL during the patient-matching process. The symbols help researchers understand how similar or different the identifying information is without seeing every detail.</i><br><br>
-							<img src="../static/images/Fig3.PNG" alt="1"/><br><br>
+							<img src="./faq_files/mindfirl3.png" alt="1"><br><br>
 							Third, MINDFIRL allows researchers to selectively reveal information to help accurately match patients. This way, <b>a researcher does not have to see every identifier in order to make a correct match.</b> You can see how this works in this clickable demo (You must use chrome on your PC for this demo to work well. The link will not work on a phone.): <b><span style="border:2px solid Tomato;"><a href="http://mindfil4.herokuapp.com/?mode=4" target="_blank">Click here to try it.</a></span></b><br><br>
 							Finally, <b>MINDFIRL tracks and records the information that researchers see.</b> In this way, the research supervisors can ensure that the researchers who are matching records are not abusing their position by revealing too much.<b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: We encourage researchers to setup an audit and reporting process when using MINDFIRL and to be transparent about this process here.]</span></b>
                             </div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq7" class="expand" data-toggle="collapse" href="#q7" role="button" aria-expanded="false" aria-controls="q7" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.3 What does MINDFIRL look like?
                         </a>
                         <div class="collapse" id="q7">
                             <div class="regular">
-                            Click <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=_uPMiVVZg3s&feature=youtu.be" target="_blank">here</a></span></b> to see a video of MINDFIRL and  <b><span style="border:2px solid Tomato;"><a href="http://mindfil4.herokuapp.com/?mode=4" target="_blank">here</a></span></b> to try it. (You must use chrome on your PC for this demo to work well. The link will not work on a phone).
+                            Click <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=xM_Yw4h6nn4&feature=youtu.be" target="_blank">here</a></span></b> to see a video of MINDFIRL and  <b><span style="border:2px solid Tomato;"><a href="http://mindfil4.herokuapp.com/?mode=4" target="_blank">here</a></span></b> to try it. (You must use chrome on your PC for this demo to work well. The link will not work on a phone).
                             </div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq8" class="expand" data-toggle="collapse" href="#q8" role="button" aria-expanded="false" aria-controls="q8" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.4 What information do you need in order to match my records?
                         </a>
                         <div class="collapse" id="q8">
                             <div class="regular">
-                            For some people, very little <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process.">identifying information</a> is needed to match records. For example, records from someone with a very unique name may be easily matched with just a name and perhaps their date of birth. In contrast, the records for someone with a common name may be harder for the researchers to accurately match. As a result, additional information such as gender, race or ethnicity, and identification numbers may be needed. 
+                            For some people, very little <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process." data-original-title="" title="">identifying information</a> is needed to match records. For example, records from someone with a very unique name may be easily matched with just a name and perhaps their date of birth. In contrast, the records for someone with a common name may be harder for the researchers to accurately match. As a result, additional information such as gender, race or ethnicity, and identification numbers may be needed. 
                             </div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq9" class="expand" data-toggle="collapse" href="#q9" role="button" aria-expanded="false" aria-controls="q9" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.5 Can I be identified in the linked data?
                         </a>
                         <div class="collapse" id="q9">
                             <div class="regular">
-							It is highly unlikely, but possible, that you might be identified in the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a 'linked data record.' We call the collection of all linked data records the “linked data.”">linked data</a>. The linked data is created when the MINDFIRL software connects the non-identifying information from each database. <b>No <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question.">identifying information</a> is contained in the linked data, and no one can see the identifying information and non-identifying information at the same time.</b> If someone wanted to identify you in the linked data, they would have to use some other information to tell you apart from everyone in the linked data (and the rest of the world). We use encryption and secure computer systems to protect this data to reduce the risk that someone can identify you in the data.               
+							It is highly unlikely, but possible, that you might be identified in the <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="We call the health-related information that is matched to one real-world person a &#39;linked data record.&#39; We call the collection of all linked data records the “linked data.”" data-original-title="" title="">linked data</a>. The linked data is created when the MINDFIRL software connects the non-identifying information from each database. <b>No <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question." data-original-title="" title="">identifying information</a> is contained in the linked data, and no one can see the identifying information and non-identifying information at the same time.</b> If someone wanted to identify you in the linked data, they would have to use some other information to tell you apart from everyone in the linked data (and the rest of the world). We use encryption and secure computer systems to protect this data to reduce the risk that someone can identify you in the data.               
                         </div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq10" class="expand" data-toggle="collapse" href="#q10" role="button" aria-expanded="false" aria-controls="q10" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.6 Are there risks to patient matching?
@@ -338,7 +378,7 @@ a {
                             Patient matching is not very risky on its own, but there are unavoidable risks to all data use just as with driving. There is always a slight chance that someone outside our research group may try to gain access to your data or that someone matching the data might misuse it. <br> <br> We work hard to minimize these risks. First, we store all data on secure computers that meet legal standards to minimize the risk of someone breaking into the data. Second, each researcher on this project is trained to use the software properly and comply with the law. Third, we use the MINDFIRL software to limit access to identifying information and tracks what researchers see and do with the data. These efforts will minimize the risks of patient matching.
                             </div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq11" class="expand" data-toggle="collapse" href="#q11" role="button" aria-expanded="false" aria-controls="q11" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.7 How does MINDFIRL lower the risks of patient matching?
@@ -346,30 +386,30 @@ a {
                         <div class="collapse" id="q11">
                             <div class="regular">
                             MINDFIRL is designed to improve privacy in database studies. It limits access to identifying information. It also includes tools to promote transparency and monitor researcher activity to limit risk. For example, MINDFIRL tracks what identifying information is viewed and who viewed it. This is similar to a store that has a surveillance camera to make sure that the cashier does not take money from the cash register.  This tracking tool is used to discourage the misuse of your information. It also allows for setting hard limits on how much data is used. Once this limit is reached, researchers cannot reveal more information. See figure below.<br> <br> 
-                            <img src="../static/images/Meter.PNG" alt="1"/>
+                            <img src="./faq_files/Meter.PNG" alt="1">
 							</div>
                         </div>
-						<br/>
+						<br>
 						
 							<a id="qq12" class="expand" data-toggle="collapse" href="#q12" role="button" aria-expanded="false" aria-controls="q12" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.8 How does MINDFIRL enhance privacy?
                         </a>
                         <div class="collapse" id="q12">
                             <div class="regular">
-                            MINDFIRL improves privacy by greatly reducing the identifying information viewed by researchers. MINDFIRL only shows identifying information if a researcher thinks they need it to match patient records accurately. In addition, MINDFIRL gives researchers clues to help researchers understand if two masked pieces of identifying information are the same, similar, or different. This helps researchers match records without revealing identifying <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=_uPMiVVZg3s&feature=youtu.be" target="_blank">information</a></span></b>.
+                            MINDFIRL improves privacy by greatly reducing the identifying information viewed by researchers. MINDFIRL only shows identifying information if a researcher thinks they need it to match patient records accurately. In addition, MINDFIRL gives researchers clues to help researchers understand if two masked pieces of identifying information are the same, similar, or different. This helps researchers match records without revealing identifying <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=xM_Yw4h6nn4&feature=youtu.be" target="_blank">information</a></span></b>.
 							</div>
                         </div>
-						<br/>
+						<br>
 						
 						<a id="qq13" class="expand" data-toggle="collapse" href="#q13" role="button" aria-expanded="false" aria-controls="q13" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 2.9 Does MINDFIRL reduce the quality of matched records?
                         </a>
                         <div class="collapse" id="q13">
                             <div class="regular">
-                            Early evaluations of MINDFIRL show that it helps researchers make high-quality matches. People who used a prototype version of MINDFIRL were just as accurate as people who saw all of the identifying information. However, the people who used the MINDFIRL prototype saw 93% less identifying information. This means that <b>people using MINDFIRL were just as good at patient-matching as people who saw everyone’s identifying information even though people using MINDFIRL saw <u>far less</u> identifying information</b>. See <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=_uPMiVVZg3s&feature=youtu.be" target="_blank">this video</a></span></b> for an example.
+                            No. One study showed that people who used an early version of MINDFIRL were just as accurate as people who saw 100% of the identifying information. However, the people who used the MINDFIRL prototype saw 93% less identifying information on average. See <b><span style="border:2px solid Tomato;"><a href="https://www.youtube.com/watch?v=_uPMiVVZg3s&feature=youtu.be" target="_blank">this video</a></span></b> for an example.
 							</div>
                         </div>
-						<br/>
+						<br>
 						</div>
 					</div>
 						
@@ -383,14 +423,14 @@ a {
                         </a>
                         <div class="collapse" id="q14">
                             <div class="regular">
-                                a.    <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process.">Identifying information</a><br><br> Your identifying information will be kept… <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project and protocol. Researchers should describe how they will store and protect this information.<br><br>
-                                One example response might be: All research data is stored in a secure server at Texas A&M University. The Texas A&M University Information Technology (IT) department maintains the servers. See the next section on how the data is secured on this server. Your identifying information will be kept in a separate secure location with different access controls (e.g., password protection). Only the staff involved with patient matching will have access to this folder.]</span></b><br><br>
-								b.    <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question.">Non-identifying information</a><br><br>
+                                a.    <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Identifying information is information that helps us tell you apart from someone else. It may include your date of birth, your gender, your marital status, your race or ethnicity, your identification number, or your name, among other things. This is the information that we use in the patient-matching process." data-original-title="" title="">Identifying information</a><br><br> Your identifying information will be kept… <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project and protocol. Researchers should describe how they will store and protect this information.<br><br>
+                                One example response might be: All research data is stored in a secure server at Texas A&amp;M University. The Texas A&amp;M University Information Technology (IT) department maintains the servers. See the next section on how the data is secured on this server. Your identifying information will be kept in a separate secure location with different access controls (e.g., password protection). Only the staff involved with patient matching will have access to this folder.]</span></b><br><br>
+								b.    <a href="#" style="border-bottom: 1px dotted gray;font-style: italic;" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content="Non-identifying information is everything that is not identifying information. Non-identifying information could include information such as diagnosis, medications, or blood pressure. This is the information that will help us answer our research question." data-original-title="" title="">Non-identifying information</a><br><br>
 								Your non-identifying information such as diagnosis type, medications, etc., will be kept… <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project and protocol. Researchers should describe how they will store and protect this information.<br><br>
 								One example response might be: The non-identifying information is stored in the same secured server as the identifying information. However, the non-identifying information will be stored in a different secure folder from the identifying information. Only staff conducting analysis with the data will have access to the folder with the non-identifying data.]</span></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq15" class="expand" data-toggle="collapse" href="#q15" role="button" aria-expanded="false" aria-controls="q15" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 3.2 What security measures are you using to protect me?
@@ -400,10 +440,10 @@ a {
                                 <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project and protocol. Researchers should describe the specific security measures for the study.<br><br>
 							Some possible answers might be:<br>•	The server is located in the secure facility with 24/7 monitoring<br>•	Dual authentication (For example, a password and a code sent to a researcher’s phone)<br>•	Firewall (server is located behind a secure network with limited access from outside)<br>
 							•	Virtual Private Network (VPN) encrypted connections (connections from outside are always encrypted)<br>•	No data is allowed to be taken off the server<br>•	Identifying information is stored separately from non-identifying information<br>
-							•	Using MINDFIRL to reduce access to identifying information<br>•	Security audits for compliance.]<br></b>
+							•	Using MINDFIRL to reduce access to identifying information<br>•	Security audits for compliance.]<br></span></b>
                         </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq16" class="expand" data-toggle="collapse" href="#q16" role="button" aria-expanded="false" aria-controls="q16" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 3.3 What are you doing to make sure that my data is being used responsibly?
@@ -415,7 +455,7 @@ a {
 							Additionally, <b>we are using secure computers and encryption during each step of the research process</b> to ensure that only approved researchers can access this research data safely.
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq17" class="expand" data-toggle="collapse" href="#q17" role="button" aria-expanded="false" aria-controls="q17" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 3.4 What will you do if you discover that an unauthorized person has accessed my data or my data has been otherwise misused? 
@@ -428,7 +468,7 @@ a {
 							•	A summary of any requirements from your Institutional Review Board] </span></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
 
                         <a id="qq18" class="expand" data-toggle="collapse" href="#q18" role="button" aria-expanded="false" aria-controls="q18" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 3.5 Who will have access to my data?
@@ -438,7 +478,7 @@ a {
                                 <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project. Researchers should describe the qualifications for authorized data users and consider identifying the research team.]</span></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
                     </div>
                 </div>
 				
@@ -456,19 +496,17 @@ a {
 							One example response might be: Your data is needed so that we can better understand who is using the emergency department (ED) at different locations, how often, and why. This information is expected to better inform developing policies on ED use as well as improve operations of the ED.]</span></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
 						
 						 <a id="qq20" class="expand" data-toggle="collapse" href="#q20" role="button" aria-expanded="false" aria-controls="q20" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 4.2 What difference is my data going to make?
                         </a>
                         <div class="collapse" id="q20">
                             <div class="regular">
-                            OPTION 1: Your information should help us make discoveries from this research in two ways. First, it is easier to make discoveries or find patterns if there are more records in the dataset. Second, it is important for our data to be representative of the population. If people like you are not included in the research, then what we learn will not be useful to you or others in similar situations.  In other words, without your information our findings will not be representative of you.<br><br>
-							OPTION 2: In short, your information could help make any discoveries from this research more helpful to people like you. In research, we use information about a group of people, called a “sample,” to understand things about a larger group or “population.” If our data is too different from the population then we cannot learn very much from the research. If people like you are not included in the research, then what we learn will not be useful to you or others like you.  For example, if young adults are excluded from all studies about exercise, it will be difficult to know the types and varieties of exercise that are most beneficial to young adults.<b><span style="color:rgb(114, 114, 114);"> [Suggestion for researchers using this FAQ: Researchers should consider swapping this example with one that relates to the present research]</span></b> In other words, without your information it will be harder for us to understand how this research relates to people like you.
-
+                            Your information should help us make discoveries from this research in two ways. First, it is easier to make discoveries or find patterns if there are more records in the dataset. Second, it is important for our data to be representative of the population. If persons who have a similar health history or background as you are not included in the research, then what we learn will not be useful to you or others in similar situations.  In other words, without your information our findings will not be representative of you.<br><br>				
                             </div>
                         </div>
-                        <br/>
+                        <br>
 						</div>
                 </div>
 				
@@ -485,7 +523,7 @@ a {
                                <b><span style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project. Researchers should discuss their plans to destroy, store, or reuse the study data.]</span></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
 						
 						 <a id="qq22" class="expand" data-toggle="collapse" href="#q22" role="button" aria-expanded="false" aria-controls="q22" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 5.2 Will my matched data be used for other research studies?
@@ -495,7 +533,7 @@ a {
                             <b><p style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project. Researchers should discuss any plans to reuse the study data.]</p></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
 						
 						 <a id="qq23" class="expand" data-toggle="collapse" href="#q23" role="button" aria-expanded="false" aria-controls="q23" style="text-decoration: underline;color:#000;">
                             <span class="expand-sign">+</span> 5.3 Where can I get more information?
@@ -505,16 +543,25 @@ a {
                             <b><p style="color:rgb(114, 114, 114);">[Suggestion for researchers using this FAQ: This information will vary depending on the specific research project. Researchers should provide contact information.]</p></b>
                             </div>
                         </div>
-                        <br/>
+                        <br>
                     </div>
                 </div>
 					
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        
+    
 
+    <footer style="background-color: #DDDDDD;">
+        <div class="container">
+            <div class="footer-copyright text-center py-3">
+              pinfo@2019 all rights reserved.<br>
+              <a style="color: #500000" href="https://pinformatics.org/ppirl/">Population Informatics Lab</a>, 
+              <a href="https://www.tamu.edu/" style="color: #500000">Texas A&amp;M University</a>
+            </div>
+        </div>
+    </footer>
 <script>
 var toggler = document.getElementsByClassName("caret");
 var i;
@@ -552,15 +599,34 @@ function open_card(id) {
     $('#'+id).prev().find('.expand-sign').html('-');
 }
 
+function eventFire(el, etype){
+  if (el.fireEvent) {
+    el.fireEvent('on' + etype);
+  } else {
+    var evObj = document.createEvent('Events');
+    evObj.initEvent(etype, true, false);
+    el.dispatchEvent(evObj);
+  }
+}
+
+var qid = window.location.hash.substr(1);
+//open_card(qid);
+if(qid) {
+  eventFire(document.getElementById(qid), 'click');
+}
+
 $(".collapse_all").click(function() {
     state = $(this).parent().next().find('.show');
     if(state.length < 1) {
         $(this).parent().next().find('.collapse').addClass('show');
         $(this).parent().next().find('.expand-sign').html('-');
+        $(this).find('.caret2').removeClass('caret-down');
+        $(this).find('.caret2').addClass('caret-down');
     }
     else {
         $(this).parent().next().find('.collapse').removeClass('show');
         $(this).parent().next().find('.expand-sign').html('+');
+        $(this).find('.caret2').removeClass('caret-down');
     }
 })
 
@@ -581,6 +647,6 @@ function topFunction() {
   document.documentElement.scrollTop = 0;
 }
 </script>
-</body>
-</html>
 
+
+<iframe id="blockbyte-bs-sidebar" class="notranslate" data-pos="left" src="./faq_files/saved_resource.html"></iframe><div id="blockbyte-bs-indicator" class="blockbyte-bs-fullHeight blockbyte-bs-visible" data-pos="left" style="width: 2px; height: 100%; top: 0%;"><div><span></span></div></div></body></html>

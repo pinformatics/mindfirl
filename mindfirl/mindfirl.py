@@ -432,6 +432,9 @@ def save_project():
 @app.route('/saveProject2', methods=["POST"])
 @login_required
 def save_project2():
+    """
+    creating project by blocking
+    """
     user = current_user
     form = ProjectForm2(formdata=request.form)
 
@@ -548,7 +551,7 @@ def delete_project(pid):
 
     flask.flash('Project has been deleted.', 'alert-success')
 
-    return redirect('/project_list')
+    return redirect(url_for('project_list'))
 
 
 @app.route('/viewProjectConfig/<pid>')
@@ -684,14 +687,17 @@ def record_linkage(pid):
     page_size = assignment_status['page_size']
     kapr_limit = assignment_status['kapr_limit']
     current_kapr = assignment_status['current_kapr']
-    isfull = assignment_status['isfull']
+    display_mode = assignment_status['display_mode']
+    isfull = False
+    if 'isfull' in assignment_status:
+        isfull = assignment_status['isfull']
     if isfull == 'true':
         default_mode = 'B'
     else:
         default_mode = 'M'
     if current_page >= page_size:
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
     # get working data and full data
     pair_datafile = storage_model.get_pair_datafile(mongo=mongo, user=user, pid=pid)
@@ -704,10 +710,11 @@ def record_linkage(pid):
 
     # prepare return data
     icons = working_data.get_icons()
+    #print(icons)
     ids_list = working_data.get_ids()
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
-    data_mode = 'masked'
-    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r, default_mode=default_mode)
+    data_mode = display_mode.lower()
+    data_mode_list = storage_model.get_data_mode(assignment_id, ids, r=r, data_mode=data_mode, default_mode=default_mode)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
 
@@ -720,7 +727,7 @@ def record_linkage(pid):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
+        delta += dm.KAPR_delta(full_data, data_pair, 11*['M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -798,9 +805,9 @@ def record_linkage_next(pid):
             create_resolve_conflict_project(pid)
 
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
-    return redirect('record_linkage/'+pid)
+    return redirect(url_for('record_linkage', pid=pid))
 
 
 @app.route('/get_cell', methods=['GET', 'POST'])
@@ -997,7 +1004,7 @@ def resolve_conflicts2(pid):
     current_kapr = assignment['current_kapr']
     if current_page >= page_size:
         flask.flash('You have completed the project.', 'alert-success')
-        return redirect('project')
+        return redirect(url_for('project'))
 
     # get working data and full data
     pair_datafile = storage_model.get_project_pair_datafile(mongo=mongo, user=user.username, pid=pid)
@@ -1017,9 +1024,10 @@ def resolve_conflicts2(pid):
     ids = list(zip(ids_list[0::2], ids_list[1::2]))
     data_mode = 'masked'
     data_mode_list = storage_model.get_conflict_data_mode(pid, ids, mongo, r, assignment_id, isfull)
-    print(data_mode_list)
     pairs_formatted = working_data.get_data_display(data_mode, data_mode_list)
     data = list(zip(pairs_formatted[0::2], pairs_formatted[1::2]))
+
+    record_ids = storage_model.get_record_id_by_pair_id(mongo, pid, indices)
 
     # get the delta information
     delta = list()
@@ -1027,7 +1035,7 @@ def resolve_conflicts2(pid):
         data_pair = working_data.get_data_pair_by_index(i)
         if data_pair is None:
             break
-        delta += dm.KAPR_delta(full_data, data_pair, ['M', 'M', 'M', 'M', 'M', 'M'], len(full_data))
+        delta += dm.KAPR_delta(full_data, data_pair, 11*['M'], len(full_data))
 
     # prepare cache data for ajax query
     r.set(user.username+'_working_pid', pid)
@@ -1040,12 +1048,15 @@ def resolve_conflicts2(pid):
 
     # get users' choices information
     choices, choice_cnt = storage_model.get_users_choices(mongo=mongo, pid=pid, indices=indices)
+    print(choices)
 
     ret_data = {
         'data': data,
         'data_mode_list': data_mode_list,
         'icons': icons,
         'ids': ids,
+        'pair_ids': indices,
+        'record_ids': record_ids,
         'title': 'resolve conflicts',
         'kapr': round(100*float(current_kapr), 1),
         'kapr_limit': kapr_limit, 
@@ -1103,9 +1114,9 @@ def resolve_conflicts2_next(pid):
         # flush redis data
         storage_model.clear_working_page_cache(assignment_id, r)
         flask.flash('You have completed resolve conflicts of this project.', 'alert-success')
-        return redirect('project/'+pid)
+        return redirect(url_for('project', pid=pid))
 
-    return redirect('resolve_conflicts2/'+pid)
+    return redirect(url_for('resolve_conflicts2', pid=pid))
 
 
 @app.route('/resolve_conflicts/<pid>')
@@ -1214,7 +1225,6 @@ def save_data_resolve_conflicts():
         if line:
             user_data += ('uid:'+user.username+','+line+';')
     formatted_data = ud.parse_user_data(user_data)
-    print(formatted_data)
 
     storage_model.save_resolve_conflicts(mongo, pid, user.username, formatted_data)
 
@@ -1266,7 +1276,9 @@ def get_file(pid):
 
     path = storage_model.get_result_path(mongo=mongo, pid=pid)
     result_file_name = '%s_result.csv' % project['project_name']
-    return send_from_directory('', path, as_attachment=True, attachment_filename=result_file_name)
+    #filename = path.split('/')[-1]
+    filename = os.path.split(path)[-1]
+    return send_from_directory(os.path.join('data', 'internal'), filename, as_attachment=True, attachment_filename=result_file_name)
 
 
 

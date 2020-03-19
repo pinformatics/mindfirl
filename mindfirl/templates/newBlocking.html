@@ -26,7 +26,7 @@
             option_str += `<option value="${user_list[i]}">${user_list[i]}</option>`;
         }
     </script>
-    <script src="../static/javascript/new_blocking.js?v=2"></script>
+    <script src="../static/javascript/new_blocking.js?v=8"></script>
 </head>
 
 <body>
@@ -119,6 +119,18 @@
                                                 Assignment percentage:
                                                 <input class="form-control" type="number" placeholder="Assignment percentage (%)" step="1" min="0" max="100" name="percentage" id="percentage_1" value="100">
                                                 <div class="form-error" id="percentage_1-error"></div>
+
+                                                <div class="form-group">
+                                                    <label for="display_mode_1">Display mode</label>
+                                                    <select class="form-control" id="display_mode_1">
+                                                      <option>Masked</option>
+                                                      <option>Minimum</option>
+                                                      <option>Moderate</option>
+                                                      <option>Full</option>
+                                                      <option>Base</option>
+                                                    </select>
+                                                </div>
+                                                <label style="display: none;"><input type="checkbox" id="full_1" name="full_1" value="full">Fully open</label>
                                             </div>
                                         </div>
 

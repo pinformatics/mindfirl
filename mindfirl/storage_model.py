@@ -3,8 +3,8 @@ import time
 import hashlib
 import config
 import math
-from get_pair_file import generate_pair_file, generate_fake_file
-from get_pair_file_2 import generate_pair_file2
+from get_pair_file_extra import generate_pair_file
+from get_pair_file_2_extra import generate_pair_file2
 from blocking import generate_pair_by_blocking, update_result_to_intfile
 import blocking
 import numpy as np
@@ -82,7 +82,7 @@ def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_
     The MINDFIRL system internally need 3 files: a different pairfile, file1, and file2
     This function turn the input pairfile and name_freq_file into those 3 files
     """
-    table_head = 'ID,voter_reg_num,first_name,last_name,dob,sex,race,type,file_id\n'
+    table_head = 'ID,voter_reg_num,first_name,last_name,dob,sex,race,info1,info2,info3,info4,info5,type,file_id\n'
     fout = open(internal_pairfile_path, 'w+')
     fout.write(table_head)
 
@@ -91,7 +91,7 @@ def build_save_pairfile_3(pairfile_path, name_freq_file_path, internal_pairfile_
     for l in pairfile:
         if cnt != 0:
             l = l.strip().split(',')
-            newline = [l[0], l[4], l[5], l[6], l[7], l[8], l[9]]
+            newline = [l[0], l[4], l[5], l[6], l[7], l[8], l[9], l[10], l[11], l[12], l[13], l[14]]
             newline.append('1')
             if cnt%2 == 0:
                 newline.append('1-A')
@@ -190,6 +190,9 @@ def get_block_id_len(block_id):
     return total
 
 def save_project(mongo, data):
+    """
+    by pair file
+    """
     project_name = data['project_name']
     project_des = data['project_des']
     owner = data['owner']
@@ -227,7 +230,9 @@ def save_project(mongo, data):
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage, isfull = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
+        if display_mode.lower() == 'base':
+            isfull = 'true'
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -257,6 +262,7 @@ def save_project(mongo, data):
             'pair_idx': 0,
             'total_pairs': get_block_id_len(assigned_id),
             'kapr_limit': cur_kapr, 
+            'display_mode': display_mode,
             'isfull': isfull,
             'current_kapr': 0,
         })
@@ -286,6 +292,9 @@ def save_project(mongo, data):
 
 
 def save_project2(mongo, data):
+    """
+    by blocking
+    """
     project_name = data['project_name']
     project_des = data['project_des']
     owner = data['owner']
@@ -303,6 +312,7 @@ def save_project2(mongo, data):
     file2.save(file2_path)
 
     total_pairs, block_id = generate_pair_by_blocking(blocking=data['blocking'], file1=file1_path, file2=file2_path, intfile=intfile_path, pair_file=pairfile_path)
+
     # if blocking_result is False, need to consider this
     pf_result = generate_pair_file(pairfile_path, file1_path, file2_path, pf_path)
 
@@ -311,17 +321,17 @@ def save_project2(mongo, data):
     f.close()
 
     # assign the pairfile to each assignee, generate pf_file for them
-    assigner = Assign_generator(pairfile_path)
+    assigner = Assign_generator(pairfile_path, block_id)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
         tmp_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+cur_assignee+'_'+project_name+'_pairfile.csv')
-        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=int(total_pairs*percentage), block_id=block_id)
+        assigned_id = assigner.random_assign(tmp_file=tmp_file, pair_num=math.ceil(total_pairs*percentage), block_id=block_id)
         pf_file = os.path.join(config.DATA_DIR, 'internal', owner+'_'+project_name+'_'+cur_assignee+'_pf.csv')
         pf_result = generate_pair_file(tmp_file, file1_path, file2_path, pf_file)
         delete_file(tmp_file)
@@ -344,6 +354,8 @@ def save_project2(mongo, data):
             'current_kapr': 0,
             'pair_idx': 0,
             'total_pairs': pf_result['size'],
+            'display_mode': display_mode,
+            'isfull': isfull,
         })
 
     project_key = owner+'-'+project_name+str(time.time())
@@ -501,11 +513,20 @@ def update_kapr(mongo, username, pid, kapr):
 def update_kapr_conflicts(mongo, username, pid, kapr):
     mongo.db.conflicts.update({'pid': pid}, {'$set': {'current_kapr': kapr}})
 
-def get_data_mode(assignment_id, ids, r, default_mode='M'):
+def get_data_mode(assignment_id, ids, r, data_mode='masked', default_mode='M'):
     """
     if is None, then insert 'M' into the redis
     """
+    data_modes = {
+        'base': ['base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base', 'base'],
+        'full': ['full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full', 'full'],
+        'masked': ['masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+        'minimum': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+        'moderate': ['partial', 'partial', 'partial', 'partial', 'full', 'masked', 'masked', 'masked', 'masked', 'masked', 'masked'],
+    }
+
     mode_dict = {'M': 'masked', 'P': 'partial', 'F': 'full', 'B': 'base'}
+    mode_dict2 = {'masked': 'M', 'partial': 'P', 'full': 'F', 'base': 'B'}
     data_mode_list = []
 
     for (id1, id2) in ids:
@@ -519,16 +540,18 @@ def get_data_mode(assignment_id, ids, r, default_mode='M'):
                 else:
                     cur_list.append(mode_dict[mode])
             else:
-                r.set(key, default_mode)
-                cur_list.append(mode_dict[default_mode])
+                attribute = int(attribute_id1.split('-')[-1])
+                default_mode = data_modes[data_mode][attribute]
+                r.set(key, mode_dict2[default_mode])
+                cur_list.append(default_mode)
         data_mode_list.append(cur_list)
 
     return data_mode_list
 
 
 def _union_data_mode(list1, list2):
-    ret = 6*['masked']
-    for i in range(6):
+    ret = 11*['masked']
+    for i in range(11):
         if list1[i] == 'full' or list2[i] == 'full':
             ret[i] = 'full'
         elif list1[i] == 'partial' or list2[i] == 'partial':
@@ -541,10 +564,10 @@ def get_conflict_data_mode(pid, ids, mongo, r, manager_assignment_id, isfull=Fal
     the data mode for resolve conflicts is the Union of each assignee's data mode
     """
     if isfull:
-        data_mode_list = len(ids)*[6*['base']]
+        data_mode_list = len(ids)*[11*['base']]
         return data_mode_list
 
-    data_mode_list = len(ids)*[6*['masked']]
+    data_mode_list = len(ids)*[11*['masked']]
 
     project = mongo.db.projects.find_one({'pid': pid})
     assignee_stat = project['assignee_stat']
@@ -813,9 +836,14 @@ def get_record_id_by_pair_id(mongo, pid, indices):
             line2 = lines[i+1]
             data1 = line1.split(',')
             data2 = line2.split(',')
-            id1 = data1[2]+'-'+data1[3]
-            id2 = data2[2]+'-'+data2[3]
-            pid = data1[0]
+            if project['created_by'] == 'pairfile':
+                id1 = data1[2]+'-'+data1[3]
+                id2 = data2[2]+'-'+data2[3]
+                pid = data1[0]
+            else:
+                id1 = data1[8]
+                id2 = data2[8]
+                pid = data1[0]
             id_dict[int(pid)] = (id1, id2)
 
     ret = list()
@@ -897,7 +925,7 @@ def generate_final_result(pairfile_path, result_path, final_result_path):
             data = line.strip().split(',')
             result[int(data[0])] = [int(data[1]), int(data[2])]
 
-    table_head = 'PairID,GroupID,DB,ID,voter_reg_num,first_name,last_name,dob,sex,race,decision,choice\n'
+    table_head = 'PairID,GroupID,DB,ID,voter_reg_num,first_name,last_name,dob,sex,race,info1,info2,info3,info4,info5,decision,choice\n'
     f1 = open(pairfile_path, 'r')
     f2 = open(final_result_path, 'w')
 
@@ -1008,12 +1036,12 @@ def new_blocking(mongo, data):
 
     total_pairs, block_id = blocking.new_blocking(blocking=data['blocking'], intfile=intfile_path, pair_file=pairfile_path)
 
-    assigner = Assign_generator(pairfile_path)
+    assigner = Assign_generator(pairfile_path, block_id)
     assignee_items = data['assignee_area'].rstrip(';').split(';')
     assignee_list = list()
     assignee_stat = list()
     for assignee_item in assignee_items:
-        cur_assignee, cur_kapr, cur_percentage = assignee_item.split(',')
+        cur_assignee, cur_kapr, cur_percentage, display_mode, isfull = assignee_item.split(',')
         assignee_list.append(cur_assignee)
 
         percentage = float(cur_percentage)/100.0
@@ -1042,6 +1070,8 @@ def new_blocking(mongo, data):
             'current_kapr': 0,
             'pair_idx': 0,
             'total_pairs': pf_result['size'],
+            'isfull': isfull,
+            'display_mode': display_mode,
         })
 
     mongo.db.projects.update( {"pid": pid}, {"$set": {"assignee": assignee_list}})

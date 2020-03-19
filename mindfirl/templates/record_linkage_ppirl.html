@@ -6,9 +6,9 @@
         <link rel="shortcut icon" href="../static/images/site/favicon.ico" type="image/x-icon" />
 
         <link rel="stylesheet" href="../static/css/site.css?q=5" type="text/css">
-        <link rel="stylesheet" href="../static/css/style.css?q=66" type="text/css">
+        <link rel="stylesheet" href="../static/css/style.css?q=92" type="text/css">
         <link rel="stylesheet" href="../static/css/ionicons.min.css" type="text/css">
-        <link rel="stylesheet" href="../static/css/select.css?q=13" type="text/css">
+        <link rel="stylesheet" href="../static/css/select.css?q=30" type="text/css">
         <link rel="stylesheet" href="../static/css/bootstrap.min.css" type="text/css">
         <link rel="stylesheet" href="../static/css/footer.css" type="text/css">
         <link rel="stylesheet" href="../static/css/animate.min.css">
@@ -57,16 +57,16 @@
         </script>
     </head>
 
-    <body style="padding-bottom: 0px; min-height: 0px;">
+    <body style="padding-bottom: 0px; height: 100%; position: fixed; overflow-y: hidden; width: 100%;">
         <div id="wrapper">
-            <div id="title">
+            <div id="title" style="position: static; text-align: center; width: 100%;">
                 <h3 style="font-size:24px;">{{ data['title'] | safe }}</h3>
             </div>
             
             <div id="content">
                 <div class="tool-bar">
                 {% if data['isfull'] != 'true' %}
-                <div class="privacy-budget-div">
+                <div class="privacy-budget-div" style=" position: fixed; left: 50px; top:50px; width: 1600px;">
                     <script>
                         $(function() {
                             $("[title]").tooltip({'placement': "bottom"});
@@ -83,16 +83,13 @@
                 </div>
                 {% endif %}
 
-                <div id="page-number" class="page-number-div-meter">
-                    page: <span id="page-number">{{ data['page_number'] }}/{{ data['page_size'] }}</span>
-                </div>
-
-                
                 </div>
                 <div style="clear:both"></div>
-                <div id="table">
+                <div id="table" style=" width: 1600px; height: 700px; margin-top: 60px; overflow-x: auto; overflow-y: auto;">  
+                    <div style="width: 2250px;">
                     <div id="table_head">
                         <div class="table_col1">Pair</div>
+                        <div class="table_col10">Choice Panel</div>
                         <div class="table_col2">ID</div>
                         <div class="table_col3">FFreq</div>
                         <div class="table_col4 table_names">First Name</div>
@@ -102,7 +99,11 @@
                         <div class="table_col7">DoB(M/D/Y)</div>
                         <div class="table_col8">Sex</div>
                         <div class="table_col9">MI</div>
-                        <div class="table_col10">Choice Panel</div>
+                        <div class="table_col4 table_names">Email</div>
+                        <div class="table_col4 table_names">Zip</div>
+                        <div class="table_col4 table_names">State</div>
+                        <div class="table_col4 table_names">Rheumatologist NPI</div>
+                        <div class="table_col4 table_names">Rheumatologist name</div>
                     </div>
                     <div id="table_content">
                         {% set ids = data['ids'] %}
@@ -122,6 +123,45 @@
                                     {{ data['record_ids'][loop.index0][1] }}
                                 </span>
                             </div>
+
+                            <div class="table_col10">
+                                <div class="choice-panel">
+                                    <div class="choice-label">
+                                        <span class="fill1"></span>
+                                        <span>H</span>
+                                        <span style="margin-left: 5px;">M</span>
+                                        <span style="margin-left: 5px;">L</span>
+                                        <span class="fill1"></span>
+                                        <span>L</span>
+                                        <span style="margin-left: 5px;">M</span>
+                                        <span style="margin-left: 5px;">H</span>
+                                        <span class="fill1"></span>
+                                    </div>
+                                    <br/>
+                                    <ul class="mrate choice-button">
+                                        <li class="ion-android-arrow-back"></li>
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a1" status="{% if 'p'+r[0][0]+'a1' in data['saved_answers'] %}on{% endif %}"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a2" status="{% if 'p'+r[0][0]+'a2' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a3" status="{% if 'p'+r[0][0]+'a3' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <li class="ion-android-add"></li>
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a4" status="{% if 'p'+r[0][0]+'a4' in data['saved_answers'] %}on{% endif %}"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a5" status="{% if 'p'+r[0][0]+'a5' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <!--<li class="ion-android-remove"></li>-->
+                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a6" status="{% if 'p'+r[0][0]+'a6' in data['saved_answers'] %}on{% endif %}" style="margin-left: 5px;"></li>
+                                        <li class="ion-android-arrow-forward"></li>
+                                        
+                                    </ul>
+                                    <br/>
+                                    <ul class="choice-result">
+                                        <li class="diff">Different</li>
+                                        <li class="same">Same</li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <div class="table_col2 clickable_cell" id = "test_col" mode="{{ data['data_mode_list'][loop.index0][0] }}">
                                 <div class="sub_row1" id="{{ ids[loop.index0][0][0] }}">
                                     {{ r[0][1]|safe }}
@@ -278,58 +318,89 @@
                                     {{ r[1][8]|safe }}
                                 </div>
                             </div>
-                            <div class="table_col10">
-                                <div class="choice-panel">
-                                    <div class="choice-label">
-                                        <span class="fill"></span>
-                                        <span>H</span>
-                                        <span class="fill"></span>
-                                        <span>M</span>
-                                        <span class="fill"></span>
-                                        <span>L</span>
-                                        <span class="fill"></span>
-                                        <span>L</span>
-                                        <span class="fill"></span>
-                                        <span>M</span>
-                                        <span class="fill"></span>
-                                        <span>H</span>
-                                        <span class="fill"></span>
-                                    </div>
-                                    <br/>
-                                    <ul class="mrate choice-button">
-                                        <li class="ion-android-arrow-back"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a1" status="{% if 'p'+r[0][0]+'a1' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a2" status="{% if 'p'+r[0][0]+'a2' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a3" status="{% if 'p'+r[0][0]+'a3' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-add"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a4" status="{% if 'p'+r[0][0]+'a4' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a5" status="{% if 'p'+r[0][0]+'a5' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-remove"></li>
-                                        <li class="ion-android-radio-button-off input_radio q-choices" id="p{{ r[0][0]|safe }}a6" status="{% if 'p'+r[0][0]+'a6' in data['saved_answers'] %}on{% endif %}"></li>
-                                        <li class="ion-android-arrow-forward"></li>
-                                    </ul>
-                                    <br/>
-                                    <ul class="choice-result">
-                                        <li class="diff">Different</li>
-                                        <li class="same">Same</li>
-                                    </ul>
+
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][6] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][6] }}">
+                                    {{ r[0][9]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][7]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][6] }}">
+                                    {{ r[1][9]|safe }}
                                 </div>
                             </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][7] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][7] }}">
+                                    {{ r[0][10]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][8]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][7] }}">
+                                    {{ r[1][10]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][8] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][8] }}">
+                                    {{ r[0][11]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][9]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][8] }}">
+                                    {{ r[1][11]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][9] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][9] }}">
+                                    {{ r[0][12]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][10]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][9] }}">
+                                    {{ r[1][12]|safe }}
+                                </div>
+                            </div>
+                            <div class="table_col4 table_names clickable_cell" mode="{{ data['data_mode_list'][loop.index0][10] }}">
+                                <div class="sub_row1" id="{{ ids[loop.index0][0][10] }}">
+                                    {{ r[0][13]|safe }}
+                                </div>
+                                <div class="sub_row2">
+                                    {% if data['isfull'] != 'true' %}
+                                    {{ icons[loop.index0][11]|safe }}
+                                    {% endif %}
+                                </div>
+                                <div class="sub_row3" id="{{ ids[loop.index0][1][10] }}">
+                                    {{ r[1][13]|safe }}
+                                </div>
+                            </div>
+                            
                         </div>
                         <div style="clear:both"></div>
                         {% endfor %}
                     </div>
+                    </div>
+                </div>
+                <div id="page-number" class="page-number-div-meter">
+                    page: <span id="page-number">{{ data['page_number'] }}/{{ data['page_size'] }}</span>
                 </div>
 
                 <div id="feedback">
                 </div>
 
                 <div class="submit_div">
-                    <button id="save_exit" class="submit_button" style="">Save & Exit</button>
-                    <button id="button_next_rl" class="submit_button" style="">Submit</button>
+                    <button id="save_exit" class="submit_button" style="width: 150px;">Save & Exit</button>
+                    <button id="button_next_rl" class="submit_button" style="width: 150px;">Submit</button>
                 </div>
             </div>
             <!-- End of div content -->
