@@ -49,4 +49,12 @@ python run.py
 9. Open the port 5000 on this server, then on the other computers, the uses should be able to access the software via a web browser at ip:5000
 
 ## How to use the software
+1. Create an account and log in to MINDFIRL.
+2. Create a project either by pair file or by blocking on fields and assign it to one or more users. (see help in MINDFIRL)
+3. Do your assignment.
+4. After all users finished their assignment, you can export the result (projects -> export result)
+5. More:
 
+Tutorial: http://mindfil4.herokuapp.com/introduction
+
+Video: https://www.youtube.com/watch?v=xM_Yw4h6nn4&feature=youtu.be
