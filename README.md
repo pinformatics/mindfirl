@@ -51,6 +51,9 @@ python run.py
 ## How to use the software
 1. Create an account and log in to MINDFIRL.
 2. Create a project either by pair file or by blocking on fields and assign it to one or more users. (see help in MINDFIRL)
+  - There are some demo files (/mindfirl/data) that you can use:
+      * dev_file1.csv and dev_file2.csv are for creating a project by blocking.
+      * pairfile_extra.csv and name_freq.csv are for creating a project by pair file.
 3. Do your assignment.
 4. After all users finished their assignment, you can export the result (projects -> export result)
 5. More:
