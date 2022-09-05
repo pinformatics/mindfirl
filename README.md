@@ -1,5 +1,5 @@
 # MINDFIRL
-MINDFIRL stands for Minimum & Necessary Disclosure for Interactive Record Linkage. It is a software for interactive record linkage. For more information please visit https://pinformatics.tamhsc.edu/ppirl/
+MINDFIRL stands for Minimum & Necessary Disclosure for Interactive Record Linkage. It is a software for interactive record linkage (RL). For more information please visit https://pinformatics.tamhsc.edu/ppirl/. The automatic RL code using different machine learning approaches can be found at https://github.com/pinformatics/hybridRL_code_and_models
 
 ## Files
 You can find these 4 files in the docs folder:
